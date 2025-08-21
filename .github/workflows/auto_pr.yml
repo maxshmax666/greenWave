@@ -1,0 +1,32 @@
+name: Auto PR
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "feature/**", "fix/**" ]   # какие ветки ловим
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Если у тебя есть скрипт, который генерит изменения — вставь его здесь.
+      # Иначе этот шаг можно удалить.
+      # - run: ./scripts/update_version.sh
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: auto-update"
+          title: "Auto PR: updates"
+          body: "Automated changes."
+          branch: "auto/update-${{ github.sha }}"
+          base: "main"
+          delete-branch: true
