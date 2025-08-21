@@ -1,1 +1,57 @@
+name: Flutter CI (format, analyze, test, build)
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          # flutter-version: '3.19.6'   # (опционально зафиксируй версию)
+          cache: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: flutter pub get
+        run: flutter pub get
+
+      - name: dart format (check)
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: flutter analyze
+        run: flutter analyze
+
+      - name: flutter test
+        run: flutter test --no-pub
+
+      # Сборка APK (если нужна)
+      - name: flutter build apk (release)
+        run: flutter build apk --release --split-per-abi
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-release
+          path: build/app/outputs/flutter-apk/*.apk
+          if-no-files-found: error
 
