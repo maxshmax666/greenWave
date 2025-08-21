@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+
+import '../services/route_service.dart';
+import '../services/snap_utils.dart';
+import '../services/speed_advisor.dart';
 
 final supa = Supabase.instance.client;
 
@@ -18,13 +23,21 @@ class _MapScreenState extends State<MapScreen> {
   static const _defaultCenter = LatLng(57.90502, 60.08683);
   final List<Map<String, dynamic>> _lights = [];
   Timer? _ticker;
+  List<LatLng> _route = [];
+  List<SnappedLight> _snapped = [];
+  int? _advised;
 
   @override
   void initState() {
     super.initState();
     _loadLights();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() {});
+      if (!mounted) return;
+      int? sp;
+      if (_route.isNotEmpty) {
+        sp = SpeedAdvisor.advise(_snapped);
+      }
+      setState(() => _advised = sp);
     });
   }
 
@@ -51,6 +64,30 @@ class _MapScreenState extends State<MapScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Не удалось загрузить lights: $e')),
       );
+    }
+  }
+
+  Future<LatLng> _currentPos() async {
+    try {
+      final p = await Geolocator.getCurrentPosition();
+      return LatLng(p.latitude, p.longitude);
+    } catch (_) {
+      return _map.center;
+    }
+  }
+
+  Future<void> _setDest(LatLng dest) async {
+    try {
+      final start = await _currentPos();
+      final pts = await RouteService.getRoute(start, dest);
+      setState(() {
+        _route = pts;
+        _snapped = SnapUtils.snapLights(_lights, _route);
+      });
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Route error: $e')));
     }
   }
 
@@ -121,9 +158,10 @@ class _MapScreenState extends State<MapScreen> {
       ),
       body: FlutterMap(
         mapController: _map,
-        options: const MapOptions(
+        options: MapOptions(
           initialCenter: _defaultCenter,
           initialZoom: 15,
+          onLongPress: (tap, latlng) => _setDest(latlng),
           interactionOptions: InteractionOptions(
               flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
         ),
@@ -143,6 +181,10 @@ class _MapScreenState extends State<MapScreen> {
             },
           ),
           MarkerLayer(markers: markers),
+          if (_route.isNotEmpty)
+            PolylineLayer(polylines: [
+              Polyline(points: _route, strokeWidth: 4, color: Colors.blue)
+            ]),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -152,20 +194,40 @@ class _MapScreenState extends State<MapScreen> {
                 color: Colors.white70,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Row(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
-                  _LegendDot(color: Colors.red, label: 'Второстепенная'),
-                  SizedBox(width: 12),
-                  _LegendDot(color: Colors.green, label: 'Главная'),
-                  SizedBox(width: 12),
-                  _LegendDot(color: Colors.blue, label: 'Пешеходы'),
+                children: [
+                  if (_route.isNotEmpty)
+                    Text(_advised != null
+                        ? 'Go ~$_advised km/h'
+                        : 'No lights on route'),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      _LegendDot(color: Colors.red, label: 'Второстепенная'),
+                      SizedBox(width: 12),
+                      _LegendDot(color: Colors.green, label: 'Главная'),
+                      SizedBox(width: 12),
+                      _LegendDot(color: Colors.blue, label: 'Пешеходы'),
+                    ],
+                  ),
                 ],
               ),
             ),
           ),
         ],
       ),
+      floatingActionButton: _route.isNotEmpty
+          ? FloatingActionButton(
+              onPressed: () => setState(() {
+                    _route.clear();
+                    _snapped = [];
+                    _advised = null;
+                  }),
+              tooltip: 'Clear route',
+              child: const Icon(Icons.clear),
+            )
+          : null,
     );
   }
 }
