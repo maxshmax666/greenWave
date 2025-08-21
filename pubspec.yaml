@@ -1,0 +1,23 @@
+﻿name: green_wave_app
+description: "GreenWave: map + lights + recorder"
+publish_to: "none" # чтобы случайно не залить в pub.dev
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_map: ^6.2.1
+  latlong2: ^0.9.1
+  supabase_flutter: ^2.6.0
+  geolocator: ^12.0.0
+  permission_handler: ^11.4.0
+  camera: ^0.10.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
