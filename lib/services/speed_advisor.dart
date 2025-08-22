@@ -11,13 +11,16 @@ class SpeedAdvisor {
       int score = 0;
       for (int i = 0; i < lights.length && i < 3; i++) {
         final l = lights[i].light;
-        final dist = lights[i].distance;
+        final dist = lights[i].alongMeters;
         final arrive = now.add(Duration(seconds: (dist / v).round()));
         final ph = _phaseAt(l, arrive);
-        if (ph == _Phase.green) score += 2;
-        else if (ph == _Phase.red) score -= 2;
+        if (ph == _Phase.green)
+          score += 2;
+        else if (ph == _Phase.red)
+          score -= 2;
       }
-      if (score > bestScore || (score == bestScore && (best == null || sp < best))) {
+      if (score > bestScore ||
+          (score == bestScore && (best == null || sp < best))) {
         bestScore = score;
         best = sp;
       }
@@ -34,7 +37,8 @@ class SpeedAdvisor {
     final start = startStr != null ? DateTime.parse(startStr).toUtc() : null;
     if (cycle <= 0 || start == null) return _Phase.unknown;
     final offset = (l['offset_sec'] as int?) ?? 0;
-    final s = ((t.difference(start).inSeconds + offset) % cycle + cycle) % cycle;
+    final s =
+        ((t.difference(start).inSeconds + offset) % cycle + cycle) % cycle;
     if (s < green) return _Phase.green;
     if (s < green + yellow) return _Phase.yellow;
     return _Phase.red;
