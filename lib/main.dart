@@ -1,9 +1,11 @@
-﻿import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'screens/map_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'screens/cycle_recorder.dart';
+import 'screens/map_screen.dart';
 import 'screens/speed_advisor.dart';
+import 'theme_colors.dart';
 
 const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
 const supabaseAnonKey =
@@ -18,11 +20,22 @@ const seedColors = [
 
 final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
 final themeColorIndex = ValueNotifier<int>(0);
+final themeColor = ValueNotifier<MaterialColor>(themeColors.first);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   final prefs = await SharedPreferences.getInstance();
+
+  // Загружаем индекс seed-палитры
   themeColorIndex.value = prefs.getInt('colorIndex') ?? 0;
+
+  // Загружаем конкретный цвет, если он сохранён
+  final colorIndex = prefs.getInt('primary_color') ?? 0;
+  if (colorIndex >= 0 && colorIndex < themeColors.length) {
+    themeColor.value = themeColors[colorIndex];
+  }
+
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
   runApp(const MyApp());
 }
@@ -31,28 +44,38 @@ final supa = Supabase.instance.client;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<int>(
       valueListenable: themeColorIndex,
-      builder: (context, colorIdx, _) {
-        final color = seedColors[colorIdx % seedColors.length];
-        return ValueListenableBuilder<ThemeMode>(
-          valueListenable: themeMode,
-          builder: (context, mode, _) => MaterialApp(
-            title: 'GreenWave',
-            themeMode: mode,
-            theme: ThemeData(
-              colorSchemeSeed: color,
-              brightness: Brightness.light,
-            ),
-            darkTheme: ThemeData(
-              colorSchemeSeed: color,
-              brightness: Brightness.dark,
-            ),
-            debugShowCheckedModeBanner: false,
-            home: const AuthGate(),
-          ),
+      builder: (context, idx, _) {
+        final seed = seedColors[idx % seedColors.length];
+        return ValueListenableBuilder<MaterialColor>(
+          valueListenable: themeColor,
+          builder: (context, color, _) {
+            return ValueListenableBuilder<ThemeMode>(
+              valueListenable: themeMode,
+              builder: (context, mode, __) => MaterialApp(
+                title: 'GreenWave',
+                themeMode: mode,
+                theme: ThemeData(
+                  colorSchemeSeed: seed,
+                  colorScheme: ColorScheme.fromSeed(seedColor: color),
+                  useMaterial3: true,
+                ),
+                darkTheme: ThemeData(
+                  colorScheme: ColorScheme.fromSeed(
+                    seedColor: color,
+                    brightness: Brightness.dark,
+                  ),
+                  useMaterial3: true,
+                ),
+                debugShowCheckedModeBanner: false,
+                home: const AuthGate(),
+              ),
+            );
+          },
         );
       },
     );
@@ -100,6 +123,8 @@ class _HomeTabsState extends State<HomeTabs> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _i,
         onTap: (v) => setState(() => _i = v),
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'),
           BottomNavigationBarItem(icon: Icon(Icons.videocam), label: 'Record'),
