@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../env.dart';
 import '../main.dart';
+import '../theme_colors.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -25,6 +28,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: themeMode.value == ThemeMode.dark,
             onChanged: (v) => setState(
                 () => themeMode.value = v ? ThemeMode.dark : ThemeMode.light),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            children: [
+              for (final c in themeColors)
+                GestureDetector(
+                  onTap: () async {
+                    setState(() => themeColor.value = c);
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setInt('primary_color', themeColors.indexOf(c));
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: c,
+                    child: themeColor.value == c
+                        ? const Icon(Icons.check, color: Colors.white)
+                        : null,
+                  ),
+                ),
+            ],
           ),
           DropdownButtonFormField<String>(
             value: _lang,

@@ -1,16 +1,27 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'screens/map_screen.dart';
+
 import 'screens/cycle_recorder.dart';
+import 'screens/map_screen.dart';
 import 'screens/speed_advisor.dart';
+import 'theme_colors.dart';
 
 const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzb3lqcXRxdG9teGNkbXNnZWh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDc2NzIsImV4cCI6MjA3MDY4MzY3Mn0.AgVnUEmf4dO3aaVBJjZ1zJm0EFUQ0ghENtpkRqsXW4o';
 
 final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
+final themeColor = ValueNotifier<MaterialColor>(themeColors.first);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final prefs = await SharedPreferences.getInstance();
+  final colorIndex = prefs.getInt('primary_color') ?? 0;
+  if (colorIndex >= 0 && colorIndex < themeColors.length) {
+    themeColor.value = themeColors[colorIndex];
+  }
+
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
   runApp(const MyApp());
 }
@@ -21,16 +32,30 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: themeMode,
-      builder: (context, mode, _) => MaterialApp(
-        title: 'GreenWave',
-        themeMode: mode,
-        theme: ThemeData.light(),
-        darkTheme: ThemeData.dark(),
-        debugShowCheckedModeBanner: false,
-        home: const AuthGate(),
-      ),
+    return ValueListenableBuilder<MaterialColor>(
+      valueListenable: themeColor,
+      builder: (context, color, _) {
+        return ValueListenableBuilder<ThemeMode>(
+          valueListenable: themeMode,
+          builder: (context, mode, __) => MaterialApp(
+            title: 'GreenWave',
+            themeMode: mode,
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: color),
+              useMaterial3: true,
+            ),
+            darkTheme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: color,
+                brightness: Brightness.dark,
+              ),
+              useMaterial3: true,
+            ),
+            debugShowCheckedModeBanner: false,
+            home: const AuthGate(),
+          ),
+        );
+      },
     );
   }
 }
@@ -76,6 +101,9 @@ class _HomeTabsState extends State<HomeTabs> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _i,
         onTap: (v) => setState(() => _i = v),
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor:
+            Theme.of(context).colorScheme.onSurfaceVariant,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'),
           BottomNavigationBarItem(icon: Icon(Icons.videocam), label: 'Record'),
