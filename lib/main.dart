@@ -1,16 +1,28 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/map_screen.dart';
 import 'screens/cycle_recorder.dart';
 import 'screens/speed_advisor.dart';
 
 const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzb3lqcXRxdG9teGNkbXNnZWh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDc2NzIsImV4cCI6MjA3MDY4MzY3Mn0.AgVnUEmf4dO3aaVBJjZ1zJm0EFUQ0ghENtpkRqsXW4o';
+const supabaseAnonKey =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzb3lqcXRxdG9teGNkbXNnZWh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDc2NzIsImV4cCI6MjA3MDY4MzY3Mn0.AgVnUEmf4dO3aaVBJjZ1zJm0EFUQ0ghENtpkRqsXW4o';
+
+const seedColors = [
+  Colors.green,
+  Colors.blue,
+  Colors.orange,
+  Colors.purple,
+];
 
 final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
+final themeColorIndex = ValueNotifier<int>(0);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  themeColorIndex.value = prefs.getInt('colorIndex') ?? 0;
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
   runApp(const MyApp());
 }
@@ -21,16 +33,28 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: themeMode,
-      builder: (context, mode, _) => MaterialApp(
-        title: 'GreenWave',
-        themeMode: mode,
-        theme: ThemeData.light(),
-        darkTheme: ThemeData.dark(),
-        debugShowCheckedModeBanner: false,
-        home: const AuthGate(),
-      ),
+    return ValueListenableBuilder<int>(
+      valueListenable: themeColorIndex,
+      builder: (context, colorIdx, _) {
+        final color = seedColors[colorIdx % seedColors.length];
+        return ValueListenableBuilder<ThemeMode>(
+          valueListenable: themeMode,
+          builder: (context, mode, _) => MaterialApp(
+            title: 'GreenWave',
+            themeMode: mode,
+            theme: ThemeData(
+              colorSchemeSeed: color,
+              brightness: Brightness.light,
+            ),
+            darkTheme: ThemeData(
+              colorSchemeSeed: color,
+              brightness: Brightness.dark,
+            ),
+            debugShowCheckedModeBanner: false,
+            home: const AuthGate(),
+          ),
+        );
+      },
     );
   }
 }

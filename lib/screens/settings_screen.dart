@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../env.dart';
 import '../main.dart';
 
@@ -25,6 +26,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: themeMode.value == ThemeMode.dark,
             onChanged: (v) => setState(
                 () => themeMode.value = v ? ThemeMode.dark : ThemeMode.light),
+          ),
+          const SizedBox(height: 12),
+          ValueListenableBuilder<int>(
+            valueListenable: themeColorIndex,
+            builder: (context, idx, _) => Row(
+              children: [
+                for (int i = 0; i < seedColors.length; i++)
+                  GestureDetector(
+                    onTap: () async {
+                      themeColorIndex.value = i;
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.setInt('colorIndex', i);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: seedColors[i],
+                        shape: BoxShape.circle,
+                        border: idx == i
+                            ? Border.all(width: 3, color: Colors.black)
+                            : null,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
           DropdownButtonFormField<String>(
             value: _lang,
