@@ -4,10 +4,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:camera/camera.dart';
 
 import '../services/route_service.dart';
 import '../services/snap_utils.dart';
 import '../services/speed_advisor.dart';
+import 'settings_screen.dart';
 
 final supa = Supabase.instance.client;
 
@@ -26,17 +28,22 @@ class _MapScreenState extends State<MapScreen> {
   List<LatLng> _route = [];
   List<SnappedLight> _snapped = [];
   int? _advised;
+  LatLng? _myPos;
+  int? _nearestId;
+  final _dist = Distance();
 
   @override
   void initState() {
     super.initState();
     _loadLights();
+    _updateNearest();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted) return;
       int? sp;
       if (_route.isNotEmpty) {
         sp = SpeedAdvisor.advise(_snapped);
       }
+      _updateNearest();
       setState(() => _advised = sp);
     });
   }
@@ -59,12 +66,33 @@ class _MapScreenState extends State<MapScreen> {
           ..clear()
           ..addAll(List<Map<String, dynamic>>.from(res));
       });
+      _updateNearest();
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Не удалось загрузить lights: $e')),
       );
     }
+  }
+
+  Future<void> _updateNearest() async {
+    try {
+      final pos = await _currentPos();
+      _myPos = pos;
+      double best = double.infinity;
+      int? bestId;
+      for (final l in _lights) {
+        final lat = (l['lat'] as num?)?.toDouble();
+        final lon = (l['lon'] as num?)?.toDouble();
+        if (lat == null || lon == null) continue;
+        final d = _dist.as(LengthUnit.Meter, pos, LatLng(lat, lon));
+        if (d < best) {
+          best = d;
+          bestId = l['id'] as int?;
+        }
+      }
+      if (mounted) setState(() => _nearestId = bestId);
+    } catch (_) {}
   }
 
   Future<LatLng> _currentPos() async {
@@ -89,6 +117,15 @@ class _MapScreenState extends State<MapScreen> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Route error: $e')));
     }
+  }
+
+  void _openExplorer() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.black54,
+      isScrollControlled: true,
+      builder: (_) => const ExplorerSheet(),
+    );
   }
 
   (Color, int) _phaseColorAndLeft(Map<String, dynamic> l) {
@@ -120,11 +157,24 @@ class _MapScreenState extends State<MapScreen> {
           final lon = (m['lon'] as num?)?.toDouble();
           if (lat == null || lon == null) return null;
           final (color, left) = _phaseColorAndLeft(m);
+          final lamp = _TrafficLamp(color: color, leftSec: left);
+          Widget child = lamp;
+          if (_nearestId == m['id']) {
+            child = Container(
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                    color: color.withOpacity(0.6),
+                    blurRadius: 12,
+                    spreadRadius: 4)
+              ]),
+              child: lamp,
+            );
+          }
           return Marker(
             point: LatLng(lat, lon),
             width: 46,
             height: 60,
-            child: _TrafficLamp(color: color, leftSec: left),
+            child: child,
           );
         })
         .whereType<Marker>()
@@ -137,6 +187,11 @@ class _MapScreenState extends State<MapScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: _openExplorer,
+          tooltip: 'Explorer',
+          icon: const Icon(Icons.explore),
+        ),
         title: const Text('Map & Lights'),
         actions: [
           IconButton(
@@ -150,7 +205,8 @@ class _MapScreenState extends State<MapScreen> {
             icon: const Icon(Icons.my_location),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SettingsScreen())),
             tooltip: 'Настройки',
             icon: const Icon(Icons.settings),
           ),
@@ -314,6 +370,85 @@ class _LegendDot extends StatelessWidget {
         const SizedBox(width: 6),
         Text(label),
       ],
+    );
+  }
+}
+
+class ExplorerSheet extends StatefulWidget {
+  const ExplorerSheet({super.key});
+  @override
+  State<ExplorerSheet> createState() => _ExplorerSheetState();
+}
+
+class _ExplorerSheetState extends State<ExplorerSheet> {
+  CameraController? _controller;
+  bool _rec = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  Future<void> _init() async {
+    final cams = await availableCameras();
+    if (cams.isEmpty) return;
+    _controller = CameraController(cams.first, ResolutionPreset.medium);
+    await _controller!.initialize();
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _toggleRec() async {
+    if (_controller == null) return;
+    if (_rec) {
+      final file = await _controller!.stopVideoRecording();
+      // TODO: upload file.path to server
+      setState(() => _rec = false);
+    } else {
+      await _controller!.startVideoRecording();
+      setState(() => _rec = true);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_controller == null || !_controller!.value.isInitialized) {
+      return const SizedBox(
+        height: 300,
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+    return SizedBox(
+      height: 300,
+      child: Column(
+        children: [
+          Expanded(child: CameraPreview(_controller!)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.flash_on),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: Icon(_rec ? Icons.stop : Icons.fiber_manual_record),
+                color: _rec ? Colors.red : null,
+                onPressed: _toggleRec,
+              ),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.pop(context),
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

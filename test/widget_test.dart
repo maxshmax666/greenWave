@@ -7,10 +7,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:green_wave_app/main.dart';
+import 'package:green_wave_app/env.dart';
 
 void main() {
+  setUpAll(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Supabase.initialize(
+        url: Env.supabaseUrl, anonKey: Env.supabaseAnonKey);
+  });
+
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
