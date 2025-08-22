@@ -1,8 +1,13 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../services/route_service.dart';
+import '../services/snap_utils.dart';
+import '../services/speed_advisor.dart';
 
 final supa = Supabase.instance.client;
 
@@ -14,18 +19,22 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final _map = MapController();
-
   static const _defaultCenter = LatLng(57.90502, 60.08683);
   final List<Map<String, dynamic>> _lights = [];
   Timer? _ticker;
+
+  LatLng? _myPos;
+  List<LatLng>? _route;
+  bool _followMe = true;
+  String _advice = 'Long-press to set destination';
 
   @override
   void initState() {
     super.initState();
     _loadLights();
-    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) setState(() {});
-    });
+    _initLocation();
+    _ticker =
+        Timer.periodic(const Duration(seconds: 1), (_) => _updateAdvice());
   }
 
   @override
@@ -34,12 +43,46 @@ class _MapScreenState extends State<MapScreen> {
     super.dispose();
   }
 
+  Future<void> _initLocation() async {
+    final perm = await Geolocator.requestPermission();
+    if (perm == LocationPermission.denied ||
+        perm == LocationPermission.deniedForever) return;
+    Geolocator.getPositionStream()
+        .listen((p) {
+      final pos = LatLng(p.latitude, p.longitude);
+      if (!mounted) return;
+      setState(() {
+        _myPos = pos;
+        if (_followMe) {
+          _map.move(pos, _map.camera.zoom);
+        }
+      });
+    });
+  }
+
+  void _updateAdvice() {
+    if (!mounted) return;
+    if (_myPos == null || _route == null) {
+      setState(() => _advice = 'Long-press to set destination');
+      return;
+    }
+    final adv =
+        SpeedAdvisor.advise(pos: _myPos!, route: _route!, lights: _lights);
+    setState(() {
+      if (!adv.hasLights) {
+        _advice = 'No lights on route';
+      } else {
+        _advice =
+            'Go ~${adv.speedKmh!.round()} km/h, next green in ${adv.etaSec} s';
+      }
+    });
+  }
+
   Future<void> _loadLights() async {
     try {
       final res = await supa
           .from('lights')
-          .select(
-              'id,name,lat,lon,main_duration,side_duration,ped_duration,cycle_total,cycle_start_at')
+          .select('id,name,lat,lon,green_sec,yellow_sec,red_sec,cycle_start_at')
           .order('id');
       setState(() {
         _lights
@@ -55,25 +98,19 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   (Color, int) _phaseColorAndLeft(Map<String, dynamic> l) {
-    final total = (l['cycle_total'] as int?) ??
-        ((l['main_duration'] as int? ?? 0) +
-            (l['side_duration'] as int? ?? 0) +
-            (l['ped_duration'] as int? ?? 0));
+    final green = l['green_sec'] as int? ?? 0;
+    final yellow = l['yellow_sec'] as int? ?? 0;
+    final red = l['red_sec'] as int? ?? 0;
+    final total = green + yellow + red;
     final startStr = l['cycle_start_at'] as String?;
     if (total == 0 || startStr == null) return (Colors.grey, 0);
-
-    final mainDur = l['main_duration'] as int? ?? 0;
-    final sideDur = l['side_duration'] as int? ?? 0;
-    final pedDur = l['ped_duration'] as int? ?? 0;
-
     int mod(int a, int b) => ((a % b) + b) % b;
     final now = DateTime.now().toUtc();
     final start = DateTime.parse(startStr).toUtc();
     final s = mod(now.difference(start).inSeconds, total);
-
-    if (s < mainDur) return (Colors.green, mainDur - s);
-    if (s < mainDur + sideDur) return (Colors.red, mainDur + sideDur - s);
-    return (Colors.blue, total - s);
+    if (s < red) return (Colors.red, red - s);
+    if (s < red + green) return (Colors.green, red + green - s);
+    return (Colors.yellow, total - s);
   }
 
   List<Marker> _lightMarkers() {
@@ -94,9 +131,38 @@ class _MapScreenState extends State<MapScreen> {
         .toList();
   }
 
+  Future<void> _setDestination(LatLng dest) async {
+    if (_myPos == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Нет данных GPS')));
+      return;
+    }
+    try {
+      final r = await RouteService.getRoute(_myPos!, dest);
+      setState(() {
+        _route = r;
+        _followMe = true;
+      });
+      _updateAdvice();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('OSRM error: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final markers = _lightMarkers();
+    final allMarkers = List<Marker>.from(markers);
+    if (_myPos != null) {
+      allMarkers.add(Marker(
+          point: _myPos!,
+          width: 20,
+          height: 20,
+          child: const Icon(Icons.my_location, color: Colors.blue)));
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -107,11 +173,15 @@ class _MapScreenState extends State<MapScreen> {
             tooltip: 'Обновить',
             icon: const Icon(Icons.refresh),
           ),
-          IconButton(
-            onPressed: () => _map.move(_defaultCenter, 16),
-            tooltip: 'К моему району',
-            icon: const Icon(Icons.my_location),
-          ),
+          if (_route != null)
+            IconButton(
+              onPressed: () => setState(() {
+                _route = null;
+                _advice = 'Long-press to set destination';
+              }),
+              tooltip: 'Очистить маршрут',
+              icon: const Icon(Icons.clear),
+            ),
           IconButton(
             onPressed: () {},
             tooltip: 'Настройки',
@@ -121,11 +191,15 @@ class _MapScreenState extends State<MapScreen> {
       ),
       body: FlutterMap(
         mapController: _map,
-        options: const MapOptions(
+        options: MapOptions(
           initialCenter: _defaultCenter,
           initialZoom: 15,
-          interactionOptions: InteractionOptions(
+          interactionOptions: const InteractionOptions(
               flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
+          onPositionChanged: (pos, hasGesture) {
+            if (hasGesture) setState(() => _followMe = false);
+          },
+          onLongPress: (tapPos, latlng) => _setDestination(latlng),
         ),
         children: [
           TileLayer(
@@ -134,7 +208,6 @@ class _MapScreenState extends State<MapScreen> {
             maxNativeZoom: 19,
             maxZoom: 19,
             backgroundColor: Colors.white,
-            // ВАЖНО: сигнатура из 3х аргументов
             errorTileCallback: (tile, error, stackTrace) {
               if (!mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
@@ -142,30 +215,61 @@ class _MapScreenState extends State<MapScreen> {
               );
             },
           ),
-          MarkerLayer(markers: markers),
+          if (_route != null)
+            PolylineLayer(polylines: [
+              Polyline(points: _route!, color: Colors.purple, strokeWidth: 4)
+            ]),
+          MarkerLayer(markers: allMarkers),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white70,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  _LegendDot(color: Colors.red, label: 'Второстепенная'),
-                  SizedBox(width: 12),
-                  _LegendDot(color: Colors.green, label: 'Главная'),
-                  SizedBox(width: 12),
-                  _LegendDot(color: Colors.blue, label: 'Пешеходы'),
-                ],
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white70,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(_advice),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white70,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      _LegendDot(color: Colors.red, label: 'Красный'),
+                      SizedBox(width: 12),
+                      _LegendDot(color: Colors.yellow, label: 'Жёлтый'),
+                      SizedBox(width: 12),
+                      _LegendDot(color: Colors.green, label: 'Зелёный'),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
+      floatingActionButton: _followMe
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                if (_myPos != null) {
+                  _map.move(_myPos!, _map.camera.zoom);
+                  setState(() => _followMe = true);
+                }
+              },
+              child: const Icon(Icons.my_location),
+            ),
     );
   }
 }
@@ -178,8 +282,8 @@ class _TrafficLamp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isRed = color == Colors.red;
+    final isYellow = color == Colors.yellow;
     final isGreen = color == Colors.green;
-    final isBlue = color == Colors.blue;
 
     Widget lamp(Color on, bool active) => Container(
           width: 12,
@@ -208,8 +312,8 @@ class _TrafficLamp extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               lamp(Colors.red, isRed),
+              lamp(Colors.yellow, isYellow),
               lamp(Colors.green, isGreen),
-              lamp(Colors.blue, isBlue),
             ],
           ),
         ),
