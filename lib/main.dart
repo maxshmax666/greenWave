@@ -2,9 +2,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'screens/cycle_recorder.dart';
 import 'screens/map_screen.dart';
-import 'screens/speed_advisor.dart';
+import 'screens/lights_screen.dart';
+import 'screens/settings_screen.dart';
 import 'theme_colors.dart';
 
 const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
@@ -93,8 +93,8 @@ class _HomeTabsState extends State<HomeTabs> {
   Widget build(BuildContext context) {
     final pages = [
       const MapScreen(),
-      const CycleRecorderScreen(),
-      const SpeedAdvisorScreen(),
+      const LightsScreen(),
+      const SettingsScreen(),
     ];
     return Scaffold(
       body: pages[_i],
@@ -105,9 +105,9 @@ class _HomeTabsState extends State<HomeTabs> {
         unselectedItemColor:
             Theme.of(context).colorScheme.onSurfaceVariant,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'),
-          BottomNavigationBarItem(icon: Icon(Icons.videocam), label: 'Record'),
-          BottomNavigationBarItem(icon: Icon(Icons.speed), label: 'Advisor'),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Карта'),
+          BottomNavigationBarItem(icon: Icon(Icons.traffic), label: 'Светофоры'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Настройки'),
         ],
       ),
     );
