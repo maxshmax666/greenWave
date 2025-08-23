@@ -1,5 +1,8 @@
  
 import 'package:flutter/material.dart';
+
+ 
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -30,6 +33,7 @@ import 'dart:io';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+ 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -75,7 +79,12 @@ import 'shared/theme/app_theme.dart';
 
 
 const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
+ 
+const supabaseAnonKey =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzb3lqcXRxdG9teGNkbXNnZWh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDc2NzIsImV4cCI6MjA3MDY4MzY3Mn0.AgVnUEmf4dO3aaVBJjZ1zJm0EFUQ0ghENtpkRqsXW4o';
+
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzb3lqcXRxdG9teGNkbXNnZWh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDc2NzIsImV4cCI6MjA3MDY4MzY3Mn0.AgVnUEmf4dO3aaVBJjZ1zJm0EFUQ0ghENtpkRqsXW4o';
+ 
  
 
 final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
@@ -269,6 +278,19 @@ class _HomeTabsState extends State<HomeTabs> {
         currentIndex: _i,
         onTap: (v) => setState(() => _i = v),
         selectedItemColor: Theme.of(context).colorScheme.primary,
+ 
+        unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Карта'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.traffic),
+            label: 'Светофоры',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Настройки',
+          ),
+
         unselectedItemColor:
             Theme.of(context).colorScheme.onSurfaceVariant,
         items: [
@@ -277,6 +299,7 @@ class _HomeTabsState extends State<HomeTabs> {
               icon: const Icon(Icons.traffic), label: l10n.navLights),
           BottomNavigationBarItem(
               icon: const Icon(Icons.settings), label: l10n.navSettings),
+ 
         ],
       ),
     );
@@ -338,7 +361,11 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
+ 
+  final _formKey = GlobalKey<FormState>();
+
   final formKey = GlobalKey<FormState>();
+ 
   bool isLogin = true;
   bool busy = false;
   bool acceptTerms = false;
@@ -412,8 +439,28 @@ class _LoginPageState extends State<LoginPage> {
  
   }
 
+  String? _validateEmail(String? v) {
+    if (v == null || v.isEmpty) return 'Invalid email';
+    final reg = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+    if (!reg.hasMatch(v)) return 'Invalid email';
+    return null;
+  }
+
+  String? _validatePassword(String? v) {
+    if (v == null || v.length < 6) return 'Password too short';
+    return null;
+  }
+
+  bool get _isValid =>
+      _validateEmail(emailCtrl.text.trim()) == null &&
+      _validatePassword(passCtrl.text.trim()) == null;
+
   Future<void> _submit() async {
+ 
+    if (!_formKey.currentState!.validate()) return;
+
     if (!formKey.currentState!.validate() || !acceptTerms) return;
+ 
     setState(() => busy = true);
     try {
       if (isLogin) {
@@ -457,6 +504,11 @@ class _LoginPageState extends State<LoginPage> {
  
       if (!mounted) return;
  
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+
+ 
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.errorWithMessage(e.toString()))),
@@ -473,6 +525,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
  
       );
+ 
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -604,6 +657,17 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.all(16),
  
         child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Text(
+                  isLogin ? 'Welcome back!' : 'Join us!',
+                  key: ValueKey(isLogin ? 'login_slogan' : 'signup_slogan'),
+
+ 
+        child: Form(
           key: formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
@@ -614,6 +678,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Text(
                   isLogin ? 'Welcome back!' : 'Join GreenWave!',
                   key: ValueKey(isLogin),
+ 
                 ),
               ),
               const SizedBox(height: 16),
@@ -621,17 +686,33 @@ class _LoginPageState extends State<LoginPage> {
                 controller: emailCtrl,
                 decoration: const InputDecoration(labelText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
+ 
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: _validateEmail,
+                onChanged: (_) => setState(() {}),
+
+                validator: _validateEmail,
+ 
               ),
               TextFormField(
                 controller: passCtrl,
                 decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
+ 
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: _validatePassword,
+                onChanged: (_) => setState(() {}),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: busy || !_isValid ? null : _submit,
+
                 validator: _validatePassword,
               ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: busy || !_isFormValid ? null : _submit,
+ 
                 child: Text(isLogin ? 'Sign in' : 'Create account'),
               ),
               TextButton(
@@ -639,6 +720,10 @@ class _LoginPageState extends State<LoginPage> {
                 child: Text(isLogin ? 'Create account' : 'I have an account'),
               ),
             ],
+ 
+          ),
+        ),
+
 
  
         child: Form(
@@ -774,7 +859,8 @@ class _LoginPageState extends State<LoginPage> {
 
         ]),
 
- main
+ 
+ 
       ),
     );
 

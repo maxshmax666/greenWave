@@ -1,4 +1,7 @@
+ 
+
 /// Environment configuration for the application.
+ 
 class Env {
   /// Supabase project URL.
   static const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
