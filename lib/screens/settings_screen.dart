@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../env.dart';
@@ -18,17 +19,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
-      body: ListView(
+      final l = AppLocalizations.of(context)!;
+      return Scaffold(
+        appBar: AppBar(title: Text(l.settings)),
+        body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          SwitchListTile(
-            title: const Text('Dark theme'),
-            value: themeMode.value == ThemeMode.dark,
-            onChanged: (v) => setState(
-                () => themeMode.value = v ? ThemeMode.dark : ThemeMode.light),
-          ),
+            SwitchListTile(
+              title: Text(l.darkTheme),
+              value: themeMode.value == ThemeMode.dark,
+              onChanged: (v) => setState(
+                  () => themeMode.value = v ? ThemeMode.dark : ThemeMode.light),
+            ),
           const SizedBox(height: 12),
           Wrap(
             spacing: 8,
@@ -49,26 +51,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
             ],
           ),
-          DropdownButtonFormField<String>(
-            value: _lang,
-            items: const [
-              DropdownMenuItem(value: 'en', child: Text('English')),
-              DropdownMenuItem(value: 'ru', child: Text('Русский')),
-            ],
-            onChanged: (v) => setState(() => _lang = v ?? 'en'),
-            decoration: const InputDecoration(labelText: 'Language'),
-          ),
+            DropdownButtonFormField<String>(
+              value: _lang,
+              items: [
+                DropdownMenuItem(value: 'en', child: Text('English')),
+                DropdownMenuItem(value: 'ru', child: const Text('Русский')),
+              ],
+              onChanged: (v) => setState(() => _lang = v ?? 'en'),
+              decoration:
+                  InputDecoration(labelText: l.language, hintText: l.language),
+            ),
           const SizedBox(height: 16),
-          TextField(
-            controller: _urlCtrl,
-            decoration: const InputDecoration(labelText: 'Supabase URL'),
-          ),
+            TextField(
+              controller: _urlCtrl,
+              decoration: InputDecoration(
+                labelText: l.supabaseUrl,
+                hintText: l.supabaseUrl,
+              ),
+            ),
           const SizedBox(height: 12),
-          TextField(
-            controller: _keyCtrl,
-            decoration: const InputDecoration(labelText: 'Supabase Key'),
-            obscureText: true,
-          ),
+            TextField(
+              controller: _keyCtrl,
+              decoration: InputDecoration(
+                labelText: l.supabaseKey,
+                hintText: l.supabaseKey,
+              ),
+              obscureText: true,
+            ),
         ],
       ),
     );
