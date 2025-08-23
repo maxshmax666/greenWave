@@ -48,6 +48,9 @@ import 'screens/map_screen.dart';
 import 'screens/lights_screen.dart';
 import 'screens/settings_screen.dart';
  
+import 'shared/analytics/analytics.dart';
+
+ 
 import 'shared/constants/app_colors.dart';
 import 'shared/constants/app_strings.dart';
 import 'shared/theme/app_theme.dart';
@@ -56,6 +59,7 @@ const supabaseUrl = AppStrings.supabaseUrl;
 const supabaseAnonKey = AppStrings.supabaseAnonKey;
 
 
+ 
 import 'theme_colors.dart';
 
 import 'app_theme.dart';
@@ -391,6 +395,12 @@ class _LoginPageState extends State<LoginPage> {
 
   }
 
+  @override
+  void initState() {
+    super.initState();
+    analytics.logEvent('slogan_shown');
+  }
+
   Future<void> _submit() async {
     if (!formKey.currentState!.validate() || !acceptTerms) return;
     setState(() => busy = true);
@@ -400,16 +410,31 @@ class _LoginPageState extends State<LoginPage> {
           email: emailCtrl.text.trim(),
           password: passCtrl.text.trim(),
         );
+ 
+        analytics.logEvent('login_success');
+
         await analytics.logEvent('login_success');
+ 
       } else {
         await supa.auth.signUp(
           email: emailCtrl.text.trim(),
           password: passCtrl.text.trim(),
         );
+ 
+        analytics.logEvent('signup_success');
+
         await analytics.logEvent('signup_success');
+ 
       }
 
     } catch (e) {
+ 
+      if (isLogin) {
+        analytics.logEvent('login_failure', {'error': e.toString()});
+      } else {
+        analytics.logEvent('signup_failure', {'error': e.toString()});
+      }
+
       await analytics.logEvent(
         isLogin ? 'login_failure' : 'signup_failure',
         {'error': e.toString()},
@@ -418,6 +443,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e, st) {
       debugPrint('Auth error: $e\n$st');
 
+ 
       if (!mounted) return;
  
       final l10n = AppLocalizations.of(context)!;
@@ -620,6 +646,8 @@ class _LoginPageState extends State<LoginPage> {
         ),
 
         child: Column(children: [
+          const Text('Ride the green wave!'),
+          const SizedBox(height: 16),
           TextField(
             controller: emailCtrl,
             decoration: InputDecoration(labelText: l10n.emailLabel),
