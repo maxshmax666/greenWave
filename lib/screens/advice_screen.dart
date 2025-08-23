@@ -1,6 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../data/db.dart';
 import 'speed_advisor.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AdviceScreen extends StatefulWidget {
   final int lightId;
@@ -45,34 +46,39 @@ class _AdviceScreenState extends State<AdviceScreen> {
   }
 
   @override
-  Widget build(BuildContext c) => Scaffold(
-        appBar: AppBar(title: const Text('Подсказка скорости')),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: _m == null
-              ? const Text('Недостаточно данных. Прокатись с автологом камеры.')
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+  Widget build(BuildContext c) {
+    final l10n = AppLocalizations.of(c)!;
+    return Scaffold(
+      appBar: AppBar(title: Text(l10n.adviceTitle)),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: _m == null
+            ? Text(l10n.notEnoughData)
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.cycleInfo(
+                      _m!.tCycle.toStringAsFixed(1),
+                      _m!.tRed.toStringAsFixed(1),
+                      _m!.tYellow.toStringAsFixed(1),
+                      _m!.tGreen.toStringAsFixed(1))),
+                  const SizedBox(height: 8),
+                  if (_adv != null) ...[
                     Text(
-                      'Цикл ${_m!.tCycle.toStringAsFixed(1)}с (R ${_m!.tRed.toStringAsFixed(1)} / '
-                      'Y ${_m!.tYellow.toStringAsFixed(1)} / G ${_m!.tGreen.toStringAsFixed(1)})',
+                      _adv!.message,
+                      style: Theme.of(c)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 8),
-                    if (_adv != null) ...[
-                      Text(
-                        _adv!.message,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      if (_adv!.vLow != null && _adv!.vHigh != null)
-                        Text(
-                          'Держите ~ ${(_adv!.vLow! * 3.6).toStringAsFixed(0)}–'
-                          '${(_adv!.vHigh! * 3.6).toStringAsFixed(0)} км/ч',
-                        ),
-                    ],
+                    if (_adv!.vLow != null && _adv!.vHigh != null)
+                      Text(l10n.holdSpeed(
+                          (_adv!.vLow! * 3.6).toStringAsFixed(0),
+                          (_adv!.vHigh! * 3.6).toStringAsFixed(0))),
                   ],
-                ),
-        ),
-      );
+                ],
+              ),
+      ),
+    );
+  }
 }

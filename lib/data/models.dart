@@ -1,4 +1,4 @@
-﻿enum Phase { red, yellow, green }
+enum Phase { red, yellow, green }
 
 class TrafficLight {
   int? id;

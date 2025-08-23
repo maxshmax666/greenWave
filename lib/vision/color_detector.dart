@@ -1,4 +1,4 @@
-﻿import 'dart:math';
+import 'dart:math';
 import 'package:camera/camera.dart';
 
 enum LightColor { red, yellow, green, unknown }
