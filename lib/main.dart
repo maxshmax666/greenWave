@@ -227,10 +227,43 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final formKey = GlobalKey<FormState>();
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
   bool isLogin = true;
   bool busy = false;
+  bool acceptTerms = false;
+  bool obscure = true;
+  bool isValid = false;
+  String passStrength = '';
+
+  void _updateValid() {
+    setState(() => isValid = formKey.currentState?.validate() ?? false);
+  }
+
+  String _calcStrength(String v) {
+    if (v.isEmpty) return '';
+    int score = 0;
+    if (v.length >= 8) score++;
+    if (RegExp(r'[A-Za-z]').hasMatch(v)) score++;
+    if (RegExp(r'\d').hasMatch(v)) score++;
+    if (score <= 1) return 'Слабый';
+    if (score == 2) return 'Средний';
+    return 'Сильный';
+  }
+
+  Color _strengthColor() {
+    switch (passStrength) {
+      case 'Слабый':
+        return Colors.red;
+      case 'Средний':
+        return Colors.orange;
+      case 'Сильный':
+        return Colors.green;
+      default:
+        return Colors.transparent;
+    }
+  }
 
   @override
   void initState() {
@@ -255,6 +288,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _submit() async {
+    if (!formKey.currentState!.validate() || !acceptTerms) return;
     setState(() => busy = true);
     try {
       if (isLogin) {
@@ -308,6 +342,76 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(title: Text(isLogin ? 'Sign in' : 'Sign up')),
       body: Padding(
         padding: const EdgeInsets.all(16),
+ 
+        child: Form(
+          key: formKey,
+          child: Column(children: [
+            TextFormField(
+              controller: emailCtrl,
+              decoration: const InputDecoration(labelText: 'Email'),
+              keyboardType: TextInputType.emailAddress,
+              validator: (v) {
+                if (v == null || v.isEmpty) return 'Введите email';
+                const pattern =
+                    r"^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+                if (!RegExp(pattern).hasMatch(v.trim())) {
+                  return 'Неверный email';
+                }
+                return null;
+              },
+              onChanged: (_) => _updateValid(),
+            ),
+            TextFormField(
+              controller: passCtrl,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                suffixIcon: IconButton(
+                  icon: Icon(
+                      obscure ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () => setState(() => obscure = !obscure),
+                ),
+              ),
+              obscureText: obscure,
+              validator: (v) {
+                if (v == null || v.isEmpty) return 'Введите пароль';
+                if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}')
+                    .hasMatch(v)) {
+                  return 'Пароль \u22658 символов, минимум одна буква и цифра';
+                }
+                return null;
+              },
+              onChanged: (v) {
+                passStrength = _calcStrength(v);
+                _updateValid();
+              },
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                passStrength.isEmpty ? '' : 'Пароль: $passStrength',
+                style: TextStyle(color: _strengthColor()),
+              ),
+            ),
+            CheckboxListTile(
+              value: acceptTerms,
+              onChanged: (v) => setState(() => acceptTerms = v ?? false),
+              title: const Text('Принимаю условия'),
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed:
+                  (!busy && isValid && acceptTerms) ? _submit : null,
+              child: Text(isLogin ? 'Sign in' : 'Create account'),
+            ),
+            TextButton(
+              onPressed: () => setState(() => isLogin = !isLogin),
+              child:
+                  Text(isLogin ? 'Create account' : 'I have an account'),
+            ),
+          ]),
+        ),
+
         child: Column(children: [
           TextField(
             controller: emailCtrl,
@@ -356,6 +460,7 @@ class _LoginPageState extends State<LoginPage> {
 
           ),
         ]),
+
       ),
     );
 
