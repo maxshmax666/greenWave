@@ -9,7 +9,6 @@ import 'package:camera/camera.dart';
 import '../services/route_service.dart';
 import '../services/snap_utils.dart';
 import '../services/speed_advisor.dart';
-import 'settings_screen.dart';
 
 final supa = Supabase.instance.client;
 
@@ -31,6 +30,7 @@ class _MapScreenState extends State<MapScreen> {
   LatLng? _myPos;
   int? _nearestId;
   final _dist = Distance();
+  String _profile = 'driving-car';
 
   @override
   void initState() {
@@ -107,7 +107,7 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> _setDest(LatLng dest) async {
     try {
       final start = await _currentPos();
-      final pts = await RouteService.getRoute(start, dest);
+      final pts = await RouteService.getRoute(start, dest, profile: _profile);
       setState(() {
         _route = pts;
         _snapped = SnapUtils.snapLights(_lights, _route);
@@ -116,6 +116,26 @@ class _MapScreenState extends State<MapScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Route error: $e')));
+    }
+  }
+
+  Future<void> _centerOnMe() async {
+    final pos = await _currentPos();
+    _map.move(pos, 16);
+  }
+
+  Future<void> _addLight() async {
+    try {
+      final pos = await _currentPos();
+      await supa.from('lights').insert({'lat': pos.latitude, 'lon': pos.longitude});
+      await _loadLights();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Светофор добавлен')));
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Ошибка добавления: $e')));
     }
   }
 
@@ -192,23 +212,25 @@ class _MapScreenState extends State<MapScreen> {
           tooltip: 'Explorer',
           icon: const Icon(Icons.explore),
         ),
-        title: const Text('Map & Lights'),
+        title: const Text('Карта'),
         actions: [
           IconButton(
             onPressed: _loadLights,
             tooltip: 'Обновить',
             icon: const Icon(Icons.refresh),
           ),
-          IconButton(
-            onPressed: () => _map.move(_defaultCenter, 16),
-            tooltip: 'К моему району',
-            icon: const Icon(Icons.my_location),
-          ),
-          IconButton(
-            onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const SettingsScreen())),
-            tooltip: 'Настройки',
-            icon: const Icon(Icons.settings),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.directions),
+            initialValue: _profile,
+            onSelected: (v) => setState(() => _profile = v),
+            itemBuilder: (_) => const [
+              PopupMenuItem(
+                  value: 'driving-car', child: Text('Авто')),
+              PopupMenuItem(
+                  value: 'foot-walking', child: Text('Пешком')),
+              PopupMenuItem(
+                  value: 'cycling-regular', child: Text('Вело')),
+            ],
           ),
         ],
       ),
@@ -273,17 +295,38 @@ class _MapScreenState extends State<MapScreen> {
           ),
         ],
       ),
-      floatingActionButton: _route.isNotEmpty
-          ? FloatingActionButton(
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (_route.isNotEmpty) ...[
+            FloatingActionButton(
+              heroTag: 'clear',
               onPressed: () => setState(() {
                     _route.clear();
                     _snapped = [];
                     _advised = null;
                   }),
-              tooltip: 'Clear route',
+              tooltip: 'Очистить маршрут',
               child: const Icon(Icons.clear),
-            )
-          : null,
+            ),
+            const SizedBox(height: 8),
+          ],
+          FloatingActionButton(
+            heroTag: 'loc',
+            onPressed: _centerOnMe,
+            tooltip: 'Моё местоположение',
+            child: const Icon(Icons.my_location),
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton(
+            heroTag: 'add',
+            onPressed: _addLight,
+            tooltip: 'Добавить светофор',
+            child: const Icon(Icons.add),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -402,7 +445,7 @@ class _ExplorerSheetState extends State<ExplorerSheet> {
     if (_controller == null) return;
     if (_rec) {
       final file = await _controller!.stopVideoRecording();
-      // TODO: upload file.path to server
+      // upload file.path to server
       setState(() => _rec = false);
     } else {
       await _controller!.startVideoRecording();
