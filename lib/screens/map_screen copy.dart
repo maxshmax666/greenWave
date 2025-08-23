@@ -6,6 +6,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../glowing_button.dart';
+
 final supa = Supabase.instance.client;
 
 class MapScreen extends StatefulWidget {
@@ -220,9 +222,9 @@ class _MapScreenState extends State<MapScreen> {
               onPressed: () => Navigator.pop(ctx, false),
               child: const Text('Отмена'),
             ),
-            ElevatedButton(
+            GlowingButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Сохранить'),
+              text: 'Сохранить',
             ),
           ],
         );
@@ -347,9 +349,9 @@ class _MapScreenState extends State<MapScreen> {
               onPressed: () => Navigator.pop(ctx, false),
               child: const Text('Отмена'),
             ),
-            ElevatedButton(
+            GlowingButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Сохранить'),
+              text: 'Сохранить',
             ),
           ],
         );
