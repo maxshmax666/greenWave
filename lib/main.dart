@@ -7,22 +7,29 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/map_screen.dart';
 import 'screens/lights_screen.dart';
 import 'screens/settings_screen.dart';
+
 import 'theme_colors.dart';
 import 'app_colors.dart';
+
+import 'features/auth/presentation/register_page.dart';
+import 'shared/constants/app_colors.dart';
+import 'shared/constants/app_strings.dart';
+import 'shared/theme/app_theme.dart';
+
 
 const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzb3lqcXRxdG9teGNkbXNnZWh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDc2NzIsImV4cCI6MjA3MDY4MzY3Mn0.AgVnUEmf4dO3aaVBJjZ1zJm0EFUQ0ghENtpkRqsXW4o';
 
 final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
-final themeColor = ValueNotifier<MaterialColor>(themeColors.first);
+final themeColor = ValueNotifier<MaterialColor>(AppColors.themeColors.first);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final prefs = await SharedPreferences.getInstance();
   final colorIndex = prefs.getInt('primary_color') ?? 0;
-  if (colorIndex >= 0 && colorIndex < themeColors.length) {
-    themeColor.value = themeColors[colorIndex];
+  if (colorIndex >= 0 && colorIndex < AppColors.themeColors.length) {
+    themeColor.value = AppColors.themeColors[colorIndex];
   }
 
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
@@ -40,6 +47,7 @@ class MyApp extends StatelessWidget {
       builder: (context, color, _) {
         return ValueListenableBuilder<ThemeMode>(
           valueListenable: themeMode,
+
             builder: (context, mode, __) => MaterialApp(
               onGenerateTitle: (context) =>
                   AppLocalizations.of(context)!.appTitle,
@@ -71,6 +79,16 @@ class MyApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               home: const AuthGate(),
             ),
+
+          builder: (context, mode, __) => MaterialApp(
+            title: AppStrings.appTitle,
+            themeMode: mode,
+            theme: AppTheme.light(color),
+            darkTheme: AppTheme.dark(color),
+            debugShowCheckedModeBanner: false,
+            home: const AuthGate(),
+          ),
+
         );
       },
     );
@@ -93,7 +111,7 @@ class _AuthGateState extends State<AuthGate> {
   @override
   Widget build(BuildContext context) {
     return supa.auth.currentSession == null
-        ? const LoginPage()
+        ? const RegisterPage()
         : const HomeTabs();
   }
 }
@@ -152,6 +170,7 @@ class _HomeTabsState extends State<HomeTabs> {
       );
   }
 }
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -225,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
             Semantics(
               button: true,
               label: isLogin ? l.createAccount : l.haveAccount,
-              child: TextButton(
+              child: TextButton
                 onPressed: () => setState(() => isLogin = !isLogin),
                 child:
                     Text(isLogin ? l.createAccount : l.haveAccount),
@@ -236,3 +255,5 @@ class _LoginPageState extends State<LoginPage> {
       );
   }
 }
+
+
