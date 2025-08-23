@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'manual_stopwatch.dart';
+import 'frame_import.dart';
 
 class CyclesScreen extends StatefulWidget {
   const CyclesScreen({super.key});
@@ -280,6 +282,30 @@ class _CyclesScreenState extends State<CyclesScreen>
                               ? null
                               : () => _whatIf(_dirs[i]),
                           child: const Text('Что-если')),
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                          onPressed: _lightId == null
+                              ? null
+                              : () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => ManualStopwatchScreen(
+                                            lightId: _lightId!,
+                                            dir: _dirs[i],
+                                          ))),
+                          child: const Text('Секундомер')),
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                          onPressed: _lightId == null
+                              ? null
+                              : () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => FrameImportScreen(
+                                            lightId: _lightId!,
+                                            dir: _dirs[i],
+                                          ))),
+                          child: const Text('Импорт кадров')),
                     ],
                   ),
                 ),
