@@ -1,5 +1,3 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 class Env {
   static const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
   static const supabaseAnonKey =

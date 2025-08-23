@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -8,7 +8,8 @@ import 'screens/settings_screen.dart';
 import 'theme_colors.dart';
 
 const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzb3lqcXRxdG9teGNkbXNnZWh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDc2NzIsImV4cCI6MjA3MDY4MzY3Mn0.AgVnUEmf4dO3aaVBJjZ1zJm0EFUQ0ghENtpkRqsXW4o';
+const supabaseAnonKey =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzb3lqcXRxdG9teGNkbXNnZWh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDc2NzIsImV4cCI6MjA3MDY4MzY3Mn0.AgVnUEmf4dO3aaVBJjZ1zJm0EFUQ0ghENtpkRqsXW4o';
 
 final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
 final themeColor = ValueNotifier<MaterialColor>(themeColors.first);
@@ -102,12 +103,17 @@ class _HomeTabsState extends State<HomeTabs> {
         currentIndex: _i,
         onTap: (v) => setState(() => _i = v),
         selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor:
-            Theme.of(context).colorScheme.onSurfaceVariant,
+        unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Карта'),
-          BottomNavigationBarItem(icon: Icon(Icons.traffic), label: 'Светофоры'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Настройки'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.traffic),
+            label: 'Светофоры',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Настройки',
+          ),
         ],
       ),
     );
@@ -123,10 +129,28 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   bool isLogin = true;
   bool busy = false;
 
+  String? _validateEmail(String? v) {
+    if (v == null || v.isEmpty) return 'Invalid email';
+    final reg = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+    if (!reg.hasMatch(v)) return 'Invalid email';
+    return null;
+  }
+
+  String? _validatePassword(String? v) {
+    if (v == null || v.length < 6) return 'Password too short';
+    return null;
+  }
+
+  bool get _isValid =>
+      _validateEmail(emailCtrl.text.trim()) == null &&
+      _validatePassword(passCtrl.text.trim()) == null;
+
   Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
     setState(() => busy = true);
     try {
       if (isLogin) {
@@ -142,8 +166,9 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -155,27 +180,46 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(title: Text(isLogin ? 'Sign in' : 'Sign up')),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(children: [
-          TextField(
-            controller: emailCtrl,
-            decoration: const InputDecoration(labelText: 'Email'),
-            keyboardType: TextInputType.emailAddress,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Text(
+                  isLogin ? 'Welcome back!' : 'Join us!',
+                  key: ValueKey(isLogin ? 'login_slogan' : 'signup_slogan'),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: emailCtrl,
+                decoration: const InputDecoration(labelText: 'Email'),
+                keyboardType: TextInputType.emailAddress,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: _validateEmail,
+                onChanged: (_) => setState(() {}),
+              ),
+              TextFormField(
+                controller: passCtrl,
+                decoration: const InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: _validatePassword,
+                onChanged: (_) => setState(() {}),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: busy || !_isValid ? null : _submit,
+                child: Text(isLogin ? 'Sign in' : 'Create account'),
+              ),
+              TextButton(
+                onPressed: () => setState(() => isLogin = !isLogin),
+                child: Text(isLogin ? 'Create account' : 'I have an account'),
+              ),
+            ],
           ),
-          TextField(
-            controller: passCtrl,
-            decoration: const InputDecoration(labelText: 'Password'),
-            obscureText: true,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: busy ? null : _submit,
-            child: Text(isLogin ? 'Sign in' : 'Create account'),
-          ),
-          TextButton(
-            onPressed: () => setState(() => isLogin = !isLogin),
-            child: Text(isLogin ? 'Create account' : 'I have an account'),
-          ),
-        ]),
+        ),
       ),
     );
   }
