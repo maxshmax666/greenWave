@@ -15,6 +15,10 @@ import 'screens/lights_screen.dart';
 import 'screens/settings_screen.dart';
 
 import 'theme_colors.dart';
+
+import 'app_theme.dart';
+import 'glowing_button.dart';
+=======
 import 'app_colors.dart';
 
 import 'features/auth/presentation/register_page.dart';
@@ -74,6 +78,10 @@ class MyApp extends StatelessWidget {
         return ValueListenableBuilder<ThemeMode>(
           valueListenable: themeMode,
 
+          builder: (context, mode, __) => MaterialApp(
+            title: 'GreenWave',
+
+
             builder: (context, mode, __) => MaterialApp(
               onGenerateTitle: (context) =>
                   AppLocalizations.of(context)!.appTitle,
@@ -108,6 +116,7 @@ class MyApp extends StatelessWidget {
 
           builder: (context, mode, __) => MaterialApp(
             title: AppStrings.appTitle,
+
             themeMode: mode,
             theme: AppTheme.light(color),
             darkTheme: AppTheme.dark(color),
@@ -239,6 +248,38 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    return Scaffold(
+      appBar: AppBar(title: Text(isLogin ? 'Sign in' : 'Sign up')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(children: [
+          TextField(
+            controller: emailCtrl,
+            decoration: const InputDecoration(labelText: 'Email'),
+            keyboardType: TextInputType.emailAddress,
+          ),
+          TextField(
+            controller: passCtrl,
+            decoration: const InputDecoration(labelText: 'Password'),
+            obscureText: true,
+          ),
+          const SizedBox(height: 16),
+          GlowingButton(
+            onPressed: _submit,
+            text: isLogin ? 'Sign in' : 'Create account',
+            loading: busy,
+          ),
+          const SizedBox(height: 8),
+          GlowingButton(
+            onPressed: () => setState(() => isLogin = !isLogin),
+            text: isLogin ? 'Create account' : 'I have an account',
+            tone: GlowingButtonTone.ghost,
+          ),
+        ]),
+      ),
+    );
+
       final l = AppLocalizations.of(context)!;
       return Scaffold(
         appBar:
@@ -283,6 +324,7 @@ class _LoginPageState extends State<LoginPage> {
           ]),
         ),
       );
+
   }
 }
 
