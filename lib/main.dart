@@ -123,8 +123,16 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
+  final formKey = GlobalKey<FormState>();
   bool isLogin = true;
   bool busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    emailCtrl.addListener(() => setState(() {}));
+    passCtrl.addListener(() => setState(() {}));
+  }
 
   Future<void> _submit() async {
     setState(() => busy = true);
@@ -149,33 +157,66 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  String? _validateEmail(String? value) {
+    const pattern = r'^[^@]+@[^@]+\.[^@]+$';
+    if (value == null || value.isEmpty) return 'Enter email';
+    if (!RegExp(pattern).hasMatch(value)) return 'Invalid email';
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.length < 6) return 'Min 6 chars';
+    return null;
+  }
+
+  bool get _isFormValid =>
+      _validateEmail(emailCtrl.text) == null &&
+      _validatePassword(passCtrl.text) == null;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(isLogin ? 'Sign in' : 'Sign up')),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(children: [
-          TextField(
-            controller: emailCtrl,
-            decoration: const InputDecoration(labelText: 'Email'),
-            keyboardType: TextInputType.emailAddress,
+        child: Form(
+          key: formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(
+            children: [
+              AnimatedSwitcher(
+                key: const ValueKey('slogan-switcher'),
+                duration: const Duration(milliseconds: 300),
+                child: Text(
+                  isLogin ? 'Welcome back!' : 'Join GreenWave!',
+                  key: ValueKey(isLogin),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: emailCtrl,
+                decoration: const InputDecoration(labelText: 'Email'),
+                keyboardType: TextInputType.emailAddress,
+                validator: _validateEmail,
+              ),
+              TextFormField(
+                controller: passCtrl,
+                decoration: const InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: _validatePassword,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: busy || !_isFormValid ? null : _submit,
+                child: Text(isLogin ? 'Sign in' : 'Create account'),
+              ),
+              TextButton(
+                onPressed: () => setState(() => isLogin = !isLogin),
+                child: Text(isLogin ? 'Create account' : 'I have an account'),
+              ),
+            ],
           ),
-          TextField(
-            controller: passCtrl,
-            decoration: const InputDecoration(labelText: 'Password'),
-            obscureText: true,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: busy ? null : _submit,
-            child: Text(isLogin ? 'Sign in' : 'Create account'),
-          ),
-          TextButton(
-            onPressed: () => setState(() => isLogin = !isLogin),
-            child: Text(isLogin ? 'Create account' : 'I have an account'),
-          ),
-        ]),
+        ),
       ),
     );
   }
