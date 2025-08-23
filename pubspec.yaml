@@ -1,4 +1,4 @@
-﻿name: green_wave_app
+name: green_wave_app
 description: "GreenWave: map + lights + recorder"
 publish_to: "none" # чтобы случайно не залить в pub.dev
 
