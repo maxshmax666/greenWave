@@ -338,6 +338,7 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
+  final formKey = GlobalKey<FormState>();
   bool isLogin = true;
   bool busy = false;
   bool acceptTerms = false;
@@ -378,6 +379,13 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     analytics.logEvent('slogan_shown');
 
+
+  @override
+  void initState() {
+    super.initState();
+    emailCtrl.addListener(() => setState(() {}));
+    passCtrl.addListener(() => setState(() {}));
+
   String _translateError(dynamic error) {
     const translations = {
       'Invalid login credentials': 'Неверный email или пароль',
@@ -393,12 +401,15 @@ class _LoginPageState extends State<LoginPage> {
     }
     return error.toString();
 
+ 
+
   }
 
   @override
   void initState() {
     super.initState();
     analytics.logEvent('slogan_shown');
+ 
   }
 
   Future<void> _submit() async {
@@ -466,6 +477,22 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted) setState(() => busy = false);
     }
   }
+
+  String? _validateEmail(String? value) {
+    const pattern = r'^[^@]+@[^@]+\.[^@]+$';
+    if (value == null || value.isEmpty) return 'Enter email';
+    if (!RegExp(pattern).hasMatch(value)) return 'Invalid email';
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.length < 6) return 'Min 6 chars';
+    return null;
+  }
+
+  bool get _isFormValid =>
+      _validateEmail(emailCtrl.text) == null &&
+      _validatePassword(passCtrl.text) == null;
 
   @override
   Widget build(BuildContext context) {
@@ -578,6 +605,44 @@ class _LoginPageState extends State<LoginPage> {
  
         child: Form(
           key: formKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(
+            children: [
+              AnimatedSwitcher(
+                key: const ValueKey('slogan-switcher'),
+                duration: const Duration(milliseconds: 300),
+                child: Text(
+                  isLogin ? 'Welcome back!' : 'Join GreenWave!',
+                  key: ValueKey(isLogin),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: emailCtrl,
+                decoration: const InputDecoration(labelText: 'Email'),
+                keyboardType: TextInputType.emailAddress,
+                validator: _validateEmail,
+              ),
+              TextFormField(
+                controller: passCtrl,
+                decoration: const InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: _validatePassword,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: busy || !_isFormValid ? null : _submit,
+                child: Text(isLogin ? 'Sign in' : 'Create account'),
+              ),
+              TextButton(
+                onPressed: () => setState(() => isLogin = !isLogin),
+                child: Text(isLogin ? 'Create account' : 'I have an account'),
+              ),
+            ],
+
+ 
+        child: Form(
+          key: formKey,
           child: Column(children: [
             TextFormField(
               controller: emailCtrl,
@@ -644,6 +709,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ]),
         ),
+ 
 
         child: Column(children: [
           const Text('Ride the green wave!'),
@@ -703,9 +769,12 @@ class _LoginPageState extends State<LoginPage> {
 
  
           ),
+ 
+        ),
+
         ]),
 
- 
+ main
       ),
     );
 
