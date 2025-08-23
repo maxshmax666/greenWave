@@ -1,5 +1,21 @@
  
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'env.dart';
+import 'features/auth/register_page.dart';
+import 'features/home/home_page.dart';
+import 'theme_colors.dart';
+
+/// Global theme mode used across the app.
+final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
+
+/// Primary color notifier.
+final themeColor = ValueNotifier<MaterialColor>(themeColors.first);
+
+ 
+import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -19,7 +35,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 
 import 'shared/analytics/analytics.dart';
-=======
+
 
 import 'env.dart';
 import 'features/auth/register_page.dart';
@@ -60,6 +76,10 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 
 final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
 final themeColor = ValueNotifier<MaterialColor>(AppColors.themeColors.first);
+ 
+
+/// Shortcut to the Supabase client.
+final supa = Supabase.instance.client;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -81,6 +101,21 @@ Future<void> main() async {
  
   }
 
+ 
+  await Supabase.initialize(
+    url: Env.supabaseUrl,
+    anonKey: Env.supabaseAnonKey,
+  );
+
+  final savedSession = prefs.getString(Env.supabaseSessionKey);
+  if (savedSession != null) {
+    try {
+      await Supabase.instance.client.auth.recoverSession(savedSession);
+    } catch (_) {
+      // ignore errors on session recovery
+    }
+  }
+
   Supabase.instance.client.auth.onAuthStateChange.listen((event) async {
     final session = event.session;
     if (session != null) {
@@ -90,14 +125,14 @@ Future<void> main() async {
       await prefs.remove('supabase_session');
     }
   });
+ 
 
   runApp(const MyApp());
 }
 
-final supa = Supabase.instance.client;
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<MaterialColor>(
@@ -178,6 +213,7 @@ class MyApp extends StatelessWidget {
 
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
+
   @override
   State<AuthGate> createState() => _AuthGateState();
 }
@@ -194,6 +230,11 @@ class _AuthGateState extends State<AuthGate> {
     return supa.auth.currentSession == null
         ? const RegisterPage()
         : const HomePage();
+ 
+  }
+}
+
+
   }
 }
 
@@ -689,3 +730,4 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 
+ 
