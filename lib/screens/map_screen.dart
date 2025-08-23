@@ -6,7 +6,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../services/route_service.dart';
 import '../services/snap_utils.dart';
