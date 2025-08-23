@@ -1,17 +1,20 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'screens/map_screen.dart';
-import 'screens/lights_screen.dart';
-import 'screens/settings_screen.dart';
+import 'env.dart';
+import 'features/auth/register_page.dart';
+import 'features/home/home_page.dart';
 import 'theme_colors.dart';
 
-const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzb3lqcXRxdG9teGNkbXNnZWh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDc2NzIsImV4cCI6MjA3MDY4MzY3Mn0.AgVnUEmf4dO3aaVBJjZ1zJm0EFUQ0ghENtpkRqsXW4o';
-
+/// Global theme mode used across the app.
 final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
+
+/// Primary color notifier.
 final themeColor = ValueNotifier<MaterialColor>(themeColors.first);
+
+/// Shortcut to the Supabase client.
+final supa = Supabase.instance.client;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,14 +25,26 @@ Future<void> main() async {
     themeColor.value = themeColors[colorIndex];
   }
 
-  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
+  await Supabase.initialize(
+    url: Env.supabaseUrl,
+    anonKey: Env.supabaseAnonKey,
+  );
+
+  final savedSession = prefs.getString(Env.supabaseSessionKey);
+  if (savedSession != null) {
+    try {
+      await Supabase.instance.client.auth.recoverSession(savedSession);
+    } catch (_) {
+      // ignore errors on session recovery
+    }
+  }
+
   runApp(const MyApp());
 }
 
-final supa = Supabase.instance.client;
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<MaterialColor>(
@@ -62,6 +77,7 @@ class MyApp extends StatelessWidget {
 
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
+
   @override
   State<AuthGate> createState() => _AuthGateState();
 }
@@ -76,107 +92,8 @@ class _AuthGateState extends State<AuthGate> {
   @override
   Widget build(BuildContext context) {
     return supa.auth.currentSession == null
-        ? const LoginPage()
-        : const HomeTabs();
+        ? const RegisterPage()
+        : const HomePage();
   }
 }
 
-class HomeTabs extends StatefulWidget {
-  const HomeTabs({super.key});
-  @override
-  State<HomeTabs> createState() => _HomeTabsState();
-}
-
-class _HomeTabsState extends State<HomeTabs> {
-  int _i = 0;
-  @override
-  Widget build(BuildContext context) {
-    final pages = [
-      const MapScreen(),
-      const LightsScreen(),
-      const SettingsScreen(),
-    ];
-    return Scaffold(
-      body: pages[_i],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _i,
-        onTap: (v) => setState(() => _i = v),
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor:
-            Theme.of(context).colorScheme.onSurfaceVariant,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Карта'),
-          BottomNavigationBarItem(icon: Icon(Icons.traffic), label: 'Светофоры'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Настройки'),
-        ],
-      ),
-    );
-  }
-}
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  final emailCtrl = TextEditingController();
-  final passCtrl = TextEditingController();
-  bool isLogin = true;
-  bool busy = false;
-
-  Future<void> _submit() async {
-    setState(() => busy = true);
-    try {
-      if (isLogin) {
-        await supa.auth.signInWithPassword(
-          email: emailCtrl.text.trim(),
-          password: passCtrl.text.trim(),
-        );
-      } else {
-        await supa.auth.signUp(
-          email: emailCtrl.text.trim(),
-          password: passCtrl.text.trim(),
-        );
-      }
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: $e')));
-    } finally {
-      if (mounted) setState(() => busy = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(isLogin ? 'Sign in' : 'Sign up')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(children: [
-          TextField(
-            controller: emailCtrl,
-            decoration: const InputDecoration(labelText: 'Email'),
-            keyboardType: TextInputType.emailAddress,
-          ),
-          TextField(
-            controller: passCtrl,
-            decoration: const InputDecoration(labelText: 'Password'),
-            obscureText: true,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: busy ? null : _submit,
-            child: Text(isLogin ? 'Sign in' : 'Create account'),
-          ),
-          TextButton(
-            onPressed: () => setState(() => isLogin = !isLogin),
-            child: Text(isLogin ? 'Create account' : 'I have an account'),
-          ),
-        ]),
-      ),
-    );
-  }
-}
