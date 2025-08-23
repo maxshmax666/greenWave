@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+ 
 import '../../screens/lights_screen.dart';
 import '../../screens/map_screen.dart';
 import '../../screens/settings_screen.dart';
@@ -52,3 +53,16 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+
+/// Placeholder home page shown after authentication.
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(child: Text('Home')), // TODO: implement real home page
+    );
+  }
+}
+ 
