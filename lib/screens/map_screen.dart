@@ -38,6 +38,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
+    _ensurePermission();
     _loadLights();
     _updateNearest();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -99,7 +100,18 @@ class _MapScreenState extends State<MapScreen> {
     } catch (_) {}
   }
 
+  Future<bool> _ensurePermission() async {
+    var perm = await Geolocator.checkPermission();
+    if (perm == LocationPermission.denied) {
+      perm = await Geolocator.requestPermission();
+    }
+    return perm == LocationPermission.always ||
+        perm == LocationPermission.whileInUse;
+  }
+
   Future<LatLng> _currentPos() async {
+    final ok = await _ensurePermission();
+    if (!ok) return _map.center;
     try {
       final p = await Geolocator.getCurrentPosition();
       return LatLng(p.latitude, p.longitude);

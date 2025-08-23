@@ -249,22 +249,12 @@ class _RegisterPageState extends State<RegisterPage> {
               ElevatedButton(
                 onPressed: () => _oauthLogin(Provider.google),
                 child: const Text('Sign in with Google'),
-              )
-            else
-              const GlowingButton(
-                onPressed: null,
-                child: Text('TODO: Google OAuth'),
               ),
             const SizedBox(height: 12),
             if (appleEnabled)
               ElevatedButton(
                 onPressed: () => _oauthLogin(Provider.apple),
                 child: const Text('Sign in with Apple'),
-              )
-            else
-              const GlowingButton(
-                onPressed: null,
-                child: Text('TODO: Apple OAuth'),
               ),
           ],
         ),

@@ -47,7 +47,11 @@
   "adviceTitle": "Подсказка скорости",
   "notEnoughData": "Недостаточно данных. Прокатись с автологом камеры.",
   "cycleInfo": "Цикл {cycle}с (R {red} / Y {yellow} / G {green})",
-  "holdSpeed": "Держите ~ {low}–{high} км/ч"
+  "holdSpeed": "Держите ~ {low}–{high} км/ч",
+  "unitsKmh": "Единицы",
+  "roadSpeedLimit": "Лимит скорости дороги (км/ч)",
+  "cameraOffset": "Смещение часов камеры (с)",
+  "jerkStep": "Шаг jerk советчика"
 
   "@@locale": "ru",
   "appTitle": "GreenWave",

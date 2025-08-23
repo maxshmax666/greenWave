@@ -16,6 +16,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String _lang = 'en';
   final _urlCtrl = TextEditingController(text: Env.supabaseUrl);
   final _keyCtrl = TextEditingController(text: Env.supabaseAnonKey);
+  String _units = 'kmh';
+  double _speedLimit = 60;
+  double _camOffset = 0;
+  double _jerkStep = 1;
+  final _speedCtrl = TextEditingController();
+  final _offsetCtrl = TextEditingController();
+  final _jerkCtrl = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPrefs();
+  }
+
+  Future<void> _loadPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _units = prefs.getString('units') ?? 'kmh';
+      _speedLimit = prefs.getDouble('speed_limit') ?? 60;
+      _camOffset = prefs.getDouble('cam_offset') ?? 0;
+      _jerkStep = prefs.getDouble('jerk_step') ?? 1;
+      _speedCtrl.text = _speedLimit.toString();
+      _offsetCtrl.text = _camOffset.toString();
+      _jerkCtrl.text = _jerkStep.toString();
+    });
+  }
+
+  Future<void> _savePrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('units', _units);
+    await prefs.setDouble('speed_limit', _speedLimit);
+    await prefs.setDouble('cam_offset', _camOffset);
+    await prefs.setDouble('jerk_step', _jerkStep);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +64,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: themeMode.value == ThemeMode.dark,
             onChanged: (v) => setState(
                 () => themeMode.value = v ? ThemeMode.dark : ThemeMode.light),
+          ),
+          const SizedBox(height: 12),
+          DropdownButtonFormField<String>(
+            value: _units,
+            items: const [
+              DropdownMenuItem(value: 'kmh', child: Text('km/h')),
+              DropdownMenuItem(value: 'mph', child: Text('mph')),
+            ],
+            onChanged: (v) {
+              setState(() => _units = v ?? 'kmh');
+              _savePrefs();
+            },
+            decoration: InputDecoration(labelText: l10n.unitsKmh),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _speedCtrl,
+            decoration: InputDecoration(labelText: l10n.roadSpeedLimit),
+            keyboardType: TextInputType.number,
+            onChanged: (v) {
+              _speedLimit = double.tryParse(v) ?? _speedLimit;
+              _savePrefs();
+            },
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _offsetCtrl,
+            decoration: InputDecoration(labelText: l10n.cameraOffset),
+            keyboardType: TextInputType.number,
+            onChanged: (v) {
+              _camOffset = double.tryParse(v) ?? _camOffset;
+              _savePrefs();
+            },
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _jerkCtrl,
+            decoration: InputDecoration(labelText: l10n.jerkStep),
+            keyboardType: TextInputType.number,
+            onChanged: (v) {
+              _jerkStep = double.tryParse(v) ?? _jerkStep;
+              _savePrefs();
+            },
           ),
           const SizedBox(height: 12),
           Wrap(
@@ -72,8 +149,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
             decoration: InputDecoration(labelText: l10n.supabaseKey),
             obscureText: true,
           ),
-        ],
+      ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _urlCtrl.dispose();
+    _keyCtrl.dispose();
+    _speedCtrl.dispose();
+    _offsetCtrl.dispose();
+    _jerkCtrl.dispose();
+    super.dispose();
   }
 }
