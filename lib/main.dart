@@ -5,21 +5,24 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/map_screen.dart';
 import 'screens/lights_screen.dart';
 import 'screens/settings_screen.dart';
-import 'theme_colors.dart';
+import 'features/auth/presentation/register_page.dart';
+import 'shared/constants/app_colors.dart';
+import 'shared/constants/app_strings.dart';
+import 'shared/theme/app_theme.dart';
 
 const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzb3lqcXRxdG9teGNkbXNnZWh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDc2NzIsImV4cCI6MjA3MDY4MzY3Mn0.AgVnUEmf4dO3aaVBJjZ1zJm0EFUQ0ghENtpkRqsXW4o';
 
 final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
-final themeColor = ValueNotifier<MaterialColor>(themeColors.first);
+final themeColor = ValueNotifier<MaterialColor>(AppColors.themeColors.first);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final prefs = await SharedPreferences.getInstance();
   final colorIndex = prefs.getInt('primary_color') ?? 0;
-  if (colorIndex >= 0 && colorIndex < themeColors.length) {
-    themeColor.value = themeColors[colorIndex];
+  if (colorIndex >= 0 && colorIndex < AppColors.themeColors.length) {
+    themeColor.value = AppColors.themeColors[colorIndex];
   }
 
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
@@ -38,19 +41,10 @@ class MyApp extends StatelessWidget {
         return ValueListenableBuilder<ThemeMode>(
           valueListenable: themeMode,
           builder: (context, mode, __) => MaterialApp(
-            title: 'GreenWave',
+            title: AppStrings.appTitle,
             themeMode: mode,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: color),
-              useMaterial3: true,
-            ),
-            darkTheme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: color,
-                brightness: Brightness.dark,
-              ),
-              useMaterial3: true,
-            ),
+            theme: AppTheme.light(color),
+            darkTheme: AppTheme.dark(color),
             debugShowCheckedModeBanner: false,
             home: const AuthGate(),
           ),
@@ -76,7 +70,7 @@ class _AuthGateState extends State<AuthGate> {
   @override
   Widget build(BuildContext context) {
     return supa.auth.currentSession == null
-        ? const LoginPage()
+        ? const RegisterPage()
         : const HomeTabs();
   }
 }
@@ -114,69 +108,3 @@ class _HomeTabsState extends State<HomeTabs> {
   }
 }
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  final emailCtrl = TextEditingController();
-  final passCtrl = TextEditingController();
-  bool isLogin = true;
-  bool busy = false;
-
-  Future<void> _submit() async {
-    setState(() => busy = true);
-    try {
-      if (isLogin) {
-        await supa.auth.signInWithPassword(
-          email: emailCtrl.text.trim(),
-          password: passCtrl.text.trim(),
-        );
-      } else {
-        await supa.auth.signUp(
-          email: emailCtrl.text.trim(),
-          password: passCtrl.text.trim(),
-        );
-      }
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: $e')));
-    } finally {
-      if (mounted) setState(() => busy = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(isLogin ? 'Sign in' : 'Sign up')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(children: [
-          TextField(
-            controller: emailCtrl,
-            decoration: const InputDecoration(labelText: 'Email'),
-            keyboardType: TextInputType.emailAddress,
-          ),
-          TextField(
-            controller: passCtrl,
-            decoration: const InputDecoration(labelText: 'Password'),
-            obscureText: true,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: busy ? null : _submit,
-            child: Text(isLogin ? 'Sign in' : 'Create account'),
-          ),
-          TextButton(
-            onPressed: () => setState(() => isLogin = !isLogin),
-            child: Text(isLogin ? 'Create account' : 'I have an account'),
-          ),
-        ]),
-      ),
-    );
-  }
-}
