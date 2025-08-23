@@ -1,0 +1,21 @@
+{
+  "@@locale": "ru",
+  "appTitle": "GreenWave",
+  "map": "Карта",
+  "lights": "Светофоры",
+  "settings": "Настройки",
+  "signIn": "Войти",
+  "signUp": "Регистрация",
+  "createAccount": "Создать аккаунт",
+  "haveAccount": "У меня уже есть аккаунт",
+  "email": "Email",
+  "password": "Пароль",
+  "emailHint": "Введите email",
+  "passwordHint": "Введите пароль",
+  "darkTheme": "Темная тема",
+  "language": "Язык",
+  "supabaseUrl": "Supabase URL",
+  "supabaseKey": "Supabase Key",
+  "slogan": "Лови зеленую волну",
+  "noCoords": "нет координат"
+}
