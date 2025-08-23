@@ -1,5 +1,6 @@
 ﻿import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -170,7 +171,7 @@ class _MapScreenState extends State<MapScreen> {
     return (Colors.blue, total - s);
   }
 
-  List<Marker> _lightMarkers() {
+  List<Marker> _lightMarkers(bool disableAnimations) {
     return _lights
         .map((m) {
           final lat = (m['lat'] as num?)?.toDouble();
@@ -179,7 +180,7 @@ class _MapScreenState extends State<MapScreen> {
           final (color, left) = _phaseColorAndLeft(m);
           final lamp = _TrafficLamp(color: color, leftSec: left);
           Widget child = lamp;
-          if (_nearestId == m['id']) {
+          if (_nearestId == m['id'] && !disableAnimations) {
             child = Container(
               decoration: BoxDecoration(boxShadow: [
                 BoxShadow(
@@ -203,21 +204,22 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final markers = _lightMarkers();
+    final disableAnimations = MediaQuery.of(context).disableAnimations;
+    final markers = _lightMarkers(disableAnimations);
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: _openExplorer,
           tooltip: 'Explorer',
-          icon: const Icon(Icons.explore),
+          icon: const Icon(Icons.explore, semanticLabel: 'Explorer'),
         ),
-        title: const Text('Карта'),
+        title: Text(AppLocalizations.of(context)!.map),
         actions: [
           IconButton(
             onPressed: _loadLights,
             tooltip: 'Обновить',
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh, semanticLabel: 'Обновить'),
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.directions),
@@ -302,6 +304,7 @@ class _MapScreenState extends State<MapScreen> {
           if (_route.isNotEmpty) ...[
             FloatingActionButton(
               heroTag: 'clear',
+              elevation: disableAnimations ? 0 : null,
               onPressed: () => setState(() {
                     _route.clear();
                     _snapped = [];
@@ -314,6 +317,7 @@ class _MapScreenState extends State<MapScreen> {
           ],
           FloatingActionButton(
             heroTag: 'loc',
+            elevation: disableAnimations ? 0 : null,
             onPressed: _centerOnMe,
             tooltip: 'Моё местоположение',
             child: const Icon(Icons.my_location),
@@ -321,6 +325,7 @@ class _MapScreenState extends State<MapScreen> {
           const SizedBox(height: 8),
           FloatingActionButton(
             heroTag: 'add',
+            elevation: disableAnimations ? 0 : null,
             onPressed: _addLight,
             tooltip: 'Добавить светофор',
             child: const Icon(Icons.add),
@@ -338,6 +343,7 @@ class _TrafficLamp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final disableAnimations = MediaQuery.of(context).disableAnimations;
     final isRed = color == Colors.red;
     final isGreen = color == Colors.green;
     final isBlue = color == Colors.blue;
@@ -348,7 +354,7 @@ class _TrafficLamp extends StatelessWidget {
           decoration: BoxDecoration(
             color: active ? on : Colors.black26,
             shape: BoxShape.circle,
-            boxShadow: active
+            boxShadow: active && !disableAnimations
                 ? [BoxShadow(color: on.withOpacity(0.5), blurRadius: 8)]
                 : null,
           ),
@@ -379,13 +385,15 @@ class _TrafficLamp extends StatelessWidget {
           top: -6,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: const [
-                BoxShadow(blurRadius: 4, color: Colors.black26)
-              ],
-            ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: disableAnimations
+                    ? null
+                    : const [
+                        BoxShadow(blurRadius: 4, color: Colors.black26)
+                      ],
+              ),
             child: Text(
               '$leftSec',
               style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
@@ -476,16 +484,20 @@ class _ExplorerSheetState extends State<ExplorerSheet> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               IconButton(
-                icon: const Icon(Icons.flash_on),
+                icon:
+                    const Icon(Icons.flash_on, semanticLabel: 'Flash'),
                 onPressed: () {},
               ),
               IconButton(
-                icon: Icon(_rec ? Icons.stop : Icons.fiber_manual_record),
+                icon: Icon(
+                  _rec ? Icons.stop : Icons.fiber_manual_record,
+                  semanticLabel: _rec ? 'Stop' : 'Record',
+                ),
                 color: _rec ? Colors.red : null,
                 onPressed: _toggleRec,
               ),
               IconButton(
-                icon: const Icon(Icons.close),
+                icon: const Icon(Icons.close, semanticLabel: 'Close'),
                 onPressed: () => Navigator.pop(context),
               )
             ],
