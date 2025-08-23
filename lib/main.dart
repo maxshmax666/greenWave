@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/map_screen.dart';
 import 'screens/lights_screen.dart';
 import 'screens/settings_screen.dart';
+import 'shared/analytics/analytics.dart';
 import 'theme_colors.dart';
 
 const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
@@ -126,6 +127,12 @@ class _LoginPageState extends State<LoginPage> {
   bool isLogin = true;
   bool busy = false;
 
+  @override
+  void initState() {
+    super.initState();
+    analytics.logEvent('slogan_shown');
+  }
+
   Future<void> _submit() async {
     setState(() => busy = true);
     try {
@@ -134,13 +141,20 @@ class _LoginPageState extends State<LoginPage> {
           email: emailCtrl.text.trim(),
           password: passCtrl.text.trim(),
         );
+        analytics.logEvent('login_success');
       } else {
         await supa.auth.signUp(
           email: emailCtrl.text.trim(),
           password: passCtrl.text.trim(),
         );
+        analytics.logEvent('signup_success');
       }
     } catch (e) {
+      if (isLogin) {
+        analytics.logEvent('login_failure', {'error': e.toString()});
+      } else {
+        analytics.logEvent('signup_failure', {'error': e.toString()});
+      }
       if (!mounted) return;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Error: $e')));
@@ -156,6 +170,8 @@ class _LoginPageState extends State<LoginPage> {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(children: [
+          const Text('Ride the green wave!'),
+          const SizedBox(height: 16),
           TextField(
             controller: emailCtrl,
             decoration: const InputDecoration(labelText: 'Email'),
