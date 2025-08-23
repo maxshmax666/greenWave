@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../env.dart';
 import '../main.dart';
-import '../theme_colors.dart';
+import '../shared/constants/app_colors.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -33,12 +33,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Wrap(
             spacing: 8,
             children: [
-              for (final c in themeColors)
+              for (final c in AppColors.themeColors)
                 GestureDetector(
                   onTap: () async {
                     setState(() => themeColor.value = c);
                     final prefs = await SharedPreferences.getInstance();
-                    await prefs.setInt('primary_color', themeColors.indexOf(c));
+                    await prefs.setInt('primary_color', AppColors.themeColors.indexOf(c));
                   },
                   child: CircleAvatar(
                     backgroundColor: c,
