@@ -6,6 +6,8 @@ import 'screens/map_screen.dart';
 import 'screens/lights_screen.dart';
 import 'screens/settings_screen.dart';
 import 'theme_colors.dart';
+import 'app_theme.dart';
+import 'glowing_button.dart';
 
 const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzb3lqcXRxdG9teGNkbXNnZWh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDc2NzIsImV4cCI6MjA3MDY4MzY3Mn0.AgVnUEmf4dO3aaVBJjZ1zJm0EFUQ0ghENtpkRqsXW4o';
@@ -40,17 +42,8 @@ class MyApp extends StatelessWidget {
           builder: (context, mode, __) => MaterialApp(
             title: 'GreenWave',
             themeMode: mode,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: color),
-              useMaterial3: true,
-            ),
-            darkTheme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: color,
-                brightness: Brightness.dark,
-              ),
-              useMaterial3: true,
-            ),
+            theme: AppTheme.light(color),
+            darkTheme: AppTheme.dark(color),
             debugShowCheckedModeBanner: false,
             home: const AuthGate(),
           ),
@@ -167,13 +160,16 @@ class _LoginPageState extends State<LoginPage> {
             obscureText: true,
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: busy ? null : _submit,
-            child: Text(isLogin ? 'Sign in' : 'Create account'),
+          GlowingButton(
+            onPressed: _submit,
+            text: isLogin ? 'Sign in' : 'Create account',
+            loading: busy,
           ),
-          TextButton(
+          const SizedBox(height: 8),
+          GlowingButton(
             onPressed: () => setState(() => isLogin = !isLogin),
-            child: Text(isLogin ? 'Create account' : 'I have an account'),
+            text: isLogin ? 'Create account' : 'I have an account',
+            tone: GlowingButtonTone.ghost,
           ),
         ]),
       ),
