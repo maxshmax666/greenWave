@@ -47,7 +47,11 @@
   "adviceTitle": "Speed advice",
   "notEnoughData": "Not enough data. Ride with camera autolog.",
   "cycleInfo": "Cycle {cycle}s (R {red} / Y {yellow} / G {green})",
-  "holdSpeed": "Keep ~ {low}–{high} km/h"
+  "holdSpeed": "Keep ~ {low}–{high} km/h",
+  "unitsKmh": "Units",
+  "roadSpeedLimit": "Road speed limit (km/h)",
+  "cameraOffset": "Camera clock offset (s)",
+  "jerkStep": "Advisor jerk step"
   "@@locale": "en",
   "appTitle": "GreenWave",
   "map": "Map",
