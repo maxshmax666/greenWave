@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
  
 import '../../screens/lights_screen.dart';
 import '../../screens/map_screen.dart';
-import '../../screens/cycle_recorder.dart';
+import '../../screens/cycles_screen.dart';
 import '../../screens/speed_advisor.dart';
 import '../../screens/settings_screen.dart';
 import '../auth/register_page.dart';
@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
     final pages = [
       const MapScreen(),
       const LightsScreen(),
-      const CycleRecorderScreen(),
+      const CyclesScreen(),
       const SpeedAdvisorScreen(),
       const SettingsScreen(),
     ];
