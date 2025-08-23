@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
- 
 
- 
 import '../main.dart';
 
 /// Simple list of traffic lights loaded from Supabase.
@@ -42,7 +40,6 @@ class _LightsScreenState extends State<LightsScreen> {
 
   @override
   Widget build(BuildContext context) {
- 
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.lightsTitle)),
@@ -57,33 +54,12 @@ class _LightsScreenState extends State<LightsScreen> {
             final subtitle =
                 (lat != null && lon != null) ? '$lat, $lon' : l10n.noCoords;
             return ListTile(
-              title: Text(l['name'] as String? ??
-                  l10n.lightWithId(l['id'].toString())),
+              title: Text(
+                  l['name'] as String? ?? l10n.lightWithId(l['id'].toString())),
               subtitle: Text(subtitle),
             );
           },
         ),
-
-      final loc = AppLocalizations.of(context)!;
-      return Scaffold(
-        appBar: AppBar(title: Text(loc.lights)),
-        body: RefreshIndicator(
-        onRefresh: _load,
-          child: ListView.builder(
-            itemCount: _items.length,
-            itemBuilder: (c, i) {
-              final item = _items[i];
-              final lat = (item['lat'] as num?)?.toDouble();
-              final lon = (item['lon'] as num?)?.toDouble();
-              final subtitle =
-                  (lat != null && lon != null) ? '$lat, $lon' : loc.noCoords;
-              return ListTile(
-                title: Text(item['name'] as String? ?? 'Light ${item['id']}'),
-                subtitle: Text(subtitle),
-              );
-            },
-          ),
- 
       ),
     );
   }

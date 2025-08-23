@@ -222,11 +222,6 @@ class _SpeedAdvisorScreenState extends State<SpeedAdvisorScreen> {
             ),
             const SizedBox(height: 8),
  
-            ElevatedButton(
-                onPressed: _compute,
-                style: btnStyle,
-                child: const Text("Compute advice")),
-
             GlowingButton(
               onPressed: _compute,
               text: "Compute advice",

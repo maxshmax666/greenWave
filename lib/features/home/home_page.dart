@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
  
 import '../../screens/lights_screen.dart';
 import '../../screens/map_screen.dart';
+import '../../screens/cycle_recorder.dart';
+import '../../screens/speed_advisor.dart';
 import '../../screens/settings_screen.dart';
 import '../auth/register_page.dart';
 
@@ -22,9 +24,11 @@ class _HomePageState extends State<HomePage> {
     final pages = [
       const MapScreen(),
       const LightsScreen(),
+      const CycleRecorderScreen(),
+      const SpeedAdvisorScreen(),
       const SettingsScreen(),
     ];
-    const titles = ['Карта', 'Светофоры', 'Настройки'];
+    const titles = ['Карта', 'Светофоры', 'Циклы', 'Советчик', 'Настройки'];
 
     return Scaffold(
       appBar: AppBar(
@@ -46,22 +50,11 @@ class _HomePageState extends State<HomePage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Карта'),
           BottomNavigationBarItem(icon: Icon(Icons.traffic), label: 'Светофоры'),
+          BottomNavigationBarItem(icon: Icon(Icons.timelapse), label: 'Циклы'),
+          BottomNavigationBarItem(icon: Icon(Icons.speed), label: 'Советчик'),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Настройки'),
         ],
       ),
-    );
-  }
-}
-
-
-/// Placeholder home page shown after authentication.
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Home')), // TODO: implement real home page
     );
   }
 }
