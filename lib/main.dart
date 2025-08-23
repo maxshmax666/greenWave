@@ -1,25 +1,30 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'screens/map_screen.dart';
 import 'screens/lights_screen.dart';
 import 'screens/settings_screen.dart';
-import 'theme_colors.dart';
+import 'shared/constants/app_colors.dart';
+import 'shared/constants/app_strings.dart';
+import 'shared/theme/app_theme.dart';
 
-const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzb3lqcXRxdG9teGNkbXNnZWh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDc2NzIsImV4cCI6MjA3MDY4MzY3Mn0.AgVnUEmf4dO3aaVBJjZ1zJm0EFUQ0ghENtpkRqsXW4o';
+const supabaseUrl = AppStrings.supabaseUrl;
+const supabaseAnonKey = AppStrings.supabaseAnonKey;
 
 final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
-final themeColor = ValueNotifier<MaterialColor>(themeColors.first);
+final themeColor = ValueNotifier<MaterialColor>(AppColors.themeColors.first);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final prefs = await SharedPreferences.getInstance();
   final colorIndex = prefs.getInt('primary_color') ?? 0;
-  if (colorIndex >= 0 && colorIndex < themeColors.length) {
-    themeColor.value = themeColors[colorIndex];
+  if (colorIndex >= 0 && colorIndex < AppColors.themeColors.length) {
+    themeColor.value = AppColors.themeColors[colorIndex];
   }
 
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseAnonKey);
@@ -38,19 +43,21 @@ class MyApp extends StatelessWidget {
         return ValueListenableBuilder<ThemeMode>(
           valueListenable: themeMode,
           builder: (context, mode, __) => MaterialApp(
-            title: 'GreenWave',
+            onGenerateTitle: (context) =>
+                AppLocalizations.of(context)!.appTitle,
             themeMode: mode,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: color),
-              useMaterial3: true,
-            ),
-            darkTheme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: color,
-                brightness: Brightness.dark,
-              ),
-              useMaterial3: true,
-            ),
+            theme: AppTheme.light(color),
+            darkTheme: AppTheme.dark(color),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en'),
+              Locale('ru'),
+            ],
             debugShowCheckedModeBanner: false,
             home: const AuthGate(),
           ),
@@ -91,11 +98,12 @@ class _HomeTabsState extends State<HomeTabs> {
   int _i = 0;
   @override
   Widget build(BuildContext context) {
-    final pages = [
-      const MapScreen(),
-      const LightsScreen(),
-      const SettingsScreen(),
+    final pages = const [
+      MapScreen(),
+      LightsScreen(),
+      SettingsScreen(),
     ];
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: pages[_i],
       bottomNavigationBar: BottomNavigationBar(
@@ -104,10 +112,12 @@ class _HomeTabsState extends State<HomeTabs> {
         selectedItemColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor:
             Theme.of(context).colorScheme.onSurfaceVariant,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Карта'),
-          BottomNavigationBarItem(icon: Icon(Icons.traffic), label: 'Светофоры'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Настройки'),
+        items: [
+          BottomNavigationBarItem(icon: const Icon(Icons.map), label: l10n.navMap),
+          BottomNavigationBarItem(
+              icon: const Icon(Icons.traffic), label: l10n.navLights),
+          BottomNavigationBarItem(
+              icon: const Icon(Icons.settings), label: l10n.navSettings),
         ],
       ),
     );
@@ -142,8 +152,10 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: $e')));
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.errorWithMessage(e.toString()))),
+      );
     } finally {
       if (mounted) setState(() => busy = false);
     }
@@ -151,29 +163,32 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: Text(isLogin ? 'Sign in' : 'Sign up')),
+      appBar: AppBar(
+          title: Text(isLogin ? l10n.signIn : l10n.signUp)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(children: [
           TextField(
             controller: emailCtrl,
-            decoration: const InputDecoration(labelText: 'Email'),
+            decoration: InputDecoration(labelText: l10n.emailLabel),
             keyboardType: TextInputType.emailAddress,
           ),
           TextField(
             controller: passCtrl,
-            decoration: const InputDecoration(labelText: 'Password'),
+            decoration: InputDecoration(labelText: l10n.passwordLabel),
             obscureText: true,
           ),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: busy ? null : _submit,
-            child: Text(isLogin ? 'Sign in' : 'Create account'),
+            child: Text(isLogin ? l10n.signIn : l10n.createAccount),
           ),
           TextButton(
             onPressed: () => setState(() => isLogin = !isLogin),
-            child: Text(isLogin ? 'Create account' : 'I have an account'),
+            child: Text(
+                isLogin ? l10n.createAccount : l10n.iHaveAccount),
           ),
         ]),
       ),

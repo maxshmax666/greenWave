@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../main.dart';
 
 /// Simple list of traffic lights loaded from Supabase.
@@ -23,8 +25,10 @@ class _LightsScreenState extends State<LightsScreen> {
         ..addAll(List<Map<String, dynamic>>.from(res)));
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Failed to load lights: $e')));
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.failedLoadLights(e.toString()))),
+      );
     }
   }
 
@@ -36,8 +40,9 @@ class _LightsScreenState extends State<LightsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Светофоры')),
+      appBar: AppBar(title: Text(l10n.lightsTitle)),
       body: RefreshIndicator(
         onRefresh: _load,
         child: ListView.builder(
@@ -47,9 +52,10 @@ class _LightsScreenState extends State<LightsScreen> {
             final lat = (l['lat'] as num?)?.toDouble();
             final lon = (l['lon'] as num?)?.toDouble();
             final subtitle =
-                (lat != null && lon != null) ? '$lat, $lon' : 'no coords';
+                (lat != null && lon != null) ? '$lat, $lon' : l10n.noCoords;
             return ListTile(
-              title: Text(l['name'] as String? ?? 'Light ${l['id']}'),
+              title: Text(l['name'] as String? ??
+                  l10n.lightWithId(l['id'].toString())),
               subtitle: Text(subtitle),
             );
           },
