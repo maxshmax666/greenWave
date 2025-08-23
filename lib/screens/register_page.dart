@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../shared/analytics/analytics.dart';
+
+final supa = Supabase.instance.client;
+
+
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
 
@@ -99,6 +106,7 @@ class _RegisterForm extends StatelessWidget {
 }
 
 
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -107,6 +115,39 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+<
+  final emailCtrl = TextEditingController();
+  final passCtrl = TextEditingController();
+  bool isLogin = true;
+  bool busy = false;
+
+  Future<void> _submit() async {
+    setState(() => busy = true);
+    try {
+      if (isLogin) {
+        await supa.auth.signInWithPassword(
+          email: emailCtrl.text.trim(),
+          password: passCtrl.text.trim(),
+        );
+        await analytics.logEvent('login_success');
+      } else {
+        await supa.auth.signUp(
+          email: emailCtrl.text.trim(),
+          password: passCtrl.text.trim(),
+        );
+        await analytics.logEvent('signup_success');
+      }
+    } catch (e) {
+      await analytics.logEvent(
+        isLogin ? 'login_failure' : 'signup_failure',
+        {'error': e.toString()},
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error: $e')));
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
@@ -154,10 +195,43 @@ class _RegisterPageState extends State<RegisterPage> {
     _emailCtrl.dispose();
     _passCtrl.dispose();
     super.dispose();
+
   }
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(isLogin ? 'Sign in' : 'Sign up')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(
+              controller: emailCtrl,
+              decoration: const InputDecoration(labelText: 'Email'),
+              keyboardType: TextInputType.emailAddress,
+            ),
+            TextField(
+              controller: passCtrl,
+              decoration: const InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: busy ? null : _submit,
+              child: Text(isLogin ? 'Sign in' : 'Create account'),
+            ),
+            TextButton(
+              onPressed: () => setState(() => isLogin = !isLogin),
+              child: Text(isLogin ? 'Create account' : 'I have an account'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+=======
     final active = _canSubmit && _accepted;
     return Scaffold(
       appBar: AppBar(title: const Text('Регистрация')),
@@ -202,8 +276,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   }
                   return null;
                 },
-              ),
-              const SizedBox(height: 8),
+              ),              const SizedBox(height: 8),
               _PasswordStrengthIndicator(strength: _strength),
               const SizedBox(height: 12),
               CheckboxListTile(
@@ -295,4 +368,5 @@ class GlowingButton extends StatelessWidget {
     );
   }
 }
+
 

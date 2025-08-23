@@ -10,10 +10,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 
+import 'shared/analytics/analytics.dart';
+=======
+
 import 'env.dart';
 import 'features/auth/register_page.dart';
 import 'features/home/home_page.dart';
 import 'theme_colors.dart';
+
 
 import 'screens/map_screen.dart';
 import 'screens/lights_screen.dart';
@@ -228,6 +232,11 @@ class _LoginPageState extends State<LoginPage> {
   bool isLogin = true;
   bool busy = false;
 
+  @override
+  void initState() {
+    super.initState();
+    analytics.logEvent('slogan_shown');
+
   String _translateError(dynamic error) {
     const translations = {
       'Invalid login credentials': 'Неверный email или пароль',
@@ -242,6 +251,7 @@ class _LoginPageState extends State<LoginPage> {
       return translations['Network request failed']!;
     }
     return error.toString();
+
   }
 
   Future<void> _submit() async {
@@ -252,14 +262,24 @@ class _LoginPageState extends State<LoginPage> {
           email: emailCtrl.text.trim(),
           password: passCtrl.text.trim(),
         );
+        await analytics.logEvent('login_success');
       } else {
         await supa.auth.signUp(
           email: emailCtrl.text.trim(),
           password: passCtrl.text.trim(),
         );
+        await analytics.logEvent('signup_success');
       }
+
+    } catch (e) {
+      await analytics.logEvent(
+        isLogin ? 'login_failure' : 'signup_failure',
+        {'error': e.toString()},
+      );
+
     } catch (e, st) {
       debugPrint('Auth error: $e\n$st');
+
       if (!mounted) return;
       final msg = _translateError(e);
       final isNetwork =
