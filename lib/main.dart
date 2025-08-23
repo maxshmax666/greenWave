@@ -300,6 +300,10 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
 
+    final disableAnimations = MediaQuery.of(context).disableAnimations;
+
+
+
     return Scaffold(
       appBar: AppBar(title: Text(isLogin ? 'Sign in' : 'Sign up')),
       body: Padding(
@@ -321,6 +325,11 @@ class _LoginPageState extends State<LoginPage> {
 
           ElevatedButton(
             onPressed: busy ? null : _submit,
+
+            style:
+                disableAnimations ? ElevatedButton.styleFrom(elevation: 0) : null,
+            child: Text(isLogin ? 'Sign in' : 'Create account'),
+
             child: busy
                 ? const SizedBox(
                     width: 20,
@@ -328,6 +337,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : Text(isLogin ? 'Sign in' : 'Create account'),
+
           ),
           TextButton(
             onPressed: busy ? null : () => setState(() => isLogin = !isLogin),
