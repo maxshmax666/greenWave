@@ -1,5 +1,6 @@
 ﻿import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -210,14 +211,14 @@ class _MapScreenState extends State<MapScreen> {
         leading: IconButton(
           onPressed: _openExplorer,
           tooltip: 'Explorer',
-          icon: const Icon(Icons.explore),
+          icon: const Icon(Icons.explore, semanticLabel: 'Explorer'),
         ),
-        title: const Text('Карта'),
+        title: Text(AppLocalizations.of(context)!.map),
         actions: [
           IconButton(
             onPressed: _loadLights,
             tooltip: 'Обновить',
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh, semanticLabel: 'Обновить'),
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.directions),
@@ -476,16 +477,20 @@ class _ExplorerSheetState extends State<ExplorerSheet> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               IconButton(
-                icon: const Icon(Icons.flash_on),
+                icon:
+                    const Icon(Icons.flash_on, semanticLabel: 'Flash'),
                 onPressed: () {},
               ),
               IconButton(
-                icon: Icon(_rec ? Icons.stop : Icons.fiber_manual_record),
+                icon: Icon(
+                  _rec ? Icons.stop : Icons.fiber_manual_record,
+                  semanticLabel: _rec ? 'Stop' : 'Record',
+                ),
                 color: _rec ? Colors.red : null,
                 onPressed: _toggleRec,
               ),
               IconButton(
-                icon: const Icon(Icons.close),
+                icon: const Icon(Icons.close, semanticLabel: 'Close'),
                 onPressed: () => Navigator.pop(context),
               )
             ],
