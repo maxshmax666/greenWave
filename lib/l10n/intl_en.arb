@@ -1,4 +1,5 @@
 {
+ 
   "appTitle": "GreenWave",
   "navMap": "Map",
   "navLights": "Lights",
@@ -47,4 +48,24 @@
   "notEnoughData": "Not enough data. Ride with camera autolog.",
   "cycleInfo": "Cycle {cycle}s (R {red} / Y {yellow} / G {green})",
   "holdSpeed": "Keep ~ {low}–{high} km/h"
+  "@@locale": "en",
+  "appTitle": "GreenWave",
+  "map": "Map",
+  "lights": "Lights",
+  "settings": "Settings",
+  "signIn": "Sign in",
+  "signUp": "Sign up",
+  "createAccount": "Create account",
+  "haveAccount": "I have an account",
+  "email": "Email",
+  "password": "Password",
+  "emailHint": "Enter your email",
+  "passwordHint": "Enter your password",
+  "darkTheme": "Dark theme",
+  "language": "Language",
+  "supabaseUrl": "Supabase URL",
+  "supabaseKey": "Supabase Key",
+  "slogan": "Ride the wave",
+  "noCoords": "no coords"
+ 
 }

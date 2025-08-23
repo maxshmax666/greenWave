@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -177,7 +178,7 @@ class _MapScreenState extends State<MapScreen> {
     return (AppColors.blue, total - s);
   }
 
-  List<Marker> _lightMarkers() {
+  List<Marker> _lightMarkers(bool disableAnimations) {
     return _lights
         .map((m) {
           final lat = (m['lat'] as num?)?.toDouble();
@@ -186,7 +187,7 @@ class _MapScreenState extends State<MapScreen> {
           final (color, left) = _phaseColorAndLeft(m);
           final lamp = _TrafficLamp(color: color, leftSec: left);
           Widget child = lamp;
-          if (_nearestId == m['id']) {
+          if (_nearestId == m['id'] && !disableAnimations) {
             child = Container(
               decoration: BoxDecoration(boxShadow: [
                 BoxShadow(
@@ -210,13 +211,19 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+ 
     final markers = _lightMarkers();
     final l10n = AppLocalizations.of(context)!;
+
+    final disableAnimations = MediaQuery.of(context).disableAnimations;
+    final markers = _lightMarkers(disableAnimations);
+ 
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: _openExplorer,
+ 
           tooltip: l10n.explorerTooltip,
           icon: const Icon(Icons.explore),
         ),
@@ -226,6 +233,17 @@ class _MapScreenState extends State<MapScreen> {
             onPressed: _loadLights,
             tooltip: l10n.refresh,
             icon: const Icon(Icons.refresh),
+
+          tooltip: 'Explorer',
+          icon: const Icon(Icons.explore, semanticLabel: 'Explorer'),
+        ),
+        title: Text(AppLocalizations.of(context)!.map),
+        actions: [
+          IconButton(
+            onPressed: _loadLights,
+            tooltip: 'Обновить',
+            icon: const Icon(Icons.refresh, semanticLabel: 'Обновить'),
+ 
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.directions),
@@ -306,7 +324,12 @@ class _MapScreenState extends State<MapScreen> {
         children: [
           if (_route.isNotEmpty) ...[
             FloatingActionButton(
+ 
               heroTag: AppStrings.heroClear,
+
+              heroTag: 'clear',
+              elevation: disableAnimations ? 0 : null,
+ 
               onPressed: () => setState(() {
                     _route.clear();
                     _snapped = [];
@@ -318,14 +341,24 @@ class _MapScreenState extends State<MapScreen> {
             const SizedBox(height: 8),
           ],
           FloatingActionButton(
+ 
             heroTag: AppStrings.heroLoc,
+
+            heroTag: 'loc',
+            elevation: disableAnimations ? 0 : null,
+ 
             onPressed: _centerOnMe,
             tooltip: l10n.myLocation,
             child: const Icon(Icons.my_location),
           ),
           const SizedBox(height: 8),
           FloatingActionButton(
+ 
             heroTag: AppStrings.heroAdd,
+
+            heroTag: 'add',
+            elevation: disableAnimations ? 0 : null,
+ 
             onPressed: _addLight,
             tooltip: l10n.addLight,
             child: const Icon(Icons.add),
@@ -343,9 +376,16 @@ class _TrafficLamp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+ 
     final isRed = color == AppColors.red;
     final isGreen = color == AppColors.green;
     final isBlue = color == AppColors.blue;
+
+    final disableAnimations = MediaQuery.of(context).disableAnimations;
+    final isRed = color == Colors.red;
+    final isGreen = color == Colors.green;
+    final isBlue = color == Colors.blue;
+ 
 
     Widget lamp(Color on, bool active) => Container(
           width: 12,
@@ -353,7 +393,7 @@ class _TrafficLamp extends StatelessWidget {
           decoration: BoxDecoration(
             color: active ? on : AppColors.black26,
             shape: BoxShape.circle,
-            boxShadow: active
+            boxShadow: active && !disableAnimations
                 ? [BoxShadow(color: on.withOpacity(0.5), blurRadius: 8)]
                 : null,
           ),
@@ -384,6 +424,7 @@ class _TrafficLamp extends StatelessWidget {
           top: -6,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+ 
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.circular(10),
@@ -391,6 +432,17 @@ class _TrafficLamp extends StatelessWidget {
                 BoxShadow(blurRadius: 4, color: AppColors.black26)
               ],
             ),
+
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: disableAnimations
+                    ? null
+                    : const [
+                        BoxShadow(blurRadius: 4, color: Colors.black26)
+                      ],
+              ),
+ 
             child: Text(
               '$leftSec',
               style: Theme.of(context)
@@ -484,16 +536,25 @@ class _ExplorerSheetState extends State<ExplorerSheet> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               IconButton(
-                icon: const Icon(Icons.flash_on),
+                icon:
+                    const Icon(Icons.flash_on, semanticLabel: 'Flash'),
                 onPressed: () {},
               ),
               IconButton(
+ 
                 icon: Icon(_rec ? Icons.stop : Icons.fiber_manual_record),
                 color: _rec ? AppColors.red : null,
+
+                icon: Icon(
+                  _rec ? Icons.stop : Icons.fiber_manual_record,
+                  semanticLabel: _rec ? 'Stop' : 'Record',
+                ),
+                color: _rec ? Colors.red : null,
+ 
                 onPressed: _toggleRec,
               ),
               IconButton(
-                icon: const Icon(Icons.close),
+                icon: const Icon(Icons.close, semanticLabel: 'Close'),
                 onPressed: () => Navigator.pop(context),
               )
             ],

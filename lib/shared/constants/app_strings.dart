@@ -1,3 +1,4 @@
+ 
 /// Application string constants.
 class AppStrings {
   AppStrings._();
@@ -14,4 +15,8 @@ class AppStrings {
   static const String heroClear = 'clear';
   static const String heroLoc = 'loc';
   static const String heroAdd = 'add';
+
+/// Centralized app text constants.
+class AppStrings {
+  static const String appTitle = 'GreenWave'; 
 }

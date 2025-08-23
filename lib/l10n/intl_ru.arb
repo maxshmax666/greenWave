@@ -1,4 +1,5 @@
 {
+ 
   "appTitle": "GreenWave",
   "navMap": "Карта",
   "navLights": "Светофоры",
@@ -47,4 +48,25 @@
   "notEnoughData": "Недостаточно данных. Прокатись с автологом камеры.",
   "cycleInfo": "Цикл {cycle}с (R {red} / Y {yellow} / G {green})",
   "holdSpeed": "Держите ~ {low}–{high} км/ч"
+
+  "@@locale": "ru",
+  "appTitle": "GreenWave",
+  "map": "Карта",
+  "lights": "Светофоры",
+  "settings": "Настройки",
+  "signIn": "Войти",
+  "signUp": "Регистрация",
+  "createAccount": "Создать аккаунт",
+  "haveAccount": "У меня уже есть аккаунт",
+  "email": "Email",
+  "password": "Пароль",
+  "emailHint": "Введите email",
+  "passwordHint": "Введите пароль",
+  "darkTheme": "Темная тема",
+  "language": "Язык",
+  "supabaseUrl": "Supabase URL",
+  "supabaseKey": "Supabase Key",
+  "slogan": "Лови зеленую волну",
+  "noCoords": "нет координат"
+ 
 }

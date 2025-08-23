@@ -6,6 +6,8 @@ import "package:supabase_flutter/supabase_flutter.dart";
 import "package:permission_handler/permission_handler.dart";
 import "package:geolocator/geolocator.dart";
 
+import '../glowing_button.dart';
+
 final supa = Supabase.instance.client;
 
 class CycleRecorderScreen extends StatefulWidget {
@@ -226,7 +228,10 @@ class _CycleRecorderScreenState extends State<CycleRecorderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ratio = _cam!=null && _camReady ? _cam!.value.aspectRatio : 16/9;
+    final disableAnimations = MediaQuery.of(context).disableAnimations;
+    final btnStyle =
+        disableAnimations ? ElevatedButton.styleFrom(elevation: 0) : null;
+    final ratio = _cam != null && _camReady ? _cam!.value.aspectRatio : 16 / 9;
     return Scaffold(
       appBar: AppBar(title: const Text("Cycle Recorder")),
       body: Column(
@@ -250,12 +255,54 @@ class _CycleRecorderScreenState extends State<CycleRecorderScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: Wrap(spacing: 8, children: [
-              ElevatedButton(onPressed: ()=>_markPhase("red"), child: const Text("Red")),
-              ElevatedButton(onPressed: ()=>_markPhase("yellow"), child: const Text("Yellow")),
-              ElevatedButton(onPressed: ()=>_markPhase("green"), child: const Text("Green")),
-              OutlinedButton(onPressed: _stopAndUpload, child: const Text("Stop & Upload")),
-              OutlinedButton(onPressed: _markHere, child: const Text("Mark here")),
-              ElevatedButton(onPressed: _toggleAuto, child: Text(_autoDetect ? "Auto Detect: ON" : "Auto Detect: OFF")),
+ 
+              ElevatedButton(
+                  onPressed: () => _markPhase("red"),
+                  style: btnStyle,
+                  child: const Text("Red")),
+              ElevatedButton(
+                  onPressed: () => _markPhase("yellow"),
+                  style: btnStyle,
+                  child: const Text("Yellow")),
+              ElevatedButton(
+                  onPressed: () => _markPhase("green"),
+                  style: btnStyle,
+                  child: const Text("Green")),
+              OutlinedButton(
+                  onPressed: _stopAndUpload,
+                  child: const Text("Stop & Upload")),
+              OutlinedButton(
+                  onPressed: _markHere, child: const Text("Mark here")),
+              ElevatedButton(
+                  onPressed: _toggleAuto,
+                  style: btnStyle,
+                  child: Text(
+                      _autoDetect ? "Auto Detect: ON" : "Auto Detect: OFF")),
+
+              GlowingButton(
+                  onPressed: () => _markPhase("red"),
+                  text: "Red",
+                  tone: GlowingButtonTone.secondary),
+              GlowingButton(
+                  onPressed: () => _markPhase("yellow"),
+                  text: "Yellow",
+                  tone: GlowingButtonTone.secondary),
+              GlowingButton(
+                  onPressed: () => _markPhase("green"),
+                  text: "Green",
+                  tone: GlowingButtonTone.secondary),
+              GlowingButton(
+                  onPressed: _stopAndUpload,
+                  text: "Stop & Upload",
+                  tone: GlowingButtonTone.ghost),
+              GlowingButton(
+                  onPressed: _markHere,
+                  text: "Mark here",
+                  tone: GlowingButtonTone.ghost),
+              GlowingButton(
+                  onPressed: _toggleAuto,
+                  text: _autoDetect ? "Auto Detect: ON" : "Auto Detect: OFF"),
+ 
             ]),
           ),
           Expanded(
