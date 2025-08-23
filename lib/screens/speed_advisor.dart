@@ -193,6 +193,9 @@ class _SpeedAdvisorScreenState extends State<SpeedAdvisorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final disableAnimations = MediaQuery.of(context).disableAnimations;
+    final btnStyle =
+        disableAnimations ? ElevatedButton.styleFrom(elevation: 0) : null;
     return Scaffold(
       appBar: AppBar(title: const Text("Speed Advisor")),
       body: Padding(
@@ -217,7 +220,9 @@ class _SpeedAdvisorScreenState extends State<SpeedAdvisorScreen> {
             ),
             const SizedBox(height: 8),
             ElevatedButton(
-                onPressed: _compute, child: const Text("Compute advice")),
+                onPressed: _compute,
+                style: btnStyle,
+                child: const Text("Compute advice")),
             const SizedBox(height: 12),
             Text(_status),
             if (_suggestMin != null && _suggestMax != null)
