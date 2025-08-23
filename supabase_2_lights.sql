@@ -1,4 +1,4 @@
-﻿-- public.lights
+-- public.lights
 create table if not exists public.lights (
   id bigserial primary key,
   name text,
