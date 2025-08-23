@@ -151,31 +151,96 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget leftPane = Container(
+      color: Theme.of(context).colorScheme.primaryContainer,
+      child: Center(
+        child: Text(
+          'GreenWave',
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+      ),
+    );
+
+    Widget rightPane(double maxWidth) => ConstrainedBox(
+          constraints:
+              BoxConstraints(maxWidth: maxWidth < 900 ? double.infinity : 420),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  isLogin ? 'Sign in' : 'Sign up',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: emailCtrl,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                TextField(
+                  controller: passCtrl,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: busy ? null : _submit,
+                  child: Text(isLogin ? 'Sign in' : 'Create account'),
+                ),
+                TextButton(
+                  onPressed: () => setState(() => isLogin = !isLogin),
+                  child: Text(
+                      isLogin ? 'Create account' : 'I have an account'),
+                ),
+              ],
+            ),
+          ),
+        );
+
     return Scaffold(
-      appBar: AppBar(title: Text(isLogin ? 'Sign in' : 'Sign up')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(children: [
-          TextField(
-            controller: emailCtrl,
-            decoration: const InputDecoration(labelText: 'Email'),
-            keyboardType: TextInputType.emailAddress,
-          ),
-          TextField(
-            controller: passCtrl,
-            decoration: const InputDecoration(labelText: 'Password'),
-            obscureText: true,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: busy ? null : _submit,
-            child: Text(isLogin ? 'Sign in' : 'Create account'),
-          ),
-          TextButton(
-            onPressed: () => setState(() => isLogin = !isLogin),
-            child: Text(isLogin ? 'Create account' : 'I have an account'),
-          ),
-        ]),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final w = constraints.maxWidth;
+          final form = rightPane(w);
+          if (w >= 1200) {
+            return Row(
+              children: [
+                Expanded(flex: 6, child: leftPane),
+                Expanded(
+                  flex: 4,
+                  child: Center(
+                    child: SingleChildScrollView(child: form),
+                  ),
+                ),
+              ],
+            );
+          } else if (w >= 900) {
+            return Row(
+              children: [
+                Expanded(flex: 5, child: leftPane),
+                Expanded(
+                  flex: 5,
+                  child: Center(
+                    child: SingleChildScrollView(child: form),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return Column(
+              children: [
+                SizedBox(height: 280, width: double.infinity, child: leftPane),
+                Expanded(
+                  child: Center(
+                    child: SingleChildScrollView(child: form),
+                  ),
+                ),
+              ],
+            );
+          }
+        },
       ),
     );
   }
