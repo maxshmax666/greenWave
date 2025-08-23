@@ -2,6 +2,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'shared/analytics/analytics.dart';
+
 import 'screens/map_screen.dart';
 import 'screens/lights_screen.dart';
 import 'screens/settings_screen.dart';
@@ -126,6 +128,12 @@ class _LoginPageState extends State<LoginPage> {
   bool isLogin = true;
   bool busy = false;
 
+  @override
+  void initState() {
+    super.initState();
+    analytics.logEvent('slogan_shown');
+  }
+
   Future<void> _submit() async {
     setState(() => busy = true);
     try {
@@ -134,13 +142,19 @@ class _LoginPageState extends State<LoginPage> {
           email: emailCtrl.text.trim(),
           password: passCtrl.text.trim(),
         );
+        await analytics.logEvent('login_success');
       } else {
         await supa.auth.signUp(
           email: emailCtrl.text.trim(),
           password: passCtrl.text.trim(),
         );
+        await analytics.logEvent('signup_success');
       }
     } catch (e) {
+      await analytics.logEvent(
+        isLogin ? 'login_failure' : 'signup_failure',
+        {'error': e.toString()},
+      );
       if (!mounted) return;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Error: $e')));
