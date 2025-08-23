@@ -1,4 +1,4 @@
-﻿name: green_wave_app
+name: green_wave_app
 description: "GreenWave: map + lights + recorder"
 publish_to: "none" # чтобы случайно не залить в pub.dev
 
@@ -10,7 +10,11 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+ 
+  intl: ^0.18.0
+
   intl: ^0.18.1
+ 
   flutter_map: ^6.2.1
   latlong2: ^0.9.1
   supabase_flutter: ^2.6.0

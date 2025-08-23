@@ -1,5 +1,72 @@
 import 'package:flutter/material.dart';
 
+
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage>
+    with TickerProviderStateMixin {
+  late final AnimationController _sloganController;
+  late final AnimationController _gradientController;
+  late final Animation<LinearGradient> _bgAnimation;
+  final slogans = <String>[
+    'Слоган первый',
+    'Слоган второй',
+    'Слоган третий',
+    'Слоган четвертый',
+  ];
+  late final int _sloganCount = slogans.length;
+
+  @override
+  void initState() {
+    super.initState();
+    _sloganController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 4 * _sloganCount),
+    )..repeat();
+
+    _gradientController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 10),
+    )..repeat();
+
+    final gradients = <LinearGradient>[
+      const LinearGradient(colors: [Colors.blue, Colors.purple]),
+      const LinearGradient(colors: [Colors.purple, Colors.pink]),
+      const LinearGradient(colors: [Colors.pink, Colors.orange]),
+      const LinearGradient(colors: [Colors.orange, Colors.blue]),
+    ];
+
+    _bgAnimation = TweenSequence<LinearGradient>([
+      TweenSequenceItem(
+        tween: Tween(begin: gradients[0], end: gradients[1]),
+        weight: 1,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: gradients[1], end: gradients[2]),
+        weight: 1,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: gradients[2], end: gradients[3]),
+        weight: 1,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: gradients[3], end: gradients[0]),
+        weight: 1,
+      ),
+    ]).animate(_gradientController);
+
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../shared/analytics/analytics.dart';
+
+final supa = Supabase.instance.client;
+
+
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
 
@@ -99,6 +166,7 @@ class _RegisterForm extends StatelessWidget {
 }
 
 
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -107,6 +175,39 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+<
+  final emailCtrl = TextEditingController();
+  final passCtrl = TextEditingController();
+  bool isLogin = true;
+  bool busy = false;
+
+  Future<void> _submit() async {
+    setState(() => busy = true);
+    try {
+      if (isLogin) {
+        await supa.auth.signInWithPassword(
+          email: emailCtrl.text.trim(),
+          password: passCtrl.text.trim(),
+        );
+        await analytics.logEvent('login_success');
+      } else {
+        await supa.auth.signUp(
+          email: emailCtrl.text.trim(),
+          password: passCtrl.text.trim(),
+        );
+        await analytics.logEvent('signup_success');
+      }
+    } catch (e) {
+      await analytics.logEvent(
+        isLogin ? 'login_failure' : 'signup_failure',
+        {'error': e.toString()},
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error: $e')));
+    } finally {
+      if (mounted) setState(() => busy = false);
+    }
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
@@ -147,17 +248,86 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     ScaffoldMessenger.of(context)
         .showSnackBar(const SnackBar(content: Text('Аккаунт создан')));
+
   }
 
   @override
   void dispose() {
+
+    _sloganController.dispose();
+    _gradientController.dispose();
+    super.dispose();
+
     _emailCtrl.dispose();
     _passCtrl.dispose();
     super.dispose();
+
+
   }
 
   @override
   Widget build(BuildContext context) {
+
+    return AnimatedBuilder(
+      animation: _gradientController,
+      builder: (context, child) {
+        final gradient = _bgAnimation.value;
+        return Container(
+          decoration: BoxDecoration(gradient: gradient),
+          child: Center(
+            child: AnimatedBuilder(
+              animation: _sloganController,
+              builder: (_, __) {
+                final index =
+                    (_sloganController.value * _sloganCount).floor() % _sloganCount;
+                return Text(
+                  slogans[index],
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineSmall
+                      ?.copyWith(color: Colors.white),
+                  textAlign: TextAlign.center,
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+    return Scaffold(
+      appBar: AppBar(title: Text(isLogin ? 'Sign in' : 'Sign up')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(
+              controller: emailCtrl,
+              decoration: const InputDecoration(labelText: 'Email'),
+              keyboardType: TextInputType.emailAddress,
+            ),
+            TextField(
+              controller: passCtrl,
+              decoration: const InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: busy ? null : _submit,
+              child: Text(isLogin ? 'Sign in' : 'Create account'),
+            ),
+            TextButton(
+              onPressed: () => setState(() => isLogin = !isLogin),
+              child: Text(isLogin ? 'Create account' : 'I have an account'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
     final active = _canSubmit && _accepted;
     return Scaffold(
       appBar: AppBar(title: const Text('Регистрация')),
@@ -202,8 +372,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   }
                   return null;
                 },
-              ),
-              const SizedBox(height: 8),
+              ),              const SizedBox(height: 8),
               _PasswordStrengthIndicator(strength: _strength),
               const SizedBox(height: 12),
               CheckboxListTile(
@@ -295,4 +464,5 @@ class GlowingButton extends StatelessWidget {
     );
   }
 }
+
 

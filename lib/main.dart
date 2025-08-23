@@ -1,3 +1,27 @@
+ 
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'env.dart';
+import 'features/auth/register_page.dart';
+import 'features/home/home_page.dart';
+import 'theme_colors.dart';
+
+/// Global theme mode used across the app.
+final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
+
+/// Primary color notifier.
+final themeColor = ValueNotifier<MaterialColor>(themeColors.first);
+
+ 
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -10,15 +34,32 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 
+import 'shared/analytics/analytics.dart';
+
+
 import 'env.dart';
 import 'features/auth/register_page.dart';
 import 'features/home/home_page.dart';
 import 'theme_colors.dart';
 
+ 
+
 import 'screens/map_screen.dart';
 import 'screens/lights_screen.dart';
 import 'screens/settings_screen.dart';
+ 
+import 'shared/analytics/analytics.dart';
 
+ 
+import 'shared/constants/app_colors.dart';
+import 'shared/constants/app_strings.dart';
+import 'shared/theme/app_theme.dart';
+
+const supabaseUrl = AppStrings.supabaseUrl;
+const supabaseAnonKey = AppStrings.supabaseAnonKey;
+
+
+ 
 import 'theme_colors.dart';
 
 import 'app_theme.dart';
@@ -35,9 +76,14 @@ import 'shared/theme/app_theme.dart';
 
 const supabaseUrl = 'https://asoyjqtqtomxcdmsgehx.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzb3lqcXRxdG9teGNkbXNnZWh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUxMDc2NzIsImV4cCI6MjA3MDY4MzY3Mn0.AgVnUEmf4dO3aaVBJjZ1zJm0EFUQ0ghENtpkRqsXW4o';
+ 
 
 final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
 final themeColor = ValueNotifier<MaterialColor>(AppColors.themeColors.first);
+ 
+
+/// Shortcut to the Supabase client.
+final supa = Supabase.instance.client;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,7 +91,7 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   final colorIndex = prefs.getInt('primary_color') ?? 0;
   if (colorIndex >= 0 && colorIndex < AppColors.themeColors.length) {
-    themeColor.value = AppColors.themeColors[colorIndex];
+    themeColor.value = AppColors.themeColors[colorIndex]
   }
 
   await Supabase.initialize(
@@ -56,6 +102,22 @@ Future<void> main() async {
   final storedSession = prefs.getString('supabase_session');
   if (storedSession != null) {
     await Supabase.instance.client.auth.recoverSession(storedSession);
+ 
+  }
+
+ 
+  await Supabase.initialize(
+    url: Env.supabaseUrl,
+    anonKey: Env.supabaseAnonKey,
+  );
+
+  final savedSession = prefs.getString(Env.supabaseSessionKey);
+  if (savedSession != null) {
+    try {
+      await Supabase.instance.client.auth.recoverSession(savedSession);
+    } catch (_) {
+      // ignore errors on session recovery
+    }
   }
 
   Supabase.instance.client.auth.onAuthStateChange.listen((event) async {
@@ -67,14 +129,14 @@ Future<void> main() async {
       await prefs.remove('supabase_session');
     }
   });
+ 
 
   runApp(const MyApp());
 }
 
-final supa = Supabase.instance.client;
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<MaterialColor>(
@@ -84,6 +146,23 @@ class MyApp extends StatelessWidget {
           valueListenable: themeMode,
 
           builder: (context, mode, __) => MaterialApp(
+ 
+            onGenerateTitle: (context) =>
+                AppLocalizations.of(context)!.appTitle,
+            themeMode: mode,
+            theme: AppTheme.light(color),
+            darkTheme: AppTheme.dark(color),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en'),
+              Locale('ru'),
+            ],
+
             title: 'GreenWave',
 
 
@@ -125,6 +204,7 @@ class MyApp extends StatelessWidget {
             themeMode: mode,
             theme: AppTheme.light(color),
             darkTheme: AppTheme.dark(color),
+ 
             debugShowCheckedModeBanner: false,
             home: const AuthGate(),
           ),
@@ -137,6 +217,7 @@ class MyApp extends StatelessWidget {
 
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
+
   @override
   State<AuthGate> createState() => _AuthGateState();
 }
@@ -153,6 +234,11 @@ class _AuthGateState extends State<AuthGate> {
     return supa.auth.currentSession == null
         ? const RegisterPage()
         : const HomePage();
+ 
+  }
+}
+
+
   }
 }
 
@@ -170,6 +256,31 @@ class _HomeTabsState extends State<HomeTabs> {
   int _i = 0;
   @override
   Widget build(BuildContext context) {
+ 
+    final pages = const [
+      MapScreen(),
+      LightsScreen(),
+      SettingsScreen(),
+    ];
+    final l10n = AppLocalizations.of(context)!;
+    return Scaffold(
+      body: pages[_i],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _i,
+        onTap: (v) => setState(() => _i = v),
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor:
+            Theme.of(context).colorScheme.onSurfaceVariant,
+        items: [
+          BottomNavigationBarItem(icon: const Icon(Icons.map), label: l10n.navMap),
+          BottomNavigationBarItem(
+              icon: const Icon(Icons.traffic), label: l10n.navLights),
+          BottomNavigationBarItem(
+              icon: const Icon(Icons.settings), label: l10n.navSettings),
+        ],
+      ),
+    );
+
       final pages = const [
         MapScreen(),
         LightsScreen(),
@@ -212,6 +323,7 @@ class _HomeTabsState extends State<HomeTabs> {
           ],
         ),
       );
+ 
   }
 }
 
@@ -223,11 +335,49 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final formKey = GlobalKey<FormState>();
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool isLogin = true;
   bool busy = false;
+  bool acceptTerms = false;
+  bool obscure = true;
+  bool isValid = false;
+  String passStrength = '';
+
+  void _updateValid() {
+    setState(() => isValid = formKey.currentState?.validate() ?? false);
+  }
+
+  String _calcStrength(String v) {
+    if (v.isEmpty) return '';
+    int score = 0;
+    if (v.length >= 8) score++;
+    if (RegExp(r'[A-Za-z]').hasMatch(v)) score++;
+    if (RegExp(r'\d').hasMatch(v)) score++;
+    if (score <= 1) return 'Слабый';
+    if (score == 2) return 'Средний';
+    return 'Сильный';
+  }
+
+  Color _strengthColor() {
+    switch (passStrength) {
+      case 'Слабый':
+        return Colors.red;
+      case 'Средний':
+        return Colors.orange;
+      case 'Сильный':
+        return Colors.green;
+      default:
+        return Colors.transparent;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    analytics.logEvent('slogan_shown');
 
 
   @override
@@ -251,9 +401,19 @@ class _LoginPageState extends State<LoginPage> {
     }
     return error.toString();
 
+ 
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    analytics.logEvent('slogan_shown');
+ 
   }
 
   Future<void> _submit() async {
+    if (!formKey.currentState!.validate() || !acceptTerms) return;
     setState(() => busy = true);
     try {
       if (isLogin) {
@@ -261,15 +421,46 @@ class _LoginPageState extends State<LoginPage> {
           email: emailCtrl.text.trim(),
           password: passCtrl.text.trim(),
         );
+ 
+        analytics.logEvent('login_success');
+
+        await analytics.logEvent('login_success');
+ 
       } else {
         await supa.auth.signUp(
           email: emailCtrl.text.trim(),
           password: passCtrl.text.trim(),
         );
+ 
+        analytics.logEvent('signup_success');
+
+        await analytics.logEvent('signup_success');
+ 
       }
+
+    } catch (e) {
+ 
+      if (isLogin) {
+        analytics.logEvent('login_failure', {'error': e.toString()});
+      } else {
+        analytics.logEvent('signup_failure', {'error': e.toString()});
+      }
+
+      await analytics.logEvent(
+        isLogin ? 'login_failure' : 'signup_failure',
+        {'error': e.toString()},
+      );
+
     } catch (e, st) {
       debugPrint('Auth error: $e\n$st');
+
+ 
       if (!mounted) return;
+ 
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.errorWithMessage(e.toString()))),
+
       final msg = _translateError(e);
       final isNetwork =
           e is SocketException || (e is AuthException && e.message == 'Network request failed');
@@ -280,6 +471,7 @@ class _LoginPageState extends State<LoginPage> {
               ? SnackBarAction(label: 'Повторить', onPressed: _submit)
               : null,
         ),
+ 
       );
     } finally {
       if (mounted) setState(() => busy = false);
@@ -304,11 +496,113 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+ 
+    final l10n = AppLocalizations.of(context)!;
+
+
+    Widget leftPane = Container(
+      color: Theme.of(context).colorScheme.primaryContainer,
+      child: Center(
+        child: Text(
+          'GreenWave',
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+      ),
+    );
+
+    Widget rightPane(double maxWidth) => ConstrainedBox(
+          constraints:
+              BoxConstraints(maxWidth: maxWidth < 900 ? double.infinity : 420),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  isLogin ? 'Sign in' : 'Sign up',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: emailCtrl,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                TextField(
+                  controller: passCtrl,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: busy ? null : _submit,
+                  child: Text(isLogin ? 'Sign in' : 'Create account'),
+                ),
+                TextButton(
+                  onPressed: () => setState(() => isLogin = !isLogin),
+                  child: Text(
+                      isLogin ? 'Create account' : 'I have an account'),
+                ),
+              ],
+            ),
+          ),
+        );
 
     return Scaffold(
-      appBar: AppBar(title: Text(isLogin ? 'Sign in' : 'Sign up')),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final w = constraints.maxWidth;
+          final form = rightPane(w);
+          if (w >= 1200) {
+            return Row(
+              children: [
+                Expanded(flex: 6, child: leftPane),
+                Expanded(
+                  flex: 4,
+                  child: Center(
+                    child: SingleChildScrollView(child: form),
+                  ),
+                ),
+              ],
+            );
+          } else if (w >= 900) {
+            return Row(
+              children: [
+                Expanded(flex: 5, child: leftPane),
+                Expanded(
+                  flex: 5,
+                  child: Center(
+                    child: SingleChildScrollView(child: form),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return Column(
+              children: [
+                SizedBox(height: 280, width: double.infinity, child: leftPane),
+                Expanded(
+                  child: Center(
+                    child: SingleChildScrollView(child: form),
+                  ),
+                ),
+              ],
+            );
+          }
+        },
+
+
+    final disableAnimations = MediaQuery.of(context).disableAnimations;
+
+
+
+ 
+    return Scaffold(
+      appBar: AppBar(
+          title: Text(isLogin ? l10n.signIn : l10n.signUp)),
       body: Padding(
         padding: const EdgeInsets.all(16),
+ 
         child: Form(
           key: formKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -346,16 +640,89 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ],
 
+ 
+        child: Form(
+          key: formKey,
+          child: Column(children: [
+            TextFormField(
+              controller: emailCtrl,
+              decoration: const InputDecoration(labelText: 'Email'),
+              keyboardType: TextInputType.emailAddress,
+              validator: (v) {
+                if (v == null || v.isEmpty) return 'Введите email';
+                const pattern =
+                    r"^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+                if (!RegExp(pattern).hasMatch(v.trim())) {
+                  return 'Неверный email';
+                }
+                return null;
+              },
+              onChanged: (_) => _updateValid(),
+            ),
+            TextFormField(
+              controller: passCtrl,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                suffixIcon: IconButton(
+                  icon: Icon(
+                      obscure ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () => setState(() => obscure = !obscure),
+                ),
+              ),
+              obscureText: obscure,
+              validator: (v) {
+                if (v == null || v.isEmpty) return 'Введите пароль';
+                if (!RegExp(r'^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}')
+                    .hasMatch(v)) {
+                  return 'Пароль \u22658 символов, минимум одна буква и цифра';
+                }
+                return null;
+              },
+              onChanged: (v) {
+                passStrength = _calcStrength(v);
+                _updateValid();
+              },
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                passStrength.isEmpty ? '' : 'Пароль: $passStrength',
+                style: TextStyle(color: _strengthColor()),
+              ),
+            ),
+            CheckboxListTile(
+              value: acceptTerms,
+              onChanged: (v) => setState(() => acceptTerms = v ?? false),
+              title: const Text('Принимаю условия'),
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed:
+                  (!busy && isValid && acceptTerms) ? _submit : null,
+              child: Text(isLogin ? 'Sign in' : 'Create account'),
+            ),
+            TextButton(
+              onPressed: () => setState(() => isLogin = !isLogin),
+              child:
+                  Text(isLogin ? 'Create account' : 'I have an account'),
+            ),
+          ]),
+        ),
+ 
+
         child: Column(children: [
+          const Text('Ride the green wave!'),
+          const SizedBox(height: 16),
           TextField(
             controller: emailCtrl,
-            decoration: const InputDecoration(labelText: 'Email'),
+            decoration: InputDecoration(labelText: l10n.emailLabel),
             keyboardType: TextInputType.emailAddress,
             enabled: !busy,
           ),
           TextField(
             controller: passCtrl,
-            decoration: const InputDecoration(labelText: 'Password'),
+            decoration: InputDecoration(labelText: l10n.passwordLabel),
             obscureText: true,
             enabled: !busy,
           ),
@@ -363,6 +730,19 @@ class _LoginPageState extends State<LoginPage> {
 
           ElevatedButton(
             onPressed: busy ? null : _submit,
+ 
+            child: Text(isLogin ? l10n.signIn : l10n.createAccount),
+          ),
+          TextButton(
+            onPressed: () => setState(() => isLogin = !isLogin),
+            child: Text(
+                isLogin ? l10n.createAccount : l10n.iHaveAccount),
+
+
+            style:
+                disableAnimations ? ElevatedButton.styleFrom(elevation: 0) : null,
+            child: Text(isLogin ? 'Sign in' : 'Create account'),
+
             child: busy
                 ? const SizedBox(
                     width: 20,
@@ -370,6 +750,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : Text(isLogin ? 'Sign in' : 'Create account'),
+
           ),
           TextButton(
             onPressed: busy ? null : () => setState(() => isLogin = !isLogin),
@@ -386,8 +767,14 @@ class _LoginPageState extends State<LoginPage> {
             text: isLogin ? 'Create account' : 'I have an account',
             tone: GlowingButtonTone.ghost,
 
+ 
           ),
+ 
         ),
+
+        ]),
+
+ main
       ),
     );
 
@@ -440,3 +827,4 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 
+ 
