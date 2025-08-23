@@ -1,4 +1,4 @@
-﻿-- public.record_marks
+-- public.record_marks
 create table if not exists public.record_marks (
   id bigserial primary key,
   lat double precision not null,
