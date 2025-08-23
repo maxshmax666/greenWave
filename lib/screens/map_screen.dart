@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -6,10 +6,13 @@ import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../services/route_service.dart';
 import '../services/snap_utils.dart';
 import '../services/speed_advisor.dart';
+import '../shared/constants/app_colors.dart';
+import '../shared/constants/app_strings.dart';
 
 final supa = Supabase.instance.client;
 
@@ -31,7 +34,7 @@ class _MapScreenState extends State<MapScreen> {
   LatLng? _myPos;
   int? _nearestId;
   final _dist = Distance();
-  String _profile = 'driving-car';
+  String _profile = AppStrings.profileCar;
 
   @override
   void initState() {
@@ -70,8 +73,9 @@ class _MapScreenState extends State<MapScreen> {
       _updateNearest();
     } catch (e) {
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Не удалось загрузить lights: $e')),
+        SnackBar(content: Text(l10n.failedLoadLights(e.toString()))),
       );
     }
   }
@@ -115,8 +119,9 @@ class _MapScreenState extends State<MapScreen> {
       });
     } catch (e) {
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Route error: $e')));
+          .showSnackBar(SnackBar(content: Text(l10n.routeError(e.toString()))));
     }
   }
 
@@ -131,19 +136,21 @@ class _MapScreenState extends State<MapScreen> {
       await supa.from('lights').insert({'lat': pos.latitude, 'lon': pos.longitude});
       await _loadLights();
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Светофор добавлен')));
+          .showSnackBar(SnackBar(content: Text(l10n.lightAdded)));
     } catch (e) {
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Ошибка добавления: $e')));
+          .showSnackBar(SnackBar(content: Text(l10n.addError(e.toString()))));
     }
   }
 
   void _openExplorer() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.black54,
+      backgroundColor: AppColors.black54,
       isScrollControlled: true,
       builder: (_) => const ExplorerSheet(),
     );
@@ -155,7 +162,7 @@ class _MapScreenState extends State<MapScreen> {
             (l['side_duration'] as int? ?? 0) +
             (l['ped_duration'] as int? ?? 0));
     final startStr = l['cycle_start_at'] as String?;
-    if (total == 0 || startStr == null) return (Colors.grey, 0);
+    if (total == 0 || startStr == null) return (AppColors.grey, 0);
 
     final mainDur = l['main_duration'] as int? ?? 0;
     final sideDur = l['side_duration'] as int? ?? 0;
@@ -166,9 +173,9 @@ class _MapScreenState extends State<MapScreen> {
     final start = DateTime.parse(startStr).toUtc();
     final s = mod(now.difference(start).inSeconds, total);
 
-    if (s < mainDur) return (Colors.green, mainDur - s);
-    if (s < mainDur + sideDur) return (Colors.red, mainDur + sideDur - s);
-    return (Colors.blue, total - s);
+    if (s < mainDur) return (AppColors.green, mainDur - s);
+    if (s < mainDur + sideDur) return (AppColors.red, mainDur + sideDur - s);
+    return (AppColors.blue, total - s);
   }
 
   List<Marker> _lightMarkers(bool disableAnimations) {
@@ -204,13 +211,29 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+ 
+    final markers = _lightMarkers();
+    final l10n = AppLocalizations.of(context)!;
+
     final disableAnimations = MediaQuery.of(context).disableAnimations;
     final markers = _lightMarkers(disableAnimations);
+ 
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: _openExplorer,
+ 
+          tooltip: l10n.explorerTooltip,
+          icon: const Icon(Icons.explore),
+        ),
+        title: Text(l10n.navMap),
+        actions: [
+          IconButton(
+            onPressed: _loadLights,
+            tooltip: l10n.refresh,
+            icon: const Icon(Icons.refresh),
+
           tooltip: 'Explorer',
           icon: const Icon(Icons.explore, semanticLabel: 'Explorer'),
         ),
@@ -220,18 +243,16 @@ class _MapScreenState extends State<MapScreen> {
             onPressed: _loadLights,
             tooltip: 'Обновить',
             icon: const Icon(Icons.refresh, semanticLabel: 'Обновить'),
+ 
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.directions),
             initialValue: _profile,
             onSelected: (v) => setState(() => _profile = v),
-            itemBuilder: (_) => const [
-              PopupMenuItem(
-                  value: 'driving-car', child: Text('Авто')),
-              PopupMenuItem(
-                  value: 'foot-walking', child: Text('Пешком')),
-              PopupMenuItem(
-                  value: 'cycling-regular', child: Text('Вело')),
+            itemBuilder: (_) => [
+              PopupMenuItem(value: AppStrings.profileCar, child: Text(l10n.profileCar)),
+              PopupMenuItem(value: AppStrings.profileFoot, child: Text(l10n.profileFoot)),
+              PopupMenuItem(value: AppStrings.profileBike, child: Text(l10n.profileBike)),
             ],
           ),
         ],
@@ -251,19 +272,19 @@ class _MapScreenState extends State<MapScreen> {
             userAgentPackageName: 'com.example.green_wave_app',
             maxNativeZoom: 19,
             maxZoom: 19,
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.white,
             // ВАЖНО: сигнатура из 3х аргументов
             errorTileCallback: (tile, error, stackTrace) {
               if (!mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Ошибка загрузки тайла: $error')),
+                SnackBar(content: Text(l10n.tileLoadError(error.toString()))),
               );
             },
           ),
           MarkerLayer(markers: markers),
           if (_route.isNotEmpty)
             PolylineLayer(polylines: [
-              Polyline(points: _route, strokeWidth: 4, color: Colors.blue)
+              Polyline(points: _route, strokeWidth: 4, color: AppColors.blue)
             ]),
           Align(
             alignment: Alignment.bottomCenter,
@@ -271,7 +292,7 @@ class _MapScreenState extends State<MapScreen> {
               margin: const EdgeInsets.only(bottom: 12),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.white70,
+                color: AppColors.white70,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
@@ -279,16 +300,16 @@ class _MapScreenState extends State<MapScreen> {
                 children: [
                   if (_route.isNotEmpty)
                     Text(_advised != null
-                        ? 'Go ~$_advised km/h'
-                        : 'No lights on route'),
+                        ? l10n.speedAdvice(_advised!.toString())
+                        : l10n.noLightsOnRoute),
                   Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      _LegendDot(color: Colors.red, label: 'Второстепенная'),
-                      SizedBox(width: 12),
-                      _LegendDot(color: Colors.green, label: 'Главная'),
-                      SizedBox(width: 12),
-                      _LegendDot(color: Colors.blue, label: 'Пешеходы'),
+                    children: [
+                      _LegendDot(color: AppColors.red, label: l10n.legendMinor),
+                      const SizedBox(width: 12),
+                      _LegendDot(color: AppColors.green, label: l10n.legendMain),
+                      const SizedBox(width: 12),
+                      _LegendDot(color: AppColors.blue, label: l10n.legendPed),
                     ],
                   ),
                 ],
@@ -303,31 +324,43 @@ class _MapScreenState extends State<MapScreen> {
         children: [
           if (_route.isNotEmpty) ...[
             FloatingActionButton(
+ 
+              heroTag: AppStrings.heroClear,
+
               heroTag: 'clear',
               elevation: disableAnimations ? 0 : null,
+ 
               onPressed: () => setState(() {
                     _route.clear();
                     _snapped = [];
                     _advised = null;
                   }),
-              tooltip: 'Очистить маршрут',
+              tooltip: l10n.clearRoute,
               child: const Icon(Icons.clear),
             ),
             const SizedBox(height: 8),
           ],
           FloatingActionButton(
+ 
+            heroTag: AppStrings.heroLoc,
+
             heroTag: 'loc',
             elevation: disableAnimations ? 0 : null,
+ 
             onPressed: _centerOnMe,
-            tooltip: 'Моё местоположение',
+            tooltip: l10n.myLocation,
             child: const Icon(Icons.my_location),
           ),
           const SizedBox(height: 8),
           FloatingActionButton(
+ 
+            heroTag: AppStrings.heroAdd,
+
             heroTag: 'add',
             elevation: disableAnimations ? 0 : null,
+ 
             onPressed: _addLight,
-            tooltip: 'Добавить светофор',
+            tooltip: l10n.addLight,
             child: const Icon(Icons.add),
           ),
         ],
@@ -343,16 +376,22 @@ class _TrafficLamp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+ 
+    final isRed = color == AppColors.red;
+    final isGreen = color == AppColors.green;
+    final isBlue = color == AppColors.blue;
+
     final disableAnimations = MediaQuery.of(context).disableAnimations;
     final isRed = color == Colors.red;
     final isGreen = color == Colors.green;
     final isBlue = color == Colors.blue;
+ 
 
     Widget lamp(Color on, bool active) => Container(
           width: 12,
           height: 12,
           decoration: BoxDecoration(
-            color: active ? on : Colors.black26,
+            color: active ? on : AppColors.black26,
             shape: BoxShape.circle,
             boxShadow: active && !disableAnimations
                 ? [BoxShadow(color: on.withOpacity(0.5), blurRadius: 8)]
@@ -368,15 +407,15 @@ class _TrafficLamp extends StatelessWidget {
           height: 48,
           padding: const EdgeInsets.symmetric(vertical: 6),
           decoration: BoxDecoration(
-            color: Colors.black87,
+            color: AppColors.black87,
             borderRadius: BorderRadius.circular(6),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              lamp(Colors.red, isRed),
-              lamp(Colors.green, isGreen),
-              lamp(Colors.blue, isBlue),
+              lamp(AppColors.red, isRed),
+              lamp(AppColors.green, isGreen),
+              lamp(AppColors.blue, isBlue),
             ],
           ),
         ),
@@ -385,6 +424,15 @@ class _TrafficLamp extends StatelessWidget {
           top: -6,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+ 
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: const [
+                BoxShadow(blurRadius: 4, color: AppColors.black26)
+              ],
+            ),
+
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -394,9 +442,13 @@ class _TrafficLamp extends StatelessWidget {
                         BoxShadow(blurRadius: 4, color: Colors.black26)
                       ],
               ),
+ 
             child: Text(
               '$leftSec',
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              style: Theme.of(context)
+                  .textTheme
+                  .labelSmall
+                  ?.copyWith(fontWeight: FontWeight.w600),
             ),
           ),
         ),
@@ -489,11 +541,16 @@ class _ExplorerSheetState extends State<ExplorerSheet> {
                 onPressed: () {},
               ),
               IconButton(
+ 
+                icon: Icon(_rec ? Icons.stop : Icons.fiber_manual_record),
+                color: _rec ? AppColors.red : null,
+
                 icon: Icon(
                   _rec ? Icons.stop : Icons.fiber_manual_record,
                   semanticLabel: _rec ? 'Stop' : 'Record',
                 ),
                 color: _rec ? Colors.red : null,
+ 
                 onPressed: _toggleRec,
               ),
               IconButton(

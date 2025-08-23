@@ -1,4 +1,4 @@
-﻿-- public.light_cycles
+-- public.light_cycles
 create table if not exists public.light_cycles (
   id bigserial primary key,
   light_id bigint references public.lights(id) on delete cascade,

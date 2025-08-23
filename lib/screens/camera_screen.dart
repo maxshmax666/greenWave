@@ -2,10 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../data/db.dart';
 import '../data/models.dart';
 import '../data/sync.dart';
 import '../vision/color_detector.dart';
+import '../shared/constants/app_colors.dart';
 
 class CameraScreen extends StatefulWidget {
   final int lightId;
@@ -33,13 +36,15 @@ class _CameraScreenState extends State<CameraScreen> {
     try {
       final cam = await Permission.camera.request();
       if (!cam.isGranted) {
-        setState(() => _error = 'Нет доступа к камере. Разреши в настройках.');
+        final l10n = AppLocalizations.of(context)!;
+        setState(() => _error = l10n.noCameraPermission);
         return;
       }
 
       final cams = await availableCameras();
       if (cams.isEmpty) {
-        setState(() => _error = 'Камера не найдена на устройстве.');
+        final l10n = AppLocalizations.of(context)!;
+        setState(() => _error = l10n.cameraNotFound);
         return;
       }
       final back = cams.firstWhere(
@@ -61,7 +66,8 @@ class _CameraScreenState extends State<CameraScreen> {
       });
       setState(() {});
     } catch (e) {
-      setState(() => _error = 'Ошибка камеры: $e');
+      final l10n = AppLocalizations.of(context)!;
+      setState(() => _error = l10n.cameraError(e.toString()));
     }
   }
 
@@ -121,8 +127,9 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     if (_error != null) {
+      final l10n = AppLocalizations.of(context)!;
       return Scaffold(
-        appBar: AppBar(title: const Text('Камера — авто лог')),
+        appBar: AppBar(title: Text(l10n.cameraTitle)),
         body: Center(
             child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -134,8 +141,9 @@ class _CameraScreenState extends State<CameraScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Камера — авто лог')),
+      appBar: AppBar(title: Text(l10n.cameraTitle)),
       body: GestureDetector(
         onTapDown: (e) => _tapToSetRoi(e, context),
         child: Stack(children: [
@@ -146,9 +154,13 @@ class _CameraScreenState extends State<CameraScreen> {
               left: 16,
               child: Container(
                 padding: const EdgeInsets.all(8),
-                color: Colors.black54,
-                child: Text('ROI: tap по огню • Цвет: $_stable',
-                    style: const TextStyle(color: Colors.white)),
+                color: AppColors.black54,
+                child: Text(
+                    l10n.roiInfo(_stable.toString()),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: AppColors.white)),
               )),
         ]),
       ),
