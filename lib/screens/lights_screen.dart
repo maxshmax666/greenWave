@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:green_wave_app/l10n/generated/app_localizations.dart';
 
-import '../main.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+final supa = Supabase.instance.client;
 
 /// Simple list of traffic lights loaded from Supabase.
 class LightsScreen extends StatefulWidget {
@@ -58,7 +60,8 @@ class _LightsScreenState extends State<LightsScreen> {
                 : l10n.noCoords;
             return ListTile(
               title: Text(
-                l['name'] as String? ?? l10n.lightWithId(l['id'].toString()),
+                l['name'] as String?
+                    ?? l10n.lightWithId((l['id'] as num).toInt()),
               ),
               subtitle: Text(subtitle),
             );

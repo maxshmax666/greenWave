@@ -283,8 +283,9 @@ class _MapScreenState extends State<MapScreen> {
               initialCenter: _defaultCenter,
               initialZoom: 15,
               onLongPress: (tap, latlng) => _setDest(latlng),
-              interactionOptions:
-                  InteractionOptions(flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
+              interactionOptions: InteractionOptions(
+                flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+              ),
             ),
             children: [
               TileLayer(
@@ -307,9 +308,15 @@ class _MapScreenState extends State<MapScreen> {
                   headingDeg: _headingDeg ?? 0,
                 ),
               if (_route.isNotEmpty)
-                PolylineLayer(polylines: [
-                  Polyline(points: _route, strokeWidth: 4, color: AppColors.blue)
-                ]),
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                      points: _route,
+                      strokeWidth: 4,
+                      color: AppColors.blue,
+                    )
+                  ],
+                ),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
@@ -323,24 +330,31 @@ class _MapScreenState extends State<MapScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (_route.isNotEmpty)
-                    Text(_advised != null
-                        ? l10n.speedAdvice(_advised!.toString())
-                        : l10n.noLightsOnRoute),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _LegendDot(color: AppColors.red, label: l10n.legendMinor),
-                      const SizedBox(width: 12),
-                      _LegendDot(color: AppColors.green, label: l10n.legendMain),
-                      const SizedBox(width: 12),
-                      _LegendDot(color: AppColors.blue, label: l10n.legendPed),
+                        Text(
+                          _advised != null
+                              ? l10n.speedAdvice(_advised!)
+                              : l10n.noLightsOnRoute,
+                        ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _LegendDot(
+                              color: AppColors.red, label: l10n.legendMinor),
+                          const SizedBox(width: 12),
+                          _LegendDot(
+                              color: AppColors.green, label: l10n.legendMain),
+                          const SizedBox(width: 12),
+                          _LegendDot(
+                              color: AppColors.blue, label: l10n.legendPed),
+                        ],
+                      ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
