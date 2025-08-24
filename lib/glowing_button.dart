@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'app_theme.dart';
+import 'shared/theme/app_theme.dart';
 
 /// Visual tone of [GlowingButton].
 enum GlowingButtonTone { primary, secondary, ghost }
