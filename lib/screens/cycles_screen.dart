@@ -25,8 +25,16 @@ class _CyclesScreenState extends State<CyclesScreen>
   }
 
   Future<void> _loadLights() async {
-    final res = await _supa.from('lights').select('id,name').order('id');
-    setState(() => _lights = List<Map<String, dynamic>>.from(res));
+    try {
+      final res =
+          await _supa.from('lights').select('id,name').order('id');
+      if (!mounted) return;
+      setState(() => _lights = List<Map<String, dynamic>>.from(res));
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to load lights')));
+    }
   }
 
   Future<double> _avgDuration(String dir, String phase) async {

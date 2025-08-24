@@ -29,8 +29,16 @@ class _SpeedAdvisorScreenState extends State<SpeedAdvisorScreen> {
   }
 
   Future<void> _loadLights() async {
-    final res = await supa.from("lights").select("id,name,lat,lon").order("id");
-    setState(() => _lights = List<Map<String, dynamic>>.from(res));
+    try {
+      final res =
+          await supa.from("lights").select("id,name,lat,lon").order("id");
+      if (!mounted) return;
+      setState(() => _lights = List<Map<String, dynamic>>.from(res));
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Failed to load lights")));
+    }
   }
 
   Future<Position?> _pos() async {
@@ -86,13 +94,25 @@ class _SpeedAdvisorScreenState extends State<SpeedAdvisorScreen> {
         .toUtc()
         .subtract(const Duration(hours: 2))
         .toIso8601String();
-    final rows = await supa
-        .from("light_cycles")
-        .select("phase,start_ts,end_ts")
-        .eq("light_id", _lightRow!["id"])
-        .gte("start_ts", twoHoursAgo)
-        .lte("end_ts", nowIso)
-        .order("start_ts");
+    List<dynamic> rows;
+    try {
+      rows = await supa
+          .from("light_cycles")
+          .select("phase,start_ts,end_ts")
+          .eq("light_id", _lightRow!["id"])
+          .gte("start_ts", twoHoursAgo)
+          .lte("end_ts", nowIso)
+          .order("start_ts");
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _status = "Failed to load cycles";
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Error loading cycles")));
+      }
+      return;
+    }
 
     final data = List<Map<String, dynamic>>.from(rows);
     if (data.isEmpty) {
