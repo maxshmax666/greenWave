@@ -83,7 +83,7 @@ class _MapPageState extends State<MapPage> {
               interactionOptions: const InteractionOptions(
                   flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
             ),
-            children: const [
+            children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.example.green_wave_app',
