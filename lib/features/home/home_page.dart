@@ -6,7 +6,7 @@ import '../../screens/map_screen.dart';
 import '../../screens/cycles_screen.dart';
 import '../../screens/speed_advisor.dart';
 import '../../screens/settings_screen.dart';
-import '../auth/register_page.dart';
+import '../auth/presentation/register_page.dart';
 
 /// Home page shown after a successful authentication.
 class HomePage extends StatefulWidget {

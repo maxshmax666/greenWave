@@ -245,39 +245,23 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
- 
-    final markers = _lightMarkers();
     final l10n = AppLocalizations.of(context)!;
-
     final disableAnimations = MediaQuery.of(context).disableAnimations;
     final markers = _lightMarkers(disableAnimations);
- 
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: _openExplorer,
- 
           tooltip: l10n.explorerTooltip,
           icon: const Icon(Icons.explore),
-        ),
-        title: Text(l10n.navMap),
-        actions: [
-          IconButton(
-            onPressed: _loadLights,
-            tooltip: l10n.refresh,
-            icon: const Icon(Icons.refresh),
-
-          tooltip: 'Explorer',
-          icon: const Icon(Icons.explore, semanticLabel: 'Explorer'),
         ),
         title: Text(AppLocalizations.of(context)!.map),
         actions: [
           IconButton(
             onPressed: _loadLights,
-            tooltip: 'Обновить',
-            icon: const Icon(Icons.refresh, semanticLabel: 'Обновить'),
- 
+            tooltip: l10n.refresh,
+            icon: const Icon(Icons.refresh),
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.directions),
@@ -291,53 +275,54 @@ class _MapScreenState extends State<MapScreen> {
           ),
         ],
       ),
-      body: FlutterMap(
-        mapController: _map,
-        options: MapOptions(
-          initialCenter: _defaultCenter,
-          initialZoom: 15,
-          onLongPress: (tap, latlng) => _setDest(latlng),
-          interactionOptions: InteractionOptions(
-              flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
-        ),
-        children: [
-          TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            userAgentPackageName: 'com.example.green_wave_app',
-            maxNativeZoom: 19,
-            maxZoom: 19,
-            backgroundColor: AppColors.white,
-            // ВАЖНО: сигнатура из 3х аргументов
-            errorTileCallback: (tile, error, stackTrace) {
-              if (!mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.tileLoadError(error.toString()))),
-              );
-            },
-          ),
-          MarkerLayer(markers: markers),
-          if (_myPos != null)
-            MyLocationMarker(
-              latLng: _myPos!,
-              headingDeg: _headingDeg ?? 0,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return FlutterMap(
+            mapController: _map,
+            options: MapOptions(
+              initialCenter: _defaultCenter,
+              initialZoom: 15,
+              onLongPress: (tap, latlng) => _setDest(latlng),
+              interactionOptions:
+                  InteractionOptions(flags: InteractiveFlag.all & ~InteractiveFlag.rotate),
             ),
-          if (_route.isNotEmpty)
-            PolylineLayer(polylines: [
-              Polyline(points: _route, strokeWidth: 4, color: AppColors.blue)
-            ]),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: AppColors.white70,
-                borderRadius: BorderRadius.circular(12),
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.example.green_wave_app',
+                maxNativeZoom: 19,
+                maxZoom: 19,
+                backgroundColor: AppColors.white,
+                errorTileCallback: (tile, error, stackTrace) {
+                  if (!mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l10n.tileLoadError(error.toString()))),
+                  );
+                },
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (_route.isNotEmpty)
+              MarkerLayer(markers: markers),
+              if (_myPos != null)
+                MyLocationMarker(
+                  latLng: _myPos!,
+                  headingDeg: _headingDeg ?? 0,
+                ),
+              if (_route.isNotEmpty)
+                PolylineLayer(polylines: [
+                  Polyline(points: _route, strokeWidth: 4, color: AppColors.blue)
+                ]),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.white70,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (_route.isNotEmpty)
                     Text(_advised != null
                         ? l10n.speedAdvice(_advised!.toString())
                         : l10n.noLightsOnRoute),
@@ -363,12 +348,8 @@ class _MapScreenState extends State<MapScreen> {
         children: [
           if (_route.isNotEmpty) ...[
             FloatingActionButton(
- 
               heroTag: AppStrings.heroClear,
-
-              heroTag: 'clear',
               elevation: disableAnimations ? 0 : null,
- 
               onPressed: () => setState(() {
                     _route.clear();
                     _snapped = [];
@@ -380,24 +361,16 @@ class _MapScreenState extends State<MapScreen> {
             const SizedBox(height: 8),
           ],
           FloatingActionButton(
- 
             heroTag: AppStrings.heroLoc,
-
-            heroTag: 'loc',
             elevation: disableAnimations ? 0 : null,
- 
             onPressed: _centerOnMe,
             tooltip: l10n.myLocation,
             child: const Icon(Icons.my_location),
           ),
           const SizedBox(height: 8),
           FloatingActionButton(
- 
             heroTag: AppStrings.heroAdd,
-
-            heroTag: 'add',
             elevation: disableAnimations ? 0 : null,
- 
             onPressed: _addLight,
             tooltip: l10n.addLight,
             child: const Icon(Icons.add),
@@ -421,9 +394,6 @@ class _TrafficLamp extends StatelessWidget {
     final isBlue = color == AppColors.blue;
 
     final disableAnimations = MediaQuery.of(context).disableAnimations;
-    final isRed = color == Colors.red;
-    final isGreen = color == Colors.green;
-    final isBlue = color == Colors.blue;
  
 
     Widget lamp(Color on, bool active) => Container(
@@ -473,12 +443,12 @@ class _TrafficLamp extends StatelessWidget {
             ),
 
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.white,
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: disableAnimations
                     ? null
                     : const [
-                        BoxShadow(blurRadius: 4, color: Colors.black26)
+                        BoxShadow(blurRadius: 4, color: AppColors.black26)
                       ],
               ),
  
@@ -580,16 +550,11 @@ class _ExplorerSheetState extends State<ExplorerSheet> {
                 onPressed: () {},
               ),
               IconButton(
- 
-                icon: Icon(_rec ? Icons.stop : Icons.fiber_manual_record),
-                color: _rec ? AppColors.red : null,
-
                 icon: Icon(
                   _rec ? Icons.stop : Icons.fiber_manual_record,
                   semanticLabel: _rec ? 'Stop' : 'Record',
                 ),
-                color: _rec ? Colors.red : null,
- 
+                color: _rec ? AppColors.red : null,
                 onPressed: _toggleRec,
               ),
               IconButton(
