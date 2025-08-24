@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../env.dart';
 import '../main.dart';
 import '../shared/constants/app_colors.dart';
+import '../ui/settings/car_avatar_tile.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -59,6 +60,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          const CarAvatarTile(),
+          const SizedBox(height: 16),
           SwitchListTile(
             title: Text(l10n.darkTheme),
             value: themeMode.value == ThemeMode.dark,
