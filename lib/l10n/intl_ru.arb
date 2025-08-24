@@ -1,76 +1,134 @@
 {
- 
+  "@@locale": "ru",
+
   "appTitle": "GreenWave",
+  "@appTitle": { "description": "Название приложения на главном экране" },
+
   "navMap": "Карта",
   "navLights": "Светофоры",
   "navSettings": "Настройки",
+
+  "map": "Карта",
+  "lights": "Светофоры",
+  "settings": "Настройки",
+
   "signIn": "Войти",
-  "signUp": "Регистрация",
-  "emailLabel": "Email",
-  "passwordLabel": "Пароль",
+  "signUp": "Зарегистрироваться",
   "createAccount": "Создать аккаунт",
-  "iHaveAccount": "У меня есть аккаунт",
-  "errorWithMessage": "Ошибка: {error}",
+  "haveAccount": "У меня уже есть аккаунт",
+
+  "email": "E‑mail",
+  "password": "Пароль",
+  "emailLabel": "E‑mail",
+  "passwordLabel": "Пароль",
+  "emailHint": "Введите e‑mail",
+  "passwordHint": "Введите пароль",
+
+  "slogan": "Лови волну зелёных",
+
   "lightsTitle": "Светофоры",
   "failedLoadLights": "Не удалось загрузить светофоры: {error}",
+  "@failedLoadLights": {
+    "description": "Ошибка при загрузке светофоров",
+    "placeholders": { "error": { "type": "String" } }
+  },
+
   "noCoords": "нет координат",
+
   "lightWithId": "Светофор {id}",
+  "@lightWithId": {
+    "description": "Заголовок со светофором по id",
+    "placeholders": { "id": { "type": "int" } }
+  },
+
   "settingsTitle": "Настройки",
-  "darkTheme": "Темная тема",
-  "english": "English",
+  "darkTheme": "Тёмная тема",
+  "english": "Английский",
   "russian": "Русский",
   "language": "Язык",
   "supabaseUrl": "Supabase URL",
   "supabaseKey": "Supabase Key",
+
   "routeError": "Ошибка маршрута: {error}",
+  "@routeError": {
+    "description": "Сообщение об ошибке прокладки маршрута",
+    "placeholders": { "error": { "type": "String" } }
+  },
+
   "lightAdded": "Светофор добавлен",
   "addError": "Ошибка добавления: {error}",
+  "@addError": {
+    "description": "Ошибка при добавлении элемента",
+    "placeholders": { "error": { "type": "String" } }
+  },
+
   "explorerTooltip": "Обзор",
   "refresh": "Обновить",
+
   "profileCar": "Авто",
   "profileFoot": "Пешком",
-  "profileBike": "Вело",
-  "tileLoadError": "Ошибка загрузки тайла: {error}",
-  "speedAdvice": "Держите ~{speed} км/ч",
-  "noLightsOnRoute": "Нет светофоров на маршруте",
+  "profileBike": "Велосипед",
+
+  "tileLoadError": "Ошибка загрузки тайлов: {error}",
+  "@tileLoadError": {
+    "description": "Ошибка загрузки картографических тайлов",
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "speedAdvice": "Едьте ~{speed} км/ч",
+  "@speedAdvice": {
+    "description": "Совет по одной скорости",
+    "placeholders": { "speed": { "type": "num" } }
+  },
+
+  "notEnoughData": "Недостаточно данных. Проедьте с авто‑логом камеры.",
+
+  "noLightsOnRoute": "На маршруте нет светофоров",
   "legendMinor": "Второстепенная",
   "legendMain": "Главная",
   "legendPed": "Пешеходы",
-  "clearRoute": "Очистить маршрут",
+  "clearRoute": "Сбросить маршрут",
   "myLocation": "Моё местоположение",
   "addLight": "Добавить светофор",
-  "noCameraPermission": "Нет доступа к камере. Разреши в настройках.",
+
+  "cameraTitle": "Камера — авто‑лог",
+  "roiInfo": "ROI: тап по кадру • Цвет: {color}",
+  "@roiInfo": {
+    "description": "Подсказка по ROI",
+    "placeholders": { "color": { "type": "String" } }
+  },
+
+  "noCameraPermission": "Нет разрешения на камеру. Включите в настройках.",
   "cameraNotFound": "Камера не найдена на устройстве.",
   "cameraError": "Ошибка камеры: {error}",
-  "cameraTitle": "Камера — авто лог",
-  "roiInfo": "ROI: tap по огню • Цвет: {color}",
-  "adviceTitle": "Подсказка скорости",
-  "notEnoughData": "Недостаточно данных. Прокатись с автологом камеры.",
-  "cycleInfo": "Цикл {cycle}с (R {red} / Y {yellow} / G {green})",
-  "holdSpeed": "Держите ~ {low}–{high} км/ч",
-  "unitsKmh": "Единицы",
-  "roadSpeedLimit": "Лимит скорости дороги (км/ч)",
-  "cameraOffset": "Смещение часов камеры (с)",
-  "jerkStep": "Шаг jerk советчика"
+  "@cameraError": {
+    "description": "Сообщение об ошибке камеры",
+    "placeholders": { "error": { "type": "String" } }
+  },
 
-  "@@locale": "ru",
-  "appTitle": "GreenWave",
-  "map": "Карта",
-  "lights": "Светофоры",
-  "settings": "Настройки",
-  "signIn": "Войти",
-  "signUp": "Регистрация",
-  "createAccount": "Создать аккаунт",
-  "haveAccount": "У меня уже есть аккаунт",
-  "email": "Email",
-  "password": "Пароль",
-  "emailHint": "Введите email",
-  "passwordHint": "Введите пароль",
-  "darkTheme": "Темная тема",
-  "language": "Язык",
-  "supabaseUrl": "Supabase URL",
-  "supabaseKey": "Supabase Key",
-  "slogan": "Лови зеленую волну",
-  "noCoords": "нет координат"
- 
+  "adviceTitle": "Совет по скорости",
+  "cycleInfo": "Цикл {cycle}с (К {red} / Ж {yellow} / З {green})",
+  "@cycleInfo": {
+    "description": "Описание цикла с компонентами",
+    "placeholders": {
+      "cycle": { "type": "num" },
+      "red":   { "type": "num" },
+      "yellow":{ "type": "num" },
+      "green": { "type": "num" }
+    }
+  },
+
+  "holdSpeed": "Держите ~{low}–{high} км/ч",
+  "@holdSpeed": {
+    "description": "Диапазон скорости, который нужно держать",
+    "placeholders": {
+      "low":  { "type": "num" },
+      "high": { "type": "num" }
+    }
+  },
+
+  "unitsKmh": "Единицы",
+  "roadSpeedLimit": "Ограничение скорости (км/ч)",
+  "cameraOffset": "Смещение часов камеры (с)",
+  "jerkStep": "Шаг изменения совета"
 }
