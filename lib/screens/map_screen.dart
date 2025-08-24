@@ -12,6 +12,8 @@ import '../services/snap_utils.dart';
 import '../services/speed_advisor.dart';
 import '../shared/constants/app_colors.dart';
 import '../shared/constants/app_strings.dart';
+import '../domain/user_car_avatar.dart';
+import '../ui/map/my_location_marker.dart';
 
 final supa = Supabase.instance.client;
 
@@ -31,6 +33,8 @@ class _MapScreenState extends State<MapScreen> {
   List<SnappedLight> _snapped = [];
   int? _advised;
   LatLng? _myPos;
+  double? _headingDeg;
+  StreamSubscription<Position>? _posSub;
   int? _nearestId;
   final _dist = Distance();
   String _profile = AppStrings.profileCar;
@@ -40,7 +44,18 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
     _ensurePermission();
     _loadLights();
-    _updateNearest();
+    _posSub = Geolocator.getPositionStream().listen((p) {
+      _myPos = LatLng(p.latitude, p.longitude);
+      if (p.headingAccuracy != null &&
+          p.headingAccuracy! <= 20 &&
+          p.heading.isFinite) {
+        _headingDeg = p.heading;
+      } else {
+        _headingDeg = null;
+      }
+      _updateNearest();
+      if (mounted) setState(() {});
+    });
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted) return;
       int? sp;
@@ -54,6 +69,7 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void dispose() {
+    _posSub?.cancel();
     _ticker?.cancel();
     super.dispose();
   }
@@ -139,6 +155,13 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> _centerOnMe() async {
     final pos = await _currentPos();
     _map.move(pos, 16);
+    final enabled = await UserCarAvatar.isEnabled();
+    final hasFile = await UserCarAvatar.getFile() != null;
+    final msg = enabled && hasFile ? 'Маркер: аватар' : 'Маркер: точка';
+    if (mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(msg)));
+    }
   }
 
   Future<void> _addLight() async {
@@ -293,6 +316,11 @@ class _MapScreenState extends State<MapScreen> {
             },
           ),
           MarkerLayer(markers: markers),
+          if (_myPos != null)
+            MyLocationMarker(
+              latLng: _myPos!,
+              headingDeg: _headingDeg ?? 0,
+            ),
           if (_route.isNotEmpty)
             PolylineLayer(polylines: [
               Polyline(points: _route, strokeWidth: 4, color: AppColors.blue)
