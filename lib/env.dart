@@ -9,8 +9,12 @@ class Env {
   static const supabaseAnonKey =
       String.fromEnvironment('SUPABASE_ANON_KEY', defaultValue: '');
 
-  /// Key used to persist the Supabase session locally.
-  static const supabaseSessionKey = 'supabase_session';
+  /// Key used to persist the Supabase session locally, provided at build time.
+  static const supabaseSessionKey =
+      String.fromEnvironment(
+    'SUPABASE_SESSION_KEY',
+    defaultValue: 'supabase_session',
+  );
 
   /// OAuth client IDs passed via `--dart-define` at build time.
   static const googleClientId =
