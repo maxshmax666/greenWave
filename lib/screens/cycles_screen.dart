@@ -38,12 +38,17 @@ class _CyclesScreenState extends State<CyclesScreen>
   }
 
   Future<double> _avgDuration(String dir, String phase) async {
-    final from =
-        DateTime.now().toUtc().subtract(const Duration(days: 1)).toIso8601String();
+    if (_lightId == null) {
+      return phase == 'yellow' ? 4.0 : 30.0;
+    }
+    final from = DateTime.now()
+        .toUtc()
+        .subtract(const Duration(days: 1))
+        .toIso8601String();
     final rows = await _supa
         .from('light_cycles')
         .select('start_ts,end_ts')
-        .eq('light_id', _lightId)
+        .eq('light_id', _lightId!)
         .eq('dir', dir)
         .eq('phase', phase)
         .gte('start_ts', from);
@@ -59,6 +64,7 @@ class _CyclesScreenState extends State<CyclesScreen>
   }
 
   Future<void> _addEvent(String dir) async {
+    if (_lightId == null) return;
     String phase = 'green';
     final timeCtrl = TextEditingController();
     final dateCtrl = TextEditingController();

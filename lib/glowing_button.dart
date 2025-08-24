@@ -33,7 +33,7 @@ class _GlowingButtonState extends State<GlowingButton> {
     final scheme = Theme.of(context).colorScheme;
     Color bg;
     Color fg;
-    BorderSide? border;
+    BoxBorder? border;
 
     switch (widget.tone) {
       case GlowingButtonTone.primary:
@@ -47,7 +47,7 @@ class _GlowingButtonState extends State<GlowingButton> {
       case GlowingButtonTone.ghost:
         bg = Colors.transparent;
         fg = scheme.primary;
-        border = BorderSide(color: scheme.primary);
+        border = Border.all(color: scheme.primary);
         break;
     }
 
@@ -77,7 +77,7 @@ class _GlowingButtonState extends State<GlowingButton> {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: AppTheme.radius as BorderRadius?,
+              borderRadius: AppTheme.radius,
               onTap: widget.loading ? null : widget.onPressed,
               child: Padding(
                 padding: AppTheme.padding,
