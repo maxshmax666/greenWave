@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/db.dart';
 import 'speed_advisor.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:green_wave_app/l10n/generated/app_localizations.dart';
 
 class AdviceScreen extends StatefulWidget {
   final int lightId;
@@ -57,24 +57,29 @@ class _AdviceScreenState extends State<AdviceScreen> {
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.cycleInfo(
+                  Text(
+                    l10n.cycleInfo(
                       _m!.tCycle.toStringAsFixed(1),
                       _m!.tRed.toStringAsFixed(1),
                       _m!.tYellow.toStringAsFixed(1),
-                      _m!.tGreen.toStringAsFixed(1))),
+                      _m!.tGreen.toStringAsFixed(1),
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   if (_adv != null) ...[
                     Text(
                       _adv!.message,
-                      style: Theme.of(c)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(c).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     if (_adv!.vLow != null && _adv!.vHigh != null)
-                      Text(l10n.holdSpeed(
+                      Text(
+                        l10n.holdSpeed(
                           (_adv!.vLow! * 3.6).toStringAsFixed(0),
-                          (_adv!.vHigh! * 3.6).toStringAsFixed(0))),
+                          (_adv!.vHigh! * 3.6).toStringAsFixed(0),
+                        ),
+                      ),
                   ],
                 ],
               ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:green_wave_app/l10n/generated/app_localizations.dart';
 
 import '../main.dart';
 
@@ -20,9 +20,11 @@ class _LightsScreenState extends State<LightsScreen> {
           .from('lights')
           .select('id,name,lat,lon')
           .order('id');
-      setState(() => _items
-        ..clear()
-        ..addAll(List<Map<String, dynamic>>.from(res)));
+      setState(
+        () => _items
+          ..clear()
+          ..addAll(List<Map<String, dynamic>>.from(res)),
+      );
     } catch (e) {
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
@@ -51,11 +53,13 @@ class _LightsScreenState extends State<LightsScreen> {
             final l = _items[i];
             final lat = (l['lat'] as num?)?.toDouble();
             final lon = (l['lon'] as num?)?.toDouble();
-            final subtitle =
-                (lat != null && lon != null) ? '$lat, $lon' : l10n.noCoords;
+            final subtitle = (lat != null && lon != null)
+                ? '$lat, $lon'
+                : l10n.noCoords;
             return ListTile(
               title: Text(
-                  l['name'] as String? ?? l10n.lightWithId(l['id'].toString())),
+                l['name'] as String? ?? l10n.lightWithId(l['id'].toString()),
+              ),
               subtitle: Text(subtitle),
             );
           },

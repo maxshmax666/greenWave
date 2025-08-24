@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:green_wave_app/l10n/generated/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -15,8 +15,9 @@ class RegisterPage extends StatefulWidget {
       );
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Error: ' + e.toString())));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ' + e.toString())));
       }
     }
   }
@@ -41,8 +42,9 @@ class _RegisterPageState extends State<RegisterPage> {
       );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Error: ' + e.toString())));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ' + e.toString())));
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -58,8 +60,9 @@ class _RegisterPageState extends State<RegisterPage> {
       );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Error: ' + e.toString())));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ' + e.toString())));
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -106,8 +109,9 @@ class _RegisterPageState extends State<RegisterPage> {
               ],
             ),
             TextButton(
-              onPressed:
-                  _busy ? null : () => setState(() => _isLogin = !_isLogin),
+              onPressed: _busy
+                  ? null
+                  : () => setState(() => _isLogin = !_isLogin),
               child: Text(_isLogin ? l10n.createAccount : l10n.haveAccount),
             ),
           ],
@@ -116,4 +120,3 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 }
-

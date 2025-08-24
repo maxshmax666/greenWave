@@ -1,8 +1,7 @@
 // ignore: unused_import
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:green_wave_app/l10n/generated/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'env.dart';
@@ -13,15 +12,12 @@ import 'screens/map_screen.dart';
 import 'screens/lights_screen.dart';
 import 'screens/settings_screen.dart';
 
-final themeMode  = ValueNotifier<ThemeMode>(ThemeMode.system);
+final themeMode = ValueNotifier<ThemeMode>(ThemeMode.system);
 final themeColor = ValueNotifier<MaterialColor>(AppColors.themeColors.first);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Supabase.initialize(
-    url: Env.supabaseUrl,
-    anonKey: Env.supabaseAnonKey,
-  );
+  await Supabase.initialize(url: Env.supabaseUrl, anonKey: Env.supabaseAnonKey);
   runApp(const MyApp());
 }
 
@@ -44,9 +40,7 @@ class MyApp extends StatelessWidget {
               themeMode: mode,
               theme: AppTheme.light(color),
               darkTheme: AppTheme.dark(color),
-              routes: {
-                '/register': (_) => const RegisterPage(),
-              },
+              routes: {'/register': (_) => const RegisterPage()},
               home: const HomeTabs(),
             );
           },
