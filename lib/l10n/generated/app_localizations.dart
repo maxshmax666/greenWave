@@ -116,6 +116,18 @@ abstract class AppLocalizations {
   /// **'Lights'**
   String get navLights;
 
+  /// No description provided for @navCycles.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycles'**
+  String get navCycles;
+
+  /// No description provided for @navRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Record'**
+  String get navRecord;
+
   /// No description provided for @navSettings.
   ///
   /// In en, this message translates to:

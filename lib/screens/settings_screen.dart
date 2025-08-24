@@ -15,8 +15,8 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   String _lang = 'en';
-  final _urlCtrl = TextEditingController(text: Env.supabaseUrl);
-  final _keyCtrl = TextEditingController(text: Env.supabaseAnonKey);
+  final _urlCtrl = TextEditingController(text: supabaseUrl);
+  final _keyCtrl = TextEditingController(text: supabaseAnonKey);
   String _units = 'kmh';
   double _speedLimit = 60;
   double _camOffset = 0;

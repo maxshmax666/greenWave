@@ -18,6 +18,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get navLights => 'Светофоры';
 
   @override
+  String get navCycles => 'Циклы';
+
+  @override
+  String get navRecord => 'Метки';
+
+  @override
   String get navSettings => 'Настройки';
 
   @override

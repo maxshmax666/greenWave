@@ -9,7 +9,6 @@ This project stores traffic light locations and cycle information using Supabase
 - Adds `intersection_name`, `tags`, `bearing_main`, and `bearing_secondary` to `public.lights`.
 - Adds `dir`, `confidence`, `note`, and `inserted_via` to `public.light_cycles`.
 - Creates indexes on `light_cycles` for faster queries.
-- Removes the deprecated `todos` table and its policies.
 
 ## Dart models
 

@@ -18,6 +18,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navLights => 'Lights';
 
   @override
+  String get navCycles => 'Cycles';
+
+  @override
+  String get navRecord => 'Record';
+
+  @override
   String get navSettings => 'Settings';
 
   @override
