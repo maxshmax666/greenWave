@@ -433,25 +433,16 @@ class _TrafficLamp extends StatelessWidget {
           top: -6,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
- 
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.circular(10),
-              boxShadow: const [
-                BoxShadow(blurRadius: 4, color: AppColors.black26)
-              ],
+              boxShadow: disableAnimations
+                  ? null
+                  : const [
+                      BoxShadow(blurRadius: 4, color: AppColors.black26)
+                    ],
             ),
 
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: disableAnimations
-                    ? null
-                    : const [
-                        BoxShadow(blurRadius: 4, color: AppColors.black26)
-                      ],
-              ),
- 
             child: Text(
               '$leftSec',
               style: Theme.of(context)
