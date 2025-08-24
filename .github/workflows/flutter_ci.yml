@@ -44,5 +44,8 @@ jobs:
 
       # Сборка APK (debug). Если хочешь только проверки — временно закомментируй этот шаг.
       - name: Build debug APK
-        run: flutter build apk --debug
+        run: flutter build apk --debug \
+          --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+          --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
+          --dart-define=ORS_API_KEY=${{ secrets.ORS_API_KEY }}
         
