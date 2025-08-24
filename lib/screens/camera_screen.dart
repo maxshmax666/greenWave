@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:green_wave_app/l10n/generated/app_localizations.dart';
 
 import '../data/db.dart';
 import '../data/models.dart';
@@ -81,10 +81,11 @@ class _CameraScreenState extends State<CameraScreen> {
       if (_stable != LightColor.unknown && _stable != _lastLogged) {
         final ps = Phase.values[_stable.index];
         final sample = PhaseSample(
-            lightId: widget.lightId,
-            phase: ps,
-            ts: DateTime.now(),
-            confidence: conf);
+          lightId: widget.lightId,
+          phase: ps,
+          ts: DateTime.now(),
+          confidence: conf,
+        );
         await _db.addSample(sample);
         try {
           SyncService.pushSamples([sample]); // fire-and-forget
@@ -131,9 +132,11 @@ class _CameraScreenState extends State<CameraScreen> {
       return Scaffold(
         appBar: AppBar(title: Text(l10n.cameraTitle)),
         body: Center(
-            child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(_error!, textAlign: TextAlign.center))),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(_error!, textAlign: TextAlign.center),
+          ),
+        ),
       );
     }
 
@@ -146,23 +149,26 @@ class _CameraScreenState extends State<CameraScreen> {
       appBar: AppBar(title: Text(l10n.cameraTitle)),
       body: GestureDetector(
         onTapDown: (e) => _tapToSetRoi(e, context),
-        child: Stack(children: [
-          CameraPreview(_c!),
-          Positioned.fill(child: CustomPaint(painter: _RoiPainter(_roi))),
-          Positioned(
+        child: Stack(
+          children: [
+            CameraPreview(_c!),
+            Positioned.fill(child: CustomPaint(painter: _RoiPainter(_roi))),
+            Positioned(
               bottom: 16,
               left: 16,
               child: Container(
                 padding: const EdgeInsets.all(8),
                 color: AppColors.black54,
                 child: Text(
-                    l10n.roiInfo(_stable.toString()),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: AppColors.white)),
-              )),
-        ]),
+                  l10n.roiInfo(_stable.toString()),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: AppColors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

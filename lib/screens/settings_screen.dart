@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:green_wave_app/l10n/generated/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../env.dart';
@@ -66,7 +66,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text(l10n.darkTheme),
             value: themeMode.value == ThemeMode.dark,
             onChanged: (v) => setState(
-                () => themeMode.value = v ? ThemeMode.dark : ThemeMode.light),
+              () => themeMode.value = v ? ThemeMode.dark : ThemeMode.light,
+            ),
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
@@ -121,7 +122,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     setState(() => themeColor.value = c);
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.setInt(
-                        'primary_color', AppColors.themeColors.indexOf(c));
+                      'primary_color',
+                      AppColors.themeColors.indexOf(c),
+                    );
                   },
                   child: CircleAvatar(
                     backgroundColor: c,
@@ -152,7 +155,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             decoration: InputDecoration(labelText: l10n.supabaseKey),
             obscureText: true,
           ),
-      ],
+        ],
       ),
     );
   }
