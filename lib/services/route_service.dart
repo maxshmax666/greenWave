@@ -9,7 +9,7 @@ class RouteService {
   static Future<List<LatLng>> getRoute(LatLng start, LatLng end,
       {String profile = 'driving-car'}) async {
     final url = Uri.parse(
-        'https://api.openrouteservice.org/v2/directions/$profile?api_key=${Env.orsApiKey}&start=${start.longitude},${start.latitude}&end=${end.longitude},${end.latitude}&geometry_format=geojson');
+        'https://api.openrouteservice.org/v2/directions/$profile?api_key=$orsApiKey&start=${start.longitude},${start.latitude}&end=${end.longitude},${end.latitude}&geometry_format=geojson');
     final res = await http.get(url);
     if (res.statusCode != 200) {
       throw Exception('ORS ${res.statusCode}');

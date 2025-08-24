@@ -6,6 +6,8 @@
 
   "navMap": "Map",
   "navLights": "Lights",
+  "navCycles": "Cycles",
+  "navRecord": "Record",
   "navSettings": "Settings",
 
   "map": "Map",

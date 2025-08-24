@@ -16,9 +16,3 @@ alter table public.light_cycles
 create index if not exists idx_light_cycles_light_ts on public.light_cycles (light_id, start_ts);
 create index if not exists idx_light_cycles_light_dir on public.light_cycles (light_id, dir);
 
--- удалить (опционально) todos вместе с политиками
-drop policy if exists "todos read own"   on public.todos;
-drop policy if exists "todos insert own" on public.todos;
-drop policy if exists "todos update own" on public.todos;
-drop policy if exists "todos delete own" on public.todos;
-drop table  if exists public.todos cascade;
