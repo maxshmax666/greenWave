@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 
- 
 /// Application color constants.
 class AppColors {
   AppColors._();
 
-
-/// Application color palette.
-class AppColors {
- 
   /// Available primary colors for the app theme.
   static const List<MaterialColor> themeColors = <MaterialColor>[
     Colors.green,
@@ -18,7 +13,6 @@ class AppColors {
     Colors.orange,
     Colors.teal,
   ];
- 
 
   static const Color white = Colors.white;
   static const Color black26 = Colors.black26;
