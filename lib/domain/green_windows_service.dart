@@ -11,12 +11,11 @@ class GreenWindowsService {
 
   /// Returns upcoming green windows relative to [now] in seconds.
   ///
-  /// The service fetches last [history] green cycles for [lightId] and [dir],
-  /// builds a typical period using median of intervals between cycles and uses
-  /// the last observed start as an anchor. 2-3 windows ahead are returned.
+  /// The service fetches last [history] green cycles for [lightId], builds a
+  /// typical period using median of intervals between cycles and uses the last
+  /// observed start as an anchor. 2-3 windows ahead are returned.
   Future<List<({double tStart, double tEnd})>> fetch({
     required int lightId,
-    required String dir,
     required DateTime now,
     int history = 5,
     int forward = 3,
@@ -26,7 +25,6 @@ class GreenWindowsService {
     final from = now.subtract(const Duration(hours: 6));
     final cycles = await _cycles.list(
       lightId: lightId,
-      dir: dir,
       from: from,
       to: now,
     );

@@ -30,12 +30,8 @@ class LightsRepo {
   Future<Light> update(Light light) async {
     final data = {
       'name': light.name,
-      'intersection_name': light.intersectionName,
       'lat': light.lat,
       'lon': light.lon,
-      'tags': light.tags,
-      'bearing_main': light.bearingMain,
-      'bearing_secondary': light.bearingSecondary,
     };
     final res = await _client
         .from('lights')
