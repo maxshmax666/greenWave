@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "jsx": "react",
-    "moduleResolution": "node",
-    "strict": true,
-    "target": "esnext",
-    "esModuleInterop": true
-  }
-}
