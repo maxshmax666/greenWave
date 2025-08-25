@@ -1,35 +1,34 @@
 # green_wave_app
 
-A new Flutter project.
+A minimal Flutter client for the "Green Wave" project. The app displays a map
+and allows adding traffic lights and personal road marks.
 
 ## Environment variables
 
-The application reads sensitive keys from compile-time environment variables.
-Provide these via `--dart-define` when running or building:
+Sensitive keys are provided via compile-time environment variables using
+`--dart-define` when running or building:
 
 ```
 flutter run \
   --dart-define=SUPABASE_URL=YOUR_URL \
   --dart-define=SUPABASE_ANON_KEY=YOUR_ANON_KEY \
-  --dart-define=SUPABASE_SESSION_KEY=supabase_session \
   --dart-define=ORS_API_KEY=YOUR_ORS_KEY
 ```
 
-Optional OAuth client IDs can also be supplied using
-`SUPABASE_GOOGLE_CLIENT_ID` and `SUPABASE_APPLE_CLIENT_ID`.
-A custom storage key for the Supabase session can be provided with
-`SUPABASE_SESSION_KEY` (defaults to `supabase_session`).
+Configure these values as secrets in CI and pass them to `flutter build` with
+the same flags.
 
-In CI or deployment scripts, configure these values as environment secrets and
-pass them to `flutter build` with the same `--dart-define` flags.
+## Features
 
-## Getting Started
+- Map screen with centering on user location
+- Adding traffic lights saved to `public.lights`
+- Adding custom marks saved to `public.record_marks`
 
-A few resources to get you started if this is your first Flutter project:
+## Building
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```
+flutter analyze
+flutter build apk --debug
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Ensure a recent Flutter SDK is installed.
