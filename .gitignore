@@ -47,3 +47,9 @@ app.*.map.json
 # Игнорировать файлы с секретами
 .env
 .env.*
+
+# React Native
+apps/mobile/node_modules/
+apps/mobile/.expo/
+apps/mobile/dist/
+apps/mobile/.expo-shared/
