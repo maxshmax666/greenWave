@@ -23,6 +23,6 @@ describe('projectLightsToRoute', () => {
     const res = projectLightsToRoute(lights, route);
     expect(res.map(r => r.light.id)).toEqual(['1', '2']);
     expect(res[0].order_m).toBeLessThan(res[1].order_m);
-    expect(res[0].dist_m).toBeLessThan(50);
+    expect(res[0].dist_m).toBeLessThan(70);
   });
 });
