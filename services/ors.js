@@ -19,7 +19,10 @@ async function getRoute(start, end) {
   }
 
   const json = await res.json();
-  const feature = json.features[0];
+  const feature = json.features?.[0];
+  if (!feature) {
+    throw new Error('Route not found');
+  }
   const coords = feature.geometry.coordinates.map(([lon, lat]) => ({
     latitude: lat,
     longitude: lon,
