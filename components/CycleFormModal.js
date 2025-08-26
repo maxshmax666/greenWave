@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TextInput, Button, Alert } from 'react-native';
+import i18n from '../src/i18n';
 import { validateCycle } from '../src/validation';
 
 export default function CycleFormModal({ visible, onSubmit, onCancel }) {
@@ -32,7 +33,7 @@ export default function CycleFormModal({ visible, onSubmit, onCancel }) {
       pedEnd,
     });
     if (msg) {
-      Alert.alert('Validation', msg);
+      Alert.alert(i18n.t('validation.title'), msg);
       return;
     }
     onSubmit({
@@ -48,27 +49,27 @@ export default function CycleFormModal({ visible, onSubmit, onCancel }) {
     <Modal visible={visible} transparent>
       <View style={{ flex:1, justifyContent:'center', backgroundColor:'rgba(0,0,0,0.5)' }}>
         <View style={{ margin:20, padding:20, backgroundColor:'white' }}>
-          <Text>Cycle seconds</Text>
+          <Text>{i18n.t('cycleForm.cycleSeconds')}</Text>
           <TextInput value={cycleSeconds} onChangeText={setCycleSeconds} keyboardType="numeric" />
-          <Text>t0 ISO</Text>
+          <Text>{i18n.t('cycleForm.t0')}</Text>
           <TextInput value={t0} onChangeText={setT0} />
-          <Text>Main green start/end</Text>
+          <Text>{i18n.t('cycleForm.main')}</Text>
           <View style={{ flexDirection:'row' }}>
             <TextInput style={{ flex:1 }} value={mainStart} onChangeText={setMainStart} keyboardType="numeric" />
             <TextInput style={{ flex:1 }} value={mainEnd} onChangeText={setMainEnd} keyboardType="numeric" />
           </View>
-          <Text>Secondary green start/end</Text>
+          <Text>{i18n.t('cycleForm.secondary')}</Text>
           <View style={{ flexDirection:'row' }}>
             <TextInput style={{ flex:1 }} value={secStart} onChangeText={setSecStart} keyboardType="numeric" />
             <TextInput style={{ flex:1 }} value={secEnd} onChangeText={setSecEnd} keyboardType="numeric" />
           </View>
-          <Text>Pedestrian green start/end</Text>
+          <Text>{i18n.t('cycleForm.pedestrian')}</Text>
           <View style={{ flexDirection:'row' }}>
             <TextInput style={{ flex:1 }} value={pedStart} onChangeText={setPedStart} keyboardType="numeric" />
             <TextInput style={{ flex:1 }} value={pedEnd} onChangeText={setPedEnd} keyboardType="numeric" />
           </View>
-          <Button title="Save" onPress={save} disabled={!!error} />
-          <Button title="Cancel" onPress={onCancel} />
+          <Button title={i18n.t('common.save')} onPress={save} disabled={!!error} />
+          <Button title={i18n.t('common.cancel')} onPress={onCancel} />
         </View>
       </View>
     </Modal>

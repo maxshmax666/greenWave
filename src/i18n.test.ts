@@ -30,4 +30,25 @@ describe('i18n translations', () => {
       'Recommend 40 km/h • next light in 100 m • window in 20 s'
     );
   });
+
+  it('translates validation messages', () => {
+    i18n.locale = 'en';
+    expect(i18n.t('validation.light.nameRequired')).toBe('Name is required');
+    i18n.locale = 'ru';
+    expect(i18n.t('validation.light.nameRequired')).toBe('Требуется название');
+  });
+
+  it('translates HUD speed text', () => {
+    i18n.locale = 'en';
+    expect(i18n.t('hud.speed', { speed: 50 })).toBe('Speed: 50');
+    i18n.locale = 'ru';
+    expect(i18n.t('hud.speed', { speed: 50 })).toBe('Скорость: 50');
+  });
+
+  it('translates menu labels', () => {
+    i18n.locale = 'en';
+    expect(i18n.t('menu.startNavigation')).toBe('Start Navigation');
+    i18n.locale = 'ru';
+    expect(i18n.t('menu.startNavigation')).toBe('Начать навигацию');
+  });
 });
