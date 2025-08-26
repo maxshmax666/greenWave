@@ -1,0 +1,50 @@
+{
+  "speedBanner": {
+    "recommendation": "Recommend %{speed} km/h • next light in %{distance} m • window in %{time} s"
+  },
+  "menu": {
+    "startNavigation": "Start Navigation",
+    "clearRoute": "Clear Route",
+    "addLight": "Add Light",
+    "settings": "Settings"
+  },
+  "validation": {
+    "title": "Validation",
+    "light": {
+      "nameRequired": "Name is required",
+      "directionInvalid": "Direction is invalid"
+    },
+    "cycle": {
+      "numeric": "All numeric fields must be valid numbers",
+      "mainOrder": "Main start must be less than end",
+      "secondaryOrder": "Secondary start must be less than end",
+      "pedestrianOrder": "Pedestrian start must be less than end"
+    }
+  },
+  "hud": {
+    "maneuver": "%{maneuver} in %{distance}m",
+    "speed": "Speed: %{speed}",
+    "limit": "Limit: %{limit}",
+    "eta": "ETA: %{eta}s"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "lightForm": {
+    "name": "Name",
+    "direction": "Direction"
+  },
+  "cycleForm": {
+    "cycleSeconds": "Cycle seconds",
+    "t0": "t0 ISO",
+    "main": "Main green start/end",
+    "secondary": "Secondary green start/end",
+    "pedestrian": "Pedestrian green start/end"
+  },
+  "directions": {
+    "MAIN": "MAIN",
+    "SECONDARY": "SECONDARY",
+    "PEDESTRIAN": "PEDESTRIAN"
+  }
+}
