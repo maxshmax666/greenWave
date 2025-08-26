@@ -1,6 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import i18n from '../src/i18n';
+import { usePremium } from '../src/premium/subscription';
+import {
+  PremiumFeature,
+  requiresPremium,
+} from '../src/premium/features';
 
 export interface MainMenuProps {
   visible: boolean;
@@ -17,6 +22,7 @@ export default function MainMenu({
   onAddLight,
   onSettings,
 }: MainMenuProps) {
+  const { isPremium } = usePremium();
   if (!visible) return null;
   return (
     <View style={styles.container} testID="main-menu">
@@ -26,9 +32,11 @@ export default function MainMenu({
       <TouchableOpacity onPress={onClearRoute} style={styles.item}>
         <Text style={styles.text}>{i18n.t('menu.clearRoute')}</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={onAddLight} style={styles.item}>
-        <Text style={styles.text}>{i18n.t('menu.addLight')}</Text>
-      </TouchableOpacity>
+      {isPremium || !requiresPremium(PremiumFeature.AddLight) ? (
+        <TouchableOpacity onPress={onAddLight} style={styles.item}>
+          <Text style={styles.text}>{i18n.t('menu.addLight')}</Text>
+        </TouchableOpacity>
+      ) : null}
       <TouchableOpacity onPress={onSettings} style={styles.item}>
         <Text style={styles.text}>{i18n.t('menu.settings')}</Text>
       </TouchableOpacity>

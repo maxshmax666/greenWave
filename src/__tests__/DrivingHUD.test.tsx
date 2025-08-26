@@ -8,6 +8,9 @@ jest.mock('react-native', () => ({
   Text: 'Text',
   StyleSheet: { create: () => ({}), flatten: () => ({}) },
 }));
+jest.mock('../premium/subscription', () => ({
+  usePremium: () => ({ isPremium: true }),
+}));
 
 import DrivingHUD from '../../components/DrivingHUD';
 

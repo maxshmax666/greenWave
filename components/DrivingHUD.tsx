@@ -1,6 +1,11 @@
 import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
 import i18n from '../src/i18n';
+import { usePremium } from '../src/premium/subscription';
+import {
+  PremiumFeature,
+  requiresPremium,
+} from '../src/premium/features';
 
 export interface DrivingHUDProps {
   maneuver?: string;
@@ -19,6 +24,7 @@ export default function DrivingHUD({
   speed,
   speedLimit,
 }: DrivingHUDProps) {
+  const { isPremium } = usePremium();
   const speedKmh = Math.round(speed || 0);
   const limit = speedLimit ? Math.round(speedLimit) : '--';
   return (
@@ -33,14 +39,16 @@ export default function DrivingHUD({
             : ''}
         </Text>
       </View>
-      <View style={styles.speedPanel}>
-        <Text testID="hud-speed" style={styles.text}>
-          {i18n.t('hud.speed', { speed: speedKmh })}
-        </Text>
-        <Text testID="hud-speed-limit" style={styles.text}>
-          {i18n.t('hud.limit', { limit })}
-        </Text>
-      </View>
+      {isPremium || !requiresPremium(PremiumFeature.SpeedPanel) ? (
+        <View style={styles.speedPanel}>
+          <Text testID="hud-speed" style={styles.text}>
+            {i18n.t('hud.speed', { speed: speedKmh })}
+          </Text>
+          <Text testID="hud-speed-limit" style={styles.text}>
+            {i18n.t('hud.limit', { limit })}
+          </Text>
+        </View>
+      ) : null}
       <View style={styles.streetPanel}>
         <Text testID="hud-street" style={styles.text}>{street}</Text>
       </View>
