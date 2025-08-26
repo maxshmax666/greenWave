@@ -1,12 +1,17 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import i18n from '../src/i18n';
 
 export default function SpeedBanner({ speed, nearestDist, timeToWindow }) {
   if (!speed) return null;
   return (
     <View style={styles.container} pointerEvents="none">
       <Text style={styles.text}>
-        Рекомендуем {Math.round(speed)} км/ч • ближайший светофор через {Math.round(nearestDist)} м • окно через {Math.round(timeToWindow)} с
+        {i18n.t('speedBanner.recommendation', {
+          speed: Math.round(speed),
+          distance: Math.round(nearestDist),
+          time: Math.round(timeToWindow),
+        })}
       </Text>
     </View>
   );
