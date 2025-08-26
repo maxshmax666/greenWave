@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import i18n from '../src/i18n';
 
 export default function SpeedBanner({ speed, nearestDist, timeToWindow }) {
-  if (!speed) return null;
+  if (!speed || speed <= 0) return null;
   return (
     <View style={styles.container} pointerEvents="none">
       <Text style={styles.text}>

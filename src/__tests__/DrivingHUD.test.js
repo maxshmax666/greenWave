@@ -1,3 +1,4 @@
+/* @ts-nocheck */
 import React from 'react';
 import renderer from 'react-test-renderer';
 
@@ -30,5 +31,18 @@ describe('DrivingHUD', () => {
     expect(etaText).toContain('60');
     const limitText = root.findByProps({ testID: 'hud-speed-limit' }).props.children.join('');
     expect(limitText).toContain('50');
+  });
+
+  it('renders defaults when no navigation is active', () => {
+    const tree = renderer.create(<DrivingHUD speed={0} />);
+    const root = tree.root;
+    expect(root.findByProps({ testID: 'hud-maneuver' }).props.children).toBe('');
+    expect(root.findByProps({ testID: 'hud-street' }).props.children).toBeUndefined();
+    const etaText = root.findByProps({ testID: 'hud-eta' }).props.children.join('');
+    expect(etaText).toContain('--');
+    const limitText = root
+      .findByProps({ testID: 'hud-speed-limit' })
+      .props.children.join('');
+    expect(limitText).toContain('--');
   });
 });
