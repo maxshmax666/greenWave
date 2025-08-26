@@ -6,10 +6,22 @@ const translations = {
     speedBanner: {
       recommendation: 'Recommend %{speed} km/h • next light in %{distance} m • window in %{time} s',
     },
+    menu: {
+      startNavigation: 'Start Navigation',
+      cancelRoute: 'Cancel Route',
+      addLight: 'Add Light',
+      settings: 'Settings',
+    },
   },
   ru: {
     speedBanner: {
       recommendation: 'Рекомендуем %{speed} км/ч • ближайший светофор через %{distance} м • окно через %{time} с',
+    },
+    menu: {
+      startNavigation: 'Начать навигацию',
+      cancelRoute: 'Отменить маршрут',
+      addLight: 'Добавить светофор',
+      settings: 'Настройки',
     },
   },
 };
