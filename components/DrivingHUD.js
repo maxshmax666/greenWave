@@ -1,5 +1,6 @@
 import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import i18n from '../src/i18n';
 
 export default function DrivingHUD({
   maneuver,
@@ -15,19 +16,28 @@ export default function DrivingHUD({
     <SafeAreaView style={styles.container} pointerEvents="none">
       <View style={styles.maneuvers}>
         <Text testID="hud-maneuver" style={styles.text}>
-          {maneuver ? `${maneuver} in ${Math.round(distance)}m` : ''}
+          {maneuver
+            ? i18n.t('hud.maneuver', {
+                maneuver,
+                distance: Math.round(distance),
+              })
+            : ''}
         </Text>
       </View>
       <View style={styles.speedPanel}>
-        <Text testID="hud-speed" style={styles.text}>Speed: {speedKmh}</Text>
-        <Text testID="hud-speed-limit" style={styles.text}>Limit: {limit}</Text>
+        <Text testID="hud-speed" style={styles.text}>
+          {i18n.t('hud.speed', { speed: speedKmh })}
+        </Text>
+        <Text testID="hud-speed-limit" style={styles.text}>
+          {i18n.t('hud.limit', { limit })}
+        </Text>
       </View>
       <View style={styles.streetPanel}>
         <Text testID="hud-street" style={styles.text}>{street}</Text>
       </View>
       <View style={styles.etaPanel}>
         <Text testID="hud-eta" style={styles.text}>
-          ETA: {eta ? Math.round(eta) : '--'}s
+          {i18n.t('hud.eta', { eta: eta ? Math.round(eta) : '--' })}
         </Text>
       </View>
     </SafeAreaView>

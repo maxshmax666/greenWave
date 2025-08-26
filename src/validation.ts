@@ -1,10 +1,12 @@
+import i18n from './i18n';
+
 export const validateLight = (name: string, direction: string): string | null => {
   if (!name.trim()) {
-    return 'Name is required';
+    return i18n.t('validation.light.nameRequired');
   }
   const allowed = ['MAIN', 'SECONDARY', 'PEDESTRIAN'];
   if (!allowed.includes(direction)) {
-    return 'Direction is invalid';
+    return i18n.t('validation.light.directionInvalid');
   }
   return null;
 };
@@ -30,16 +32,16 @@ export const validateCycle = ({
 }: CycleFields): string | null => {
   const values = [cycleSeconds, mainStart, mainEnd, secStart, secEnd, pedStart, pedEnd].map(Number);
   if (values.some(v => Number.isNaN(v))) {
-    return 'All numeric fields must be valid numbers';
+    return i18n.t('validation.cycle.numeric');
   }
   if (Number(mainStart) >= Number(mainEnd)) {
-    return 'Main start must be less than end';
+    return i18n.t('validation.cycle.mainOrder');
   }
   if (Number(secStart) >= Number(secEnd)) {
-    return 'Secondary start must be less than end';
+    return i18n.t('validation.cycle.secondaryOrder');
   }
   if (Number(pedStart) >= Number(pedEnd)) {
-    return 'Pedestrian start must be less than end';
+    return i18n.t('validation.cycle.pedestrianOrder');
   }
   return null;
 };

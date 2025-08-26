@@ -26,9 +26,9 @@ describe('DrivingHUD', () => {
     expect(root.findByProps({ testID: 'hud-maneuver' }).props.children).toContain('Turn left');
     expect(root.findByProps({ testID: 'hud-maneuver' }).props.children).toContain('100');
     expect(root.findByProps({ testID: 'hud-street' }).props.children).toBe('Main St');
-    const etaText = root.findByProps({ testID: 'hud-eta' }).props.children.join('');
+    const etaText = root.findByProps({ testID: 'hud-eta' }).props.children;
     expect(etaText).toContain('60');
-    const limitText = root.findByProps({ testID: 'hud-speed-limit' }).props.children.join('');
+    const limitText = root.findByProps({ testID: 'hud-speed-limit' }).props.children;
     expect(limitText).toContain('50');
   });
 });

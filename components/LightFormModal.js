@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TextInput, Button, Alert } from 'react-native';
+import i18n from '../src/i18n';
 import { validateLight } from '../src/validation';
 
 export default function LightFormModal({ visible, coordinate, onSubmit, onCancel }) {
@@ -10,7 +11,7 @@ export default function LightFormModal({ visible, coordinate, onSubmit, onCancel
   const save = () => {
     const msg = validateLight(name, direction);
     if (msg) {
-      Alert.alert('Validation', msg);
+      Alert.alert(i18n.t('validation.title'), msg);
       return;
     }
     onSubmit({
@@ -27,16 +28,21 @@ export default function LightFormModal({ visible, coordinate, onSubmit, onCancel
     <Modal visible={visible} transparent>
       <View style={{ flex:1, justifyContent:'center', backgroundColor:'rgba(0,0,0,0.5)' }}>
         <View style={{ margin:20, padding:20, backgroundColor:'white' }}>
-          <Text>Name</Text>
+          <Text>{i18n.t('lightForm.name')}</Text>
           <TextInput value={name} onChangeText={setName} />
-          <Text>Direction</Text>
+          <Text>{i18n.t('lightForm.direction')}</Text>
           <View style={{ flexDirection:'row', justifyContent:'space-around', marginVertical:10 }}>
             {['MAIN','SECONDARY','PEDESTRIAN'].map(d => (
-              <Button key={d} title={d} onPress={() => setDirection(d)} color={direction===d ? 'blue' : undefined} />
+              <Button
+                key={d}
+                title={i18n.t(`directions.${d}`)}
+                onPress={() => setDirection(d)}
+                color={direction===d ? 'blue' : undefined}
+              />
             ))}
           </View>
-          <Button title="Save" onPress={save} disabled={!!error} />
-          <Button title="Cancel" onPress={onCancel} />
+          <Button title={i18n.t('common.save')} onPress={save} disabled={!!error} />
+          <Button title={i18n.t('common.cancel')} onPress={onCancel} />
         </View>
       </View>
     </Modal>
