@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Camera, CameraType } from 'expo-camera';
 import { detectTrafficLight, TrafficLightDetection } from '../services/trafficLightDetector';
 
@@ -7,7 +8,10 @@ const CameraScreen: React.FC = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [detection, setDetection] = useState<TrafficLightDetection | null>(null);
+  const [currentColor, setCurrentColor] = useState<string | null>(null);
+  const [colorStartTime, setColorStartTime] = useState<number | null>(null);
   const cameraRef = useRef<Camera | null>(null);
+  const colorTimeline = useRef<{ color: string; timestamp: number }[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -25,6 +29,12 @@ const CameraScreen: React.FC = () => {
           const photo = await cameraRef.current.takePictureAsync({ skipProcessing: true, base64: true });
           const result = await detectTrafficLight(photo);
           setDetection(result);
+          if (result.color && result.color !== currentColor) {
+            const now = Date.now();
+            colorTimeline.current.push({ color: result.color, timestamp: now });
+            setCurrentColor(result.color);
+            setColorStartTime(now);
+          }
         } catch (e) {
           console.warn('Capture failed', e);
         }
@@ -64,7 +74,26 @@ const CameraScreen: React.FC = () => {
       )}
       <TouchableOpacity
         style={[styles.button, isRecording ? styles.buttonStop : null]}
-        onPress={() => setIsRecording(v => !v)}
+        onPress={async () => {
+          if (isRecording) {
+            setIsRecording(false);
+            const end = Date.now();
+            const phases = colorTimeline.current.map((item, idx) => {
+              const next = colorTimeline.current[idx + 1]?.timestamp ?? end;
+              return { color: item.color, duration: next - item.timestamp };
+            });
+            try {
+              await AsyncStorage.setItem('colorPhases', JSON.stringify(phases));
+            } catch (e) {
+              console.warn('Saving phases failed', e);
+            }
+          } else {
+            colorTimeline.current = [];
+            setCurrentColor(null);
+            setColorStartTime(null);
+            setIsRecording(true);
+          }
+        }}
       >
         <Text style={styles.buttonText}>{isRecording ? 'Stop' : 'Start'}</Text>
       </TouchableOpacity>
