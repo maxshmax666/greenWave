@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Camera, CameraType } from 'expo-camera';
 import { detectTrafficLight, TrafficLightDetection } from '../services/trafficLightDetector';
+import { uploadCycle } from '../services/uploadLightData';
 
 const CameraScreen: React.FC = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -12,6 +13,7 @@ const CameraScreen: React.FC = () => {
   const [colorStartTime, setColorStartTime] = useState<number | null>(null);
   const cameraRef = useRef<Camera | null>(null);
   const colorTimeline = useRef<{ color: string; timestamp: number }[]>([]);
+  const lightId = 1; // TODO: supply actual light id
 
   useEffect(() => {
     (async () => {
@@ -86,6 +88,11 @@ const CameraScreen: React.FC = () => {
               await AsyncStorage.setItem('colorPhases', JSON.stringify(phases));
             } catch (e) {
               console.warn('Saving phases failed', e);
+            }
+            try {
+              await uploadCycle(lightId, phases);
+            } catch (e) {
+              console.warn('Uploading cycle failed', e);
             }
           } else {
             colorTimeline.current = [];
