@@ -68,7 +68,7 @@ export function projectLightsToRoute(
       }
       traveled += seg.len;
     }
-    if (bestDist <= 50) {
+    if (bestDist <= 70) {
       result.push({ light, dist_m: bestDist, order_m: bestOrder });
     }
   }
