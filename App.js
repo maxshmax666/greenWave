@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import CarMarker from './components/CarMarker';
 import DrivingHUD from './components/DrivingHUD';
@@ -24,9 +24,14 @@ export default function App() {
   const [nearestInfo, setNearestInfo] = useState({ dist: 0, time: 0 });
   const [lightModal, setLightModal] = useState(null);
   const [cycleModal, setCycleModal] = useState(null);
+  const [loadError, setLoadError] = useState(null);
 
   useEffect(() => {
-    fetchLightsAndCycles().then(({ lights, cycles }) => {
+    fetchLightsAndCycles().then(({ lights, cycles, error }) => {
+      if (error) {
+        setLoadError('Failed to load data');
+        return;
+      }
       setLights(lights);
       const map = {};
       for (const c of cycles) map[c.light_id] = c;
@@ -129,6 +134,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      {loadError && <Text testID="load-error">{loadError}</Text>}
       <MapView
         ref={mapRef}
         style={styles.map}
