@@ -1,18 +1,19 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
+import { render } from '@testing-library/react-native';
 
+jest.mock('expo-localization');
 jest.mock('react-native', () => ({
   SafeAreaView: 'SafeAreaView',
   View: 'View',
   Text: 'Text',
-  StyleSheet: { create: () => ({}) },
+  StyleSheet: { create: () => ({}), flatten: () => ({}) },
 }));
 
 import DrivingHUD from '../../components/DrivingHUD';
 
 describe('DrivingHUD', () => {
   it('displays provided props', () => {
-    const tree = renderer.create(
+    const { getByTestId } = render(
       <DrivingHUD
         maneuver="Turn left"
         distance={100}
@@ -22,13 +23,9 @@ describe('DrivingHUD', () => {
         speedLimit={50}
       />
     );
-    const root = tree.root;
-    expect(root.findByProps({ testID: 'hud-maneuver' }).props.children).toContain('Turn left');
-    expect(root.findByProps({ testID: 'hud-maneuver' }).props.children).toContain('100');
-    expect(root.findByProps({ testID: 'hud-street' }).props.children).toBe('Main St');
-    const etaText = root.findByProps({ testID: 'hud-eta' }).props.children;
-    expect(etaText).toContain('60');
-    const limitText = root.findByProps({ testID: 'hud-speed-limit' }).props.children;
-    expect(limitText).toContain('50');
+    expect(getByTestId('hud-maneuver').props.children).toBe('Turn left in 100m');
+    expect(getByTestId('hud-street').props.children).toBe('Main St');
+    expect(getByTestId('hud-eta').props.children).toBe('ETA: 60s');
+    expect(getByTestId('hud-speed-limit').props.children).toBe('Limit: 50');
   });
 });
