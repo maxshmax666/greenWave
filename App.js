@@ -40,7 +40,7 @@ export default function App() {
     setMenuVisible(false);
   };
 
-  const handleCancelRoute = () => {
+  const handleClearRoute = () => {
     setRoute(null);
     setSteps([]);
     setHudInfo({
@@ -228,7 +228,7 @@ export default function App() {
       <MainMenu
         visible={menuVisible}
         onStartNavigation={handleStartNavigation}
-        onCancelRoute={handleCancelRoute}
+        onClearRoute={handleClearRoute}
         onAddLight={handleAddLight}
         onSettings={handleSettings}
       />

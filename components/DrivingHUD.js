@@ -26,7 +26,9 @@ export default function DrivingHUD({
         <Text testID="hud-street" style={styles.text}>{street}</Text>
       </View>
       <View style={styles.etaPanel}>
-        <Text testID="hud-eta" style={styles.text}>ETA: {Math.round(eta)}s</Text>
+        <Text testID="hud-eta" style={styles.text}>
+          ETA: {eta ? Math.round(eta) : '--'}s
+        </Text>
       </View>
     </SafeAreaView>
   );
