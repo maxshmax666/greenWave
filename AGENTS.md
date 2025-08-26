@@ -3,10 +3,12 @@
 This repository contains a React Native (Expo) application.
 
 ## Structure
-- `components/` – UI components written in TSX.
-- `src/` – application logic and tests under `src/__tests__`.
-- `services/` – service modules for networking and domain logic.
+- `components/` – React Native UI components.
+- `src/` – application logic, translations under `src/locales`, and Jest tests in `src/__tests__`.
+- `services/` – networking helpers and domain services.
+- `domain/` – pure domain logic shared by services and components.
 - `assets/` – static images and resources.
+- `App.js` – application entry point; renders map, HUD, and menus.
 
 Run logic tests with Jest; coverage is generated under `coverage/`.
 

@@ -10,6 +10,7 @@ Minimal React Native (Expo) client showing a map with a car marker and driving H
 - Switched traffic light detector to TFLite model inference.
 - Implemented fetch helper with timeout and error handling.
 - Guarded route parsing and handled route fetch errors gracefully.
+- Externalized translations into locale files and expanded component test coverage.
 
 ## Environment
 
