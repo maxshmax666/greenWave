@@ -15,8 +15,8 @@ export default function SpeedBanner({ speed, nearestDist, timeToWindow }: SpeedB
       <Text style={styles.text}>
         {i18n.t('speedBanner.recommendation', {
           speed: Math.round(speed),
-          distance: Math.round(nearestDist),
-          time: Math.round(timeToWindow),
+          distance: Math.round(nearestDist ?? 0),
+          time: Math.round(timeToWindow ?? 0),
         })}
       </Text>
     </View>
