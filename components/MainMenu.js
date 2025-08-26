@@ -5,7 +5,7 @@ import i18n from '../src/i18n';
 export default function MainMenu({
   visible,
   onStartNavigation,
-  onCancelRoute,
+  onClearRoute,
   onAddLight,
   onSettings,
 }) {
@@ -15,8 +15,8 @@ export default function MainMenu({
       <TouchableOpacity onPress={onStartNavigation} style={styles.item}>
         <Text style={styles.text}>{i18n.t('menu.startNavigation')}</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={onCancelRoute} style={styles.item}>
-        <Text style={styles.text}>{i18n.t('menu.cancelRoute')}</Text>
+      <TouchableOpacity onPress={onClearRoute} style={styles.item}>
+        <Text style={styles.text}>{i18n.t('menu.clearRoute')}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={onAddLight} style={styles.item}>
         <Text style={styles.text}>{i18n.t('menu.addLight')}</Text>

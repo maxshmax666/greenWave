@@ -8,7 +8,7 @@ const translations = {
     },
     menu: {
       startNavigation: 'Start Navigation',
-      cancelRoute: 'Cancel Route',
+      clearRoute: 'Clear Route',
       addLight: 'Add Light',
       settings: 'Settings',
     },
@@ -19,7 +19,7 @@ const translations = {
     },
     menu: {
       startNavigation: 'Начать навигацию',
-      cancelRoute: 'Отменить маршрут',
+      clearRoute: 'Очистить маршрут',
       addLight: 'Добавить светофор',
       settings: 'Настройки',
     },
