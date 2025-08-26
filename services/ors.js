@@ -1,7 +1,23 @@
-export async function getRoute(start, end) {
+async function getRoute(start, end) {
   const apiKey = process.env.EXPO_PUBLIC_ORS_API_KEY;
+  if (!apiKey) {
+    throw new Error('EXPO_PUBLIC_ORS_API_KEY is required');
+  }
+
   const url = `https://api.openrouteservice.org/v2/directions/driving-car?start=${start.longitude},${start.latitude}&end=${end.longitude},${end.latitude}`;
-  const res = await fetch(url, { headers: { Authorization: apiKey } });
+
+  let res;
+  try {
+    res = await fetch(url, { headers: { Authorization: apiKey } });
+  } catch (err) {
+    throw new Error(`Failed to fetch route: ${err instanceof Error ? err.message : err}`);
+  }
+
+  if (!res.ok) {
+    const message = await res.text();
+    throw new Error(`OpenRouteService error ${res.status}: ${message}`);
+  }
+
   const json = await res.json();
   const feature = json.features[0];
   const coords = feature.geometry.coordinates.map(([lon, lat]) => ({
@@ -14,3 +30,5 @@ export async function getRoute(start, end) {
     duration: feature.properties.summary.duration,
   };
 }
+
+module.exports = { getRoute };
