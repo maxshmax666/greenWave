@@ -1,19 +1,33 @@
 import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
 
-export default function DrivingHUD() {
+export default function DrivingHUD({
+  maneuver,
+  distance,
+  street,
+  eta,
+  speed,
+  speedLimit,
+}) {
+  const speedKmh = Math.round(speed || 0);
+  const limit = speedLimit ? Math.round(speedLimit) : '--';
   return (
     <SafeAreaView style={styles.container} pointerEvents="none">
-      <View style={styles.maneuvers}><Text style={styles.text}>Next Maneuver</Text></View>
+      <View style={styles.maneuvers}>
+        <Text testID="hud-maneuver" style={styles.text}>
+          {maneuver ? `${maneuver} in ${Math.round(distance)}m` : ''}
+        </Text>
+      </View>
       <View style={styles.speedPanel}>
-        <Text style={styles.text}>Speed: --</Text>
-        <Text style={styles.text}>Limit: --</Text>
+        <Text testID="hud-speed" style={styles.text}>Speed: {speedKmh}</Text>
+        <Text testID="hud-speed-limit" style={styles.text}>Limit: {limit}</Text>
       </View>
       <View style={styles.streetPanel}>
-        <Text style={styles.text}>Street Name</Text>
-        <Text style={styles.text}>Mute</Text>
+        <Text testID="hud-street" style={styles.text}>{street}</Text>
       </View>
-      <View style={styles.etaPanel}><Text style={styles.text}>ETA -- | Progress 0%</Text></View>
+      <View style={styles.etaPanel}>
+        <Text testID="hud-eta" style={styles.text}>ETA: {Math.round(eta)}s</Text>
+      </View>
     </SafeAreaView>
   );
 }
@@ -54,5 +68,5 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.6)',
     padding: 8,
   },
-  text: { color: '#fff', textAlign: 'center' }
+  text: { color: '#fff', textAlign: 'center', fontSize: 16, fontWeight: '600' }
 });

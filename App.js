@@ -25,6 +25,14 @@ export default function App() {
   const [lightModal, setLightModal] = useState(null);
   const [cycleModal, setCycleModal] = useState(null);
   const [loadError, setLoadError] = useState(null);
+  const [hudInfo, setHudInfo] = useState({
+    maneuver: '',
+    distance: 0,
+    street: '',
+    eta: 0,
+    speedLimit: 0,
+  });
+  const [steps, setSteps] = useState([]);
 
   useEffect(() => {
     fetchLightsAndCycles().then(({ lights, cycles, error }) => {
@@ -62,6 +70,17 @@ export default function App() {
     const dest = e.nativeEvent.coordinate;
     const r = await getRoute(car, dest);
     setRoute(r.geometry);
+    setSteps(r.steps || []);
+    if (r.steps && r.steps.length) {
+      const first = r.steps[0];
+      setHudInfo({
+        maneuver: first.instruction,
+        distance: first.distance,
+        street: first.name,
+        eta: first.duration,
+        speedLimit: first.speed,
+      });
+    }
     const legs = [
       {
         distance_m: r.distance,
@@ -167,7 +186,14 @@ export default function App() {
         nearestDist={nearestInfo.dist}
         timeToWindow={nearestInfo.time}
       />
-      <DrivingHUD />
+      <DrivingHUD
+        maneuver={hudInfo.maneuver}
+        distance={hudInfo.distance}
+        street={hudInfo.street}
+        eta={hudInfo.eta}
+        speed={car ? car.speed * 3.6 : 0}
+        speedLimit={hudInfo.speedLimit}
+      />
       {lightModal && (
         <LightFormModal
           visible={true}
