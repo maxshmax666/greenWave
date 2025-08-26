@@ -12,6 +12,7 @@ import { getRoute } from './services/ors';
 import { mapColorForRuntime, getGreenWindow } from './src/domain/phases';
 import { projectLightsToRoute } from './src/domain/matching';
 import { pickSpeed, applyHysteresis } from './src/domain/advisor';
+import { trackEvent } from './services/analytics';
 
 export default function App() {
   const mapRef = useRef(null);
@@ -37,6 +38,7 @@ export default function App() {
   const [menuVisible, setMenuVisible] = useState(false);
 
   const handleStartNavigation = () => {
+    trackEvent('navigation_start');
     setMenuVisible(false);
   };
 
@@ -62,6 +64,7 @@ export default function App() {
   };
 
   const handleSettings = () => {
+    trackEvent('settings_change');
     setMenuVisible(false);
   };
 
@@ -140,6 +143,7 @@ export default function App() {
       .select()
       .single();
     if (!error) {
+      trackEvent('light_added', { id: inserted.id });
       setLights(l => [...l, inserted]);
       setLightModal(null);
       setCycleModal({ light_id: inserted.id });
