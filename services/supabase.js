@@ -1,9 +1,12 @@
 const { createClient } = require('@supabase/supabase-js');
+const { fetchWithTimeout } = require('./network');
 
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  fetch: fetchWithTimeout,
+});
 
 async function fetchLightsAndCycles() {
   const {
@@ -12,7 +15,11 @@ async function fetchLightsAndCycles() {
   } = await supabase.from('lights').select('*');
   if (lightsError) {
     console.error('Error fetching lights:', lightsError);
-    return { lights: [], cycles: [], error: lightsError };
+    return {
+      lights: [],
+      cycles: [],
+      error: new Error('Unable to load lights data. Please try again later.'),
+    };
   }
 
   const {
@@ -21,7 +28,11 @@ async function fetchLightsAndCycles() {
   } = await supabase.from('light_cycles').select('*');
   if (cyclesError) {
     console.error('Error fetching cycles:', cyclesError);
-    return { lights: lights || [], cycles: [], error: cyclesError };
+    return {
+      lights: lights || [],
+      cycles: [],
+      error: new Error('Unable to load cycle data. Please try again later.'),
+    };
   }
 
   return { lights: lights || [], cycles: cycles || [], error: null };

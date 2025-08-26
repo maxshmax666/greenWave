@@ -29,7 +29,9 @@ describe('getRoute', () => {
         text: jest.fn().mockResolvedValue('server error'),
       } as any);
 
-    await expect(getRoute(start, end)).rejects.toThrow('OpenRouteService error 500: server error');
+    await expect(getRoute(start, end)).rejects.toThrow(
+      'Unable to fetch route. Request failed with status 500: server error'
+    );
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 });

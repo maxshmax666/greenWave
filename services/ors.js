@@ -1,3 +1,5 @@
+const { fetchWithTimeout } = require('./network');
+
 async function getRoute(start, end) {
   const apiKey = process.env.EXPO_PUBLIC_ORS_API_KEY;
   if (!apiKey) {
@@ -8,14 +10,12 @@ async function getRoute(start, end) {
 
   let res;
   try {
-    res = await fetch(url, { headers: { Authorization: apiKey } });
+    res = await fetchWithTimeout(url, {
+      headers: { Authorization: apiKey },
+    });
   } catch (err) {
-    throw new Error(`Failed to fetch route: ${err instanceof Error ? err.message : err}`);
-  }
-
-  if (!res.ok) {
-    const message = await res.text();
-    throw new Error(`OpenRouteService error ${res.status}: ${message}`);
+    const message = err instanceof Error ? err.message : String(err);
+    throw new Error(`Unable to fetch route. ${message}`);
   }
 
   const json = await res.json();
