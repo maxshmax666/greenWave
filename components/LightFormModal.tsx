@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, Button, Alert } from 'react-native';
+import {
+  Modal,
+  View,
+  Text,
+  TextInput,
+  Button,
+  Alert,
+  StyleSheet,
+} from 'react-native';
 import i18n from '../src/i18n';
 import { validateLight } from '../src/validation';
 
@@ -38,12 +46,12 @@ export default function LightFormModal({
 
   return (
     <Modal visible={visible} transparent>
-      <View style={{ flex:1, justifyContent:'center', backgroundColor:'rgba(0,0,0,0.5)' }}>
-        <View style={{ margin:20, padding:20, backgroundColor:'white' }}>
+      <View style={styles.container}>
+        <View style={styles.modal}>
           <Text>{i18n.t('lightForm.name')}</Text>
-          <TextInput value={name} onChangeText={setName} />
+          <TextInput style={styles.input} value={name} onChangeText={setName} />
           <Text>{i18n.t('lightForm.direction')}</Text>
-          <View style={{ flexDirection:'row', justifyContent:'space-around', marginVertical:10 }}>
+          <View style={[styles.row, styles.buttonRow]}>
             {['MAIN','SECONDARY','PEDESTRIAN'].map(d => (
               <Button
                 key={d}
@@ -60,3 +68,24 @@ export default function LightFormModal({
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modal: {
+    margin: 20,
+    padding: 20,
+    backgroundColor: 'white',
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  buttonRow: {
+    justifyContent: 'space-around',
+    marginVertical: 10,
+  },
+  input: {},
+});
