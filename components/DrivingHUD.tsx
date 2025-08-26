@@ -2,6 +2,15 @@ import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
 import i18n from '../src/i18n';
 
+export interface DrivingHUDProps {
+  maneuver?: string;
+  distance?: number;
+  street?: string;
+  eta?: number;
+  speed?: number;
+  speedLimit?: number;
+}
+
 export default function DrivingHUD({
   maneuver,
   distance,
@@ -9,7 +18,7 @@ export default function DrivingHUD({
   eta,
   speed,
   speedLimit,
-}) {
+}: DrivingHUDProps) {
   const speedKmh = Math.round(speed || 0);
   const limit = speedLimit ? Math.round(speedLimit) : '--';
   return (
@@ -19,7 +28,7 @@ export default function DrivingHUD({
           {maneuver
             ? i18n.t('hud.maneuver', {
                 maneuver,
-                distance: Math.round(distance),
+                distance: Math.round(distance ?? 0),
               })
             : ''}
         </Text>

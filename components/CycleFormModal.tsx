@@ -3,7 +3,21 @@ import { Modal, View, Text, TextInput, Button, Alert } from 'react-native';
 import i18n from '../src/i18n';
 import { validateCycle } from '../src/validation';
 
-export default function CycleFormModal({ visible, onSubmit, onCancel }) {
+interface CycleData {
+  cycle_seconds: number;
+  t0_iso: string;
+  main_green: [number, number];
+  secondary_green: [number, number];
+  ped_green: [number, number];
+}
+
+export interface CycleFormModalProps {
+  visible: boolean;
+  onSubmit: (data: CycleData) => void;
+  onCancel: () => void;
+}
+
+export default function CycleFormModal({ visible, onSubmit, onCancel }: CycleFormModalProps) {
   const [cycleSeconds, setCycleSeconds] = useState('60');
   const [t0, setT0] = useState(new Date().toISOString());
   const [mainStart, setMainStart] = useState('0');
