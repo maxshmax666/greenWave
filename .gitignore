@@ -19,6 +19,9 @@ yarn-error.log*
 .expo/.cache/
 .metro-cache/
 
+# Jest coverage
+coverage/
+
 # Bundler artifacts
 *.map
 *.bundle

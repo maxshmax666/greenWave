@@ -7,6 +7,7 @@ Minimal React Native (Expo) client showing a map with a car marker and driving H
 - Added traffic light management forms for lights and cycles.
 - Introduced camera screen with traffic light detection.
 - Integrated premium subscription flow and analytics tracking.
+- Switched traffic light detector to TFLite model inference.
 
 ## Environment
 

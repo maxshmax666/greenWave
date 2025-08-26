@@ -8,6 +8,8 @@ This repository contains a React Native (Expo) application.
 - `services/` – service modules for networking and domain logic.
 - `assets/` – static images and resources.
 
+Run logic tests with Jest; coverage is generated under `coverage/`.
+
 ## Guidelines
 - Use functional components with hooks.
 - Define component styles via `StyleSheet.create` blocks.
@@ -19,7 +21,7 @@ Run these commands before committing:
 
 ```bash
 pre-commit run --files <files>
-npm test
+npm test -- --coverage
 ```
 
 Tests should pass and formatting hooks should run on the changed files.

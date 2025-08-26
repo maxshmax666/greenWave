@@ -14,7 +14,7 @@
     "@supabase/supabase-js": "^2.56.0",
     "expo": "^53.0.0",
     "expo-camera": "^15.0.0",
-    "expo-firebase-analytics": "^8.0.0",
+    "expo-firebase-analytics": "^4.1.0",
     "expo-in-app-purchases": "^14.5.0",
     "expo-localization": "^16.1.6",
     "expo-location": "^18.0.0",
@@ -23,7 +23,8 @@
     "react": "18.2.0",
     "react-native": "0.74.5",
     "react-native-maps": "1.14.0",
-    "react-native-svg": "15.2.0"
+    "react-native-svg": "15.2.0",
+    "tflite-react-native": "^0.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.23.0",
