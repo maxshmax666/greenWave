@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import MapView from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Camera, CameraType } from 'expo-camera';
 import { detectTrafficLight, TrafficLightDetection } from '../services/trafficLightDetector';
 import { uploadCycle } from '../services/uploadLightData';
+import LightFormModal from './LightFormModal';
+import { supabase } from '../services/supabase';
 
 const CameraScreen: React.FC = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -11,9 +14,10 @@ const CameraScreen: React.FC = () => {
   const [detection, setDetection] = useState<TrafficLightDetection | null>(null);
   const [currentColor, setCurrentColor] = useState<string | null>(null);
   const [colorStartTime, setColorStartTime] = useState<number | null>(null);
+  const [lightModal, setLightModal] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [selectedLight, setSelectedLight] = useState<{ id: number; lat: number; lon: number } | null>(null);
   const cameraRef = useRef<Camera | null>(null);
   const colorTimeline = useRef<{ color: string; timestamp: number }[]>([]);
-  const lightId = 1; // TODO: supply actual light id
 
   useEffect(() => {
     (async () => {
@@ -46,6 +50,35 @@ const CameraScreen: React.FC = () => {
       if (interval) clearInterval(interval);
     };
   }, [isRecording]);
+
+  if (!selectedLight) {
+    return (
+      <View style={styles.container}>
+        <MapView
+          style={styles.map}
+          onLongPress={e => setLightModal(e.nativeEvent.coordinate)}
+        />
+        {lightModal && (
+          <LightFormModal
+            visible={!!lightModal}
+            coordinate={lightModal}
+            onSubmit={async data => {
+              const { data: inserted, error } = await supabase
+                .from('lights')
+                .insert({ name: data.name, direction: data.direction, lat: data.lat, lon: data.lon })
+                .select()
+                .single();
+              if (!error && inserted) {
+                setSelectedLight({ id: inserted.id, lat: inserted.lat, lon: inserted.lon });
+                setLightModal(null);
+              }
+            }}
+            onCancel={() => setLightModal(null)}
+          />
+        )}
+      </View>
+    );
+  }
 
   if (hasPermission === null) {
     return (
@@ -89,10 +122,12 @@ const CameraScreen: React.FC = () => {
             } catch (e) {
               console.warn('Saving phases failed', e);
             }
-            try {
-              await uploadCycle(lightId, phases);
-            } catch (e) {
-              console.warn('Uploading cycle failed', e);
+            if (selectedLight) {
+              try {
+                await uploadCycle(selectedLight.id, selectedLight.lat, selectedLight.lon, phases);
+              } catch (e) {
+                console.warn('Uploading cycle failed', e);
+              }
             }
           } else {
             colorTimeline.current = [];
@@ -112,6 +147,7 @@ export default CameraScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  map: { flex: 1 },
   camera: { flex: 1 },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   button: {
