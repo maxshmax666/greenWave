@@ -1,6 +1,6 @@
 {
   "speedBanner": {
-    "recommendation": "Recommend %{speed} km/h • next light in %{distance} m • window in %{time} s"
+    "recommendation": "Recommended %{speed} km/h • next light in %{distance} m • window in %{time} s"
   },
   "menu": {
     "startNavigation": "Start Navigation",

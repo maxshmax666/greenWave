@@ -27,7 +27,7 @@ describe('i18n translations', () => {
       time: 20,
     });
     expect(res).toBe(
-      'Recommend 40 km/h • next light in 100 m • window in 20 s'
+      'Recommended 40 km/h • next light in 100 m • window in 20 s'
     );
   });
 
