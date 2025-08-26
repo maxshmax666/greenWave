@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, Button, Alert } from 'react-native';
+import {
+  Modal,
+  View,
+  Text,
+  TextInput,
+  Button,
+  Alert,
+  StyleSheet,
+} from 'react-native';
 import i18n from '../src/i18n';
 import { validateCycle } from '../src/validation';
 
@@ -61,26 +69,61 @@ export default function CycleFormModal({ visible, onSubmit, onCancel }: CycleFor
 
   return (
     <Modal visible={visible} transparent>
-      <View style={{ flex:1, justifyContent:'center', backgroundColor:'rgba(0,0,0,0.5)' }}>
-        <View style={{ margin:20, padding:20, backgroundColor:'white' }}>
+      <View style={styles.container}>
+        <View style={styles.modal}>
           <Text>{i18n.t('cycleForm.cycleSeconds')}</Text>
-          <TextInput value={cycleSeconds} onChangeText={setCycleSeconds} keyboardType="numeric" />
+          <TextInput
+            style={styles.input}
+            value={cycleSeconds}
+            onChangeText={setCycleSeconds}
+            keyboardType="numeric"
+          />
           <Text>{i18n.t('cycleForm.t0')}</Text>
-          <TextInput value={t0} onChangeText={setT0} />
+          <TextInput style={styles.input} value={t0} onChangeText={setT0} />
           <Text>{i18n.t('cycleForm.main')}</Text>
-          <View style={{ flexDirection:'row' }}>
-            <TextInput style={{ flex:1 }} value={mainStart} onChangeText={setMainStart} keyboardType="numeric" />
-            <TextInput style={{ flex:1 }} value={mainEnd} onChangeText={setMainEnd} keyboardType="numeric" />
+          <View style={styles.row}>
+            <TextInput
+              style={[styles.input, styles.rowInput]}
+              value={mainStart}
+              onChangeText={setMainStart}
+              keyboardType="numeric"
+            />
+            <TextInput
+              style={[styles.input, styles.rowInput]}
+              value={mainEnd}
+              onChangeText={setMainEnd}
+              keyboardType="numeric"
+            />
           </View>
           <Text>{i18n.t('cycleForm.secondary')}</Text>
-          <View style={{ flexDirection:'row' }}>
-            <TextInput style={{ flex:1 }} value={secStart} onChangeText={setSecStart} keyboardType="numeric" />
-            <TextInput style={{ flex:1 }} value={secEnd} onChangeText={setSecEnd} keyboardType="numeric" />
+          <View style={styles.row}>
+            <TextInput
+              style={[styles.input, styles.rowInput]}
+              value={secStart}
+              onChangeText={setSecStart}
+              keyboardType="numeric"
+            />
+            <TextInput
+              style={[styles.input, styles.rowInput]}
+              value={secEnd}
+              onChangeText={setSecEnd}
+              keyboardType="numeric"
+            />
           </View>
           <Text>{i18n.t('cycleForm.pedestrian')}</Text>
-          <View style={{ flexDirection:'row' }}>
-            <TextInput style={{ flex:1 }} value={pedStart} onChangeText={setPedStart} keyboardType="numeric" />
-            <TextInput style={{ flex:1 }} value={pedEnd} onChangeText={setPedEnd} keyboardType="numeric" />
+          <View style={styles.row}>
+            <TextInput
+              style={[styles.input, styles.rowInput]}
+              value={pedStart}
+              onChangeText={setPedStart}
+              keyboardType="numeric"
+            />
+            <TextInput
+              style={[styles.input, styles.rowInput]}
+              value={pedEnd}
+              onChangeText={setPedEnd}
+              keyboardType="numeric"
+            />
           </View>
           <Button title={i18n.t('common.save')} onPress={save} disabled={!!error} />
           <Button title={i18n.t('common.cancel')} onPress={onCancel} />
@@ -89,3 +132,23 @@ export default function CycleFormModal({ visible, onSubmit, onCancel }: CycleFor
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modal: {
+    margin: 20,
+    padding: 20,
+    backgroundColor: 'white',
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  rowInput: {
+    flex: 1,
+  },
+  input: {},
+});
