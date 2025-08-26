@@ -24,10 +24,19 @@ async function getRoute(start, end) {
     latitude: lat,
     longitude: lon,
   }));
+  const steps =
+    feature.properties?.segments?.[0]?.steps?.map(s => ({
+      instruction: s.instruction,
+      distance: s.distance,
+      duration: s.duration,
+      name: s.name,
+      speed: s.speed || s.speed_limit || 0,
+    })) || [];
   return {
     geometry: coords,
     distance: feature.properties.summary.distance,
     duration: feature.properties.summary.duration,
+    steps,
   };
 }
 
