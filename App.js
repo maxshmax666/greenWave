@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import CarMarker from './components/CarMarker';
 import DrivingHUD from './components/DrivingHUD';
 import LightFormModal from './components/LightFormModal';
 import CycleFormModal from './components/CycleFormModal';
 import SpeedBanner from './components/SpeedBanner';
+import MainMenu from './components/MainMenu';
 import { fetchLightsAndCycles, subscribeLightCycles, supabase } from './services/supabase';
 import { getRoute } from './services/ors';
 import { mapColorForRuntime, getGreenWindow } from './src/domain/phases';
@@ -33,6 +34,36 @@ export default function App() {
     speedLimit: 0,
   });
   const [steps, setSteps] = useState([]);
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  const handleStartNavigation = () => {
+    setMenuVisible(false);
+  };
+
+  const handleCancelRoute = () => {
+    setRoute(null);
+    setSteps([]);
+    setHudInfo({
+      maneuver: '',
+      distance: 0,
+      street: '',
+      eta: 0,
+      speedLimit: 0,
+    });
+    setLightsOnRoute([]);
+    setRecommended(0);
+    setNearestInfo({ dist: 0, time: 0 });
+    setMenuVisible(false);
+  };
+
+  const handleAddLight = () => {
+    if (car) setLightModal({ latitude: car.latitude, longitude: car.longitude });
+    setMenuVisible(false);
+  };
+
+  const handleSettings = () => {
+    setMenuVisible(false);
+  };
 
   useEffect(() => {
     fetchLightsAndCycles().then(({ lights, cycles, error }) => {
@@ -194,6 +225,20 @@ export default function App() {
         speed={car ? car.speed * 3.6 : 0}
         speedLimit={hudInfo.speedLimit}
       />
+      <MainMenu
+        visible={menuVisible}
+        onStartNavigation={handleStartNavigation}
+        onCancelRoute={handleCancelRoute}
+        onAddLight={handleAddLight}
+        onSettings={handleSettings}
+      />
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => setMenuVisible(v => !v)}
+        testID="menu-button"
+      >
+        <Text style={styles.fabText}>☰</Text>
+      </TouchableOpacity>
       {lightModal && (
         <LightFormModal
           visible={true}
@@ -232,5 +277,20 @@ const nightStyle = [
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  map: { flex: 1 }
+  map: { flex: 1 },
+  fab: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 50,
+    height: 50,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fabText: {
+    color: '#fff',
+    fontSize: 24,
+  }
 });
