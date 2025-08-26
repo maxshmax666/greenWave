@@ -2,7 +2,13 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import i18n from '../src/i18n';
 
-export default function SpeedBanner({ speed, nearestDist, timeToWindow }) {
+export interface SpeedBannerProps {
+  speed?: number;
+  nearestDist?: number;
+  timeToWindow?: number;
+}
+
+export default function SpeedBanner({ speed, nearestDist, timeToWindow }: SpeedBannerProps) {
   if (!speed) return null;
   return (
     <View style={styles.container} pointerEvents="none">

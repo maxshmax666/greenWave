@@ -3,7 +3,19 @@ import { Modal, View, Text, TextInput, Button, Alert } from 'react-native';
 import i18n from '../src/i18n';
 import { validateLight } from '../src/validation';
 
-export default function LightFormModal({ visible, coordinate, onSubmit, onCancel }) {
+export interface LightFormModalProps {
+  visible: boolean;
+  coordinate: { latitude: number; longitude: number };
+  onSubmit: (data: { name: string; direction: string; lat: number; lon: number }) => void;
+  onCancel: () => void;
+}
+
+export default function LightFormModal({
+  visible,
+  coordinate,
+  onSubmit,
+  onCancel,
+}: LightFormModalProps) {
   const [name, setName] = useState('');
   const [direction, setDirection] = useState('MAIN');
   const error = validateLight(name, direction);

@@ -2,13 +2,21 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import i18n from '../src/i18n';
 
+export interface MainMenuProps {
+  visible: boolean;
+  onStartNavigation: () => void;
+  onClearRoute: () => void;
+  onAddLight: () => void;
+  onSettings: () => void;
+}
+
 export default function MainMenu({
   visible,
   onStartNavigation,
   onClearRoute,
   onAddLight,
   onSettings,
-}) {
+}: MainMenuProps) {
   if (!visible) return null;
   return (
     <View style={styles.container} testID="main-menu">
