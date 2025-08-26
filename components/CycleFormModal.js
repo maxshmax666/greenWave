@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, Button } from 'react-native';
+import { Modal, View, Text, TextInput, Button, Alert } from 'react-native';
+import { validateCycle } from '../src/validation';
 
 export default function CycleFormModal({ visible, onSubmit, onCancel }) {
   const [cycleSeconds, setCycleSeconds] = useState('60');
@@ -10,8 +11,30 @@ export default function CycleFormModal({ visible, onSubmit, onCancel }) {
   const [secEnd, setSecEnd] = useState('20');
   const [pedStart, setPedStart] = useState('20');
   const [pedEnd, setPedEnd] = useState('30');
+  const error = validateCycle({
+    cycleSeconds,
+    mainStart,
+    mainEnd,
+    secStart,
+    secEnd,
+    pedStart,
+    pedEnd,
+  });
 
   const save = () => {
+    const msg = validateCycle({
+      cycleSeconds,
+      mainStart,
+      mainEnd,
+      secStart,
+      secEnd,
+      pedStart,
+      pedEnd,
+    });
+    if (msg) {
+      Alert.alert('Validation', msg);
+      return;
+    }
     onSubmit({
       cycle_seconds: Number(cycleSeconds),
       t0_iso: t0,
@@ -44,7 +67,7 @@ export default function CycleFormModal({ visible, onSubmit, onCancel }) {
             <TextInput style={{ flex:1 }} value={pedStart} onChangeText={setPedStart} keyboardType="numeric" />
             <TextInput style={{ flex:1 }} value={pedEnd} onChangeText={setPedEnd} keyboardType="numeric" />
           </View>
-          <Button title="Save" onPress={save} />
+          <Button title="Save" onPress={save} disabled={!!error} />
           <Button title="Cancel" onPress={onCancel} />
         </View>
       </View>

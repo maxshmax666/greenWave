@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, Button } from 'react-native';
+import { Modal, View, Text, TextInput, Button, Alert } from 'react-native';
+import { validateLight } from '../src/validation';
 
 export default function LightFormModal({ visible, coordinate, onSubmit, onCancel }) {
   const [name, setName] = useState('');
   const [direction, setDirection] = useState('MAIN');
+  const error = validateLight(name, direction);
 
   const save = () => {
+    const msg = validateLight(name, direction);
+    if (msg) {
+      Alert.alert('Validation', msg);
+      return;
+    }
     onSubmit({
       name,
       direction,
@@ -28,7 +35,7 @@ export default function LightFormModal({ visible, coordinate, onSubmit, onCancel
               <Button key={d} title={d} onPress={() => setDirection(d)} color={direction===d ? 'blue' : undefined} />
             ))}
           </View>
-          <Button title="Save" onPress={save} />
+          <Button title="Save" onPress={save} disabled={!!error} />
           <Button title="Cancel" onPress={onCancel} />
         </View>
       </View>
