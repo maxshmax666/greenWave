@@ -9,10 +9,12 @@ describe('fetchWithTimeout', () => {
     jest.useRealTimers();
     global.fetch = originalFetch;
     jest.clearAllMocks();
+    jest.restoreAllMocks();
   });
 
-  it('throws on timeout', async () => {
+  it('aborts the request when timeout elapses', async () => {
     jest.useFakeTimers();
+    const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
 
     global.fetch = jest.fn(
       (_: RequestInfo | URL, init?: RequestInit) =>
@@ -28,6 +30,26 @@ describe('fetchWithTimeout', () => {
     const p = fetchWithTimeout('https://example.com', { timeout: 50 });
     jest.advanceTimersByTime(60);
     await expect(p).rejects.toThrow('Request timed out');
+    expect(abortSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('passes custom headers to fetch', async () => {
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValue(new Response(null, { status: 200 }));
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    await fetchWithTimeout('https://example.com', {
+      headers: { 'X-Test': 'ok' },
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://example.com',
+      expect.objectContaining({
+        headers: { 'X-Test': 'ok' },
+        signal: expect.any(AbortSignal),
+      }),
+    );
   });
 
   it('formats error for JSON responses', async () => {
