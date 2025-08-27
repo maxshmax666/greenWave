@@ -1,6 +1,6 @@
 # AGENTS
 
-This repository contains a React Native (Expo) application.
+This repository contains a React Native (Expo) application. New contributors can start by exploring the folders below to see how the app is assembled.
 
 ## Structure
 - `components/` – React Native UI components.
@@ -10,7 +10,14 @@ This repository contains a React Native (Expo) application.
 - `assets/` – static images and resources.
 - `App.js` – application entry point; renders map, HUD, and menus.
 
-Run logic tests with Jest; coverage is generated under `coverage/`.
+The app fetches routing data and traffic light information from remote APIs. Tests live beside the code they verify, and coverage outputs under `coverage/`.
+
+## Getting started
+- `npm install` – install dependencies.
+- `npx expo start` – launch the development server.
+- `npm test -- --coverage` – run the Jest suite with coverage.
+
+Consult `README.md` for environment variables and more detailed setup steps.
 
 ## Guidelines
 - Use functional components with hooks.
