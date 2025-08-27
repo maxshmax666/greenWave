@@ -11,7 +11,7 @@ This repository contains a React Native (Expo) application. New contributors can
 - `assets/` – static images and resources.
 - `App.tsx` – application entry point; renders map, HUD, and menus.
 
-The app fetches routing data and traffic light information from remote APIs. Tests live beside the code they verify, and coverage outputs under `coverage/`.
+Tests live beside the code they verify, and coverage reports are stored under `coverage/`.
 
 ## Getting started
 
