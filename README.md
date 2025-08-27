@@ -4,6 +4,7 @@ Minimal React Native (Expo) client showing a map with a car marker and driving H
 
 ## Recent changes
 
+- Added offline route caching to reuse the last fetched route when connectivity fails.
 - Consolidated project structure by moving `components/` and `services/` into `src/`.
 - Fixed HUD maneuver spacing.
 - Updated localization string spacing.

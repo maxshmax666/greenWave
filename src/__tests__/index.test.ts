@@ -3,6 +3,7 @@ import {
   handleClearRoute,
   computeRecommendation,
   getNearestInfo,
+  initialState,
 } from '../index';
 
 import { Light, LightCycle } from '../domain/types';
@@ -16,21 +17,8 @@ describe('navigation helpers', () => {
 
   it('returns cleared state', () => {
     const state = handleClearRoute();
-    expect(state).toEqual({
-      route: null,
-      steps: [],
-      hudInfo: {
-        maneuver: '',
-        distance: 0,
-        street: '',
-        eta: 0,
-        speedLimit: 0,
-      },
-      lightsOnRoute: [],
-      recommended: 0,
-      nearestInfo: { dist: 0, time: 0 },
-      menuVisible: false,
-    });
+    expect(state).toEqual(initialState);
+    expect(state).not.toBe(initialState);
   });
 });
 

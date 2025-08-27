@@ -16,6 +16,7 @@ import SpeedBanner from './src/components/SpeedBanner';
 import MainMenu from './src/components/MainMenu';
 import { supabaseService, supabase } from './src/services/supabase';
 import { getRoute, RouteStep } from './src/services/ors';
+import { saveRoute, loadRoute } from './src/services/routeCache';
 import i18n from './src/i18n';
 import { mapColorForRuntime } from './src/domain/phases';
 import { projectLightsToRoute } from './src/domain/matching';
@@ -91,16 +92,33 @@ export default function App(): JSX.Element {
   };
 
   useEffect(() => {
-    supabaseService.fetchLightsAndCycles().then(({ lights, cycles, error }) => {
-      if (error) {
-        setLoadError('Failed to load data');
-        return;
-      }
-      setLights(lights);
-      const map: Record<string, LightCycle> = {};
-      for (const c of cycles) map[c.light_id] = c;
-      setCycles(map);
-    });
+    supabaseService
+      .fetchLightsAndCycles()
+      .then(async ({ lights, cycles, error }) => {
+        if (error) {
+          setLoadError('Failed to load data');
+          const cached = await loadRoute();
+          if (cached) {
+            setRoute(cached.geometry as LatLng[]);
+            setSteps(cached.steps as RouteStep[]);
+            if (cached.steps.length) {
+              const first = cached.steps[0];
+              setHudInfo({
+                maneuver: first.instruction,
+                distance: first.distance,
+                street: first.name,
+                eta: first.duration,
+                speedLimit: first.speed,
+              });
+            }
+          }
+          return;
+        }
+        setLights(lights);
+        const map: Record<string, LightCycle> = {};
+        for (const c of cycles) map[c.light_id] = c;
+        setCycles(map);
+      });
     const sub = supabaseService.subscribeLightCycles((cycle) => {
       setCycles((c) => ({ ...c, [cycle.light_id]: cycle }));
     });
@@ -127,6 +145,7 @@ export default function App(): JSX.Element {
     const dest = e.nativeEvent.coordinate;
     try {
       const r = await getRoute(car, dest);
+      await saveRoute(r);
       setRoute(r.geometry);
       setSteps(r.steps || []);
       if (r.steps && r.steps.length) {
