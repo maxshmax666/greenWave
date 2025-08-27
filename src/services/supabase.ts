@@ -6,8 +6,8 @@ import {
 } from '@supabase/supabase-js';
 import { network } from './network';
 import { log } from './logger';
-import type { Light, LightCycle } from '../src/domain/types';
-import type { Supabase as SupabaseInterface } from '../src/interfaces/supabase';
+import type { Light, LightCycle } from '../domain/types';
+import type { Supabase as SupabaseInterface } from '../interfaces/supabase';
 
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import i18n from '../src/i18n';
+import i18n from '../i18n';
 
 export interface SpeedBannerProps {
   speed?: number;

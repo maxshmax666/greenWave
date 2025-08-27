@@ -12,7 +12,7 @@ jest.mock('../premium/subscription', () => ({
   usePremium: () => ({ isPremium: true }),
 }));
 
-import DrivingHUD from '../../components/DrivingHUD';
+import DrivingHUD from '../components/DrivingHUD';
 
 describe('DrivingHUD', () => {
   it('displays provided props', () => {

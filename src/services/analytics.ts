@@ -1,6 +1,6 @@
 import * as Analytics from 'expo-firebase-analytics';
 import { log } from './logger';
-import type { Analytics as AnalyticsInterface } from '../src/interfaces/analytics';
+import type { Analytics as AnalyticsInterface } from '../interfaces/analytics';
 
 export const analytics: AnalyticsInterface = {
   async trackEvent(name, params) {

@@ -16,7 +16,7 @@ jest.mock('react-native', () => {
   };
 });
 
-import LightFormModal from '../../components/LightFormModal';
+import LightFormModal from '../components/LightFormModal';
 
 describe('LightFormModal', () => {
   it('submits when name provided', () => {

@@ -1,4 +1,4 @@
-import { getRoute } from '../services/ors';
+import { getRoute } from './services/ors';
 
 const start = { latitude: 1, longitude: 2 };
 const end = { latitude: 3, longitude: 4 };

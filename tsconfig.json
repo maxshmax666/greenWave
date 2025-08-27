@@ -12,5 +12,5 @@
     "allowJs": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "components/**/*", "services/**/*"]
+  "include": ["src/**/*"]
 }

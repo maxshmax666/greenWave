@@ -1,6 +1,6 @@
 jest.mock('tflite-react-native');
 
-import { detectTrafficLight } from '../services/trafficLightDetector';
+import { detectTrafficLight } from './services/trafficLightDetector';
 import { runModelOnImageMock } from 'tflite-react-native';
 
 describe('detectTrafficLight', () => {
