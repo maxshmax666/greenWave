@@ -4,6 +4,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Moved UI components to `src/ui` and traffic-light detectors to `src/traffic` for clearer separation.
 - Documented traffic-light domain guidelines and moved phase helpers to `src/domain`.
 - Standardized phase color mapping to green for clearer signal status.
 - Reorganized navigation logic under `src/navigation` and scaffolded `src/traffic` and `src/ui` for upcoming features.

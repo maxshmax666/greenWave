@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import MapView from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Camera, CameraType } from 'expo-camera';
-import { detectTrafficLight, TrafficLightDetection } from '../services/trafficLightDetector';
+import { detectTrafficLight, TrafficLightDetection } from '../traffic/trafficLightDetector';
 import { uploadCycle } from '../services/uploadLightData';
 import { finalizePhase, ColorPhase } from '../services/colorPhases';
 import LightFormModal from './LightFormModal';

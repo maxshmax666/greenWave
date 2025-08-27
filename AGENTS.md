@@ -4,10 +4,9 @@ This repository contains a React Native (Expo) application. New contributors can
 
 ## Structure
 
-- `src/components/` – React Native UI components.
 - `src/navigation/` – navigation state, helpers, and related tests.
-- `src/traffic/` – traffic aggregation utilities (placeholder for future work).
-- `src/ui/` – shared UI utilities (placeholder for future work).
+- `src/traffic/` – traffic-light detectors and related utilities.
+- `src/ui/` – React Native UI components.
 - `src/services/` – networking helpers and domain services.
 - `src/domain/` – shared domain types and matching utilities.
 - `assets/` – static images and resources.
@@ -52,7 +51,7 @@ Tests should pass and formatting hooks should run on the changed files.
 ## For New Contributors
 
 - Start the app with `npm start` to launch the Expo dev server.
-- UI components live in `src/components/` and rely on hooks for state.
+- UI components live in `src/ui/` and rely on hooks for state.
 - Core logic and translations live under `src/` (`src/i18n.ts` wires up `src/locales`).
 - Network and domain helpers are in `src/services/` and `src/domain/`.
 - Jest tests reside in `src/__tests__`; add tests alongside new features.

@@ -1,4 +1,4 @@
-import { getGreenWindow } from '../domain/phases';
+import { getGreenWindow } from './phases';
 import type { LightOnRoute } from './index';
 
 export function getNearestInfo(

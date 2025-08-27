@@ -1,4 +1,4 @@
-import { Direction, LightCycle } from './types';
+import { Direction, LightCycle } from '../domain/types';
 
 export function getGreenWindow(
   c: LightCycle,

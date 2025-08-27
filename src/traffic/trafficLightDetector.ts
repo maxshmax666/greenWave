@@ -41,7 +41,7 @@ export async function detectTrafficLight(
           numResults: 1,
           threshold: 0.4,
         },
-        (err, output) => (err ? reject(err) : resolve(output)),
+        (err, output) => (err ? reject(err) : resolve(output as any[])),
       );
     });
     if (!res || res.length === 0) return null;
