@@ -1,5 +1,5 @@
 import { Direction, Light, LightCycle } from '../domain/types';
-import { getGreenWindow } from './phases';
+import { getGreenWindow } from '../domain/phases';
 
 export function pickSpeed(
   nowSec: number,
