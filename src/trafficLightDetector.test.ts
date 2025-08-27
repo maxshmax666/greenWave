@@ -13,11 +13,13 @@ describe('detectTrafficLight', () => {
   });
 
   it('parses model response', async () => {
-    runModelOnImageMock.mockImplementation((opts: any, cb: any) => {
-      cb(null, [
-        { detectedClass: 'green', rect: { x: 1, y: 2, w: 3, h: 4 } },
-      ]);
-    });
+    runModelOnImageMock.mockImplementation(
+      (opts: unknown, cb: (err: Error | null, res?: unknown) => void) => {
+        cb(null, [
+          { detectedClass: 'green', rect: { x: 1, y: 2, w: 3, h: 4 } },
+        ]);
+      },
+    );
     const res = await detectTrafficLight({ base64: 'img' });
     expect(res).toEqual({
       color: 'green',
@@ -26,7 +28,9 @@ describe('detectTrafficLight', () => {
   });
 
   it('returns null on model errors', async () => {
-    runModelOnImageMock.mockImplementation((opts: any, cb: any) => cb(new Error('fail')));
+    runModelOnImageMock.mockImplementation(
+      (opts: unknown, cb: (err: Error | null) => void) => cb(new Error('fail')),
+    );
     await expect(detectTrafficLight({ base64: 'img' })).resolves.toBeNull();
   });
 });

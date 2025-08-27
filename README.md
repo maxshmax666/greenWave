@@ -8,6 +8,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 - Standardized phase color mapping to green for clearer signal status.
 - Reorganized navigation logic under `src/navigation` and scaffolded `src/traffic` and `src/ui` for upcoming features.
 - Modularized navigation helpers for easier testing and reuse.
+- Exposed navigation helpers via `src/index.ts` facade for simpler imports.
 - Handled zero recommended speed to avoid divide-by-zero in nearest info calculation.
 - Tracked traffic light phase durations for analytics.
 - Added offline route caching to reuse the last fetched route when connectivity fails.
