@@ -59,7 +59,7 @@ export function getNearestInfo(
 ) {
   let nearestInfo = { dist: 0, time: 0 };
   let nearestStillGreen = false;
-  if (nearest) {
+  if (nearest && recommended > 0) {
     const cycleLen = nearest.cycle.cycle_seconds;
     const t0 = Date.parse(nearest.cycle.t0_iso) / 1000;
     const eta = nowSec + nearest.dist_m / ((recommended * 1000) / 3600);

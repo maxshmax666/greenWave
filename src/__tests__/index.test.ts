@@ -61,4 +61,14 @@ describe('computeRecommendation', () => {
     expect(nearestInfo.dist).toBe(500);
     expect(typeof nearestStillGreen).toBe('boolean');
   });
+
+  it('handles zero recommended speed', () => {
+    const { nearestInfo, nearestStillGreen } = getNearestInfo(
+      { light, cycle, dist_m: 500, dirForDriver: 'MAIN' },
+      0,
+      0,
+    );
+    expect(nearestInfo).toEqual({ dist: 0, time: 0 });
+    expect(nearestStillGreen).toBe(false);
+  });
 });
