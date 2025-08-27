@@ -4,9 +4,10 @@ import {
   RealtimeChannel,
   RealtimePostgresChangesPayload,
 } from '@supabase/supabase-js';
-import { fetchWithTimeout } from './network';
+import { network } from './network';
 import { log } from './logger';
 import type { Light, LightCycle } from '../src/domain/types';
+import type { Supabase as SupabaseInterface } from '../src/interfaces/supabase';
 
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '';
@@ -15,11 +16,11 @@ export const supabase: SupabaseClient = createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY,
   {
-    global: { fetch: fetchWithTimeout },
+    global: { fetch: network.fetchWithTimeout },
   },
 );
 
-export async function fetchLightsAndCycles(): Promise<{
+async function fetchLightsAndCycles(): Promise<{
   lights: Light[];
   cycles: LightCycle[];
   error: Error | null;
@@ -55,9 +56,7 @@ export async function fetchLightsAndCycles(): Promise<{
   };
 }
 
-export function subscribeLightCycles(
-  cb: (cycle: LightCycle) => void,
-): RealtimeChannel {
+function subscribeLightCycles(cb: (cycle: LightCycle) => void): RealtimeChannel {
   return supabase
     .channel('public:light_cycles')
     .on(
@@ -68,3 +67,8 @@ export function subscribeLightCycles(
     )
     .subscribe();
 }
+
+export const supabaseService: SupabaseInterface = {
+  fetchLightsAndCycles,
+  subscribeLightCycles,
+};

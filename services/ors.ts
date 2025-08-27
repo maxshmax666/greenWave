@@ -1,4 +1,4 @@
-import { fetchWithTimeout } from './network';
+import { network } from './network';
 
 export interface LatLng {
   latitude: number;
@@ -33,7 +33,7 @@ export async function getRoute(
 
   let res: Response;
   try {
-    res = await fetchWithTimeout(url, {
+    res = await network.fetchWithTimeout(url, {
       headers: { Authorization: apiKey },
     });
   } catch (err) {

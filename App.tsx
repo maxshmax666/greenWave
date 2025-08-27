@@ -14,16 +14,12 @@ import LightFormModal from './components/LightFormModal';
 import CycleFormModal from './components/CycleFormModal';
 import SpeedBanner from './components/SpeedBanner';
 import MainMenu from './components/MainMenu';
-import {
-  fetchLightsAndCycles,
-  subscribeLightCycles,
-  supabase,
-} from './services/supabase';
+import { supabaseService, supabase } from './services/supabase';
 import { getRoute, RouteStep } from './services/ors';
 import i18n from './src/i18n';
 import { mapColorForRuntime } from './src/domain/phases';
 import { projectLightsToRoute } from './src/domain/matching';
-import { trackEvent } from './services/analytics';
+import { analytics } from './services/analytics';
 import {
   handleStartNavigation as startNavigation,
   handleClearRoute as clearRoute,
@@ -68,7 +64,7 @@ export default function App(): JSX.Element {
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
 
   const onStartNavigation = () => {
-    startNavigation(trackEvent);
+    startNavigation(analytics.trackEvent);
     setMenuVisible(false);
   };
 
@@ -90,12 +86,12 @@ export default function App(): JSX.Element {
   };
 
   const handleSettings = () => {
-    trackEvent('settings_change');
+    analytics.trackEvent('settings_change');
     setMenuVisible(false);
   };
 
   useEffect(() => {
-    fetchLightsAndCycles().then(({ lights, cycles, error }) => {
+    supabaseService.fetchLightsAndCycles().then(({ lights, cycles, error }) => {
       if (error) {
         setLoadError('Failed to load data');
         return;
@@ -105,7 +101,7 @@ export default function App(): JSX.Element {
       for (const c of cycles) map[c.light_id] = c;
       setCycles(map);
     });
-    const sub = subscribeLightCycles((cycle) => {
+    const sub = supabaseService.subscribeLightCycles((cycle) => {
       setCycles((c) => ({ ...c, [cycle.light_id]: cycle }));
     });
     return () => {
@@ -174,7 +170,7 @@ export default function App(): JSX.Element {
       .select()
       .single();
     if (!error) {
-      trackEvent('light_added', { id: inserted.id });
+      analytics.trackEvent('light_added', { id: inserted.id });
       setLights((l) => [...l, inserted as Light]);
       setLightModal(null);
       setCycleModal({ light_id: inserted.id });

@@ -19,6 +19,8 @@ Minimal React Native (Expo) client showing a map with a car marker and driving H
 - Refactored navigation logic into testable helpers.
 - Added GitHub Actions workflow for cached tests.
 - Configured ESLint and Prettier for consistent formatting.
+- Converted remaining JavaScript files to TypeScript.
+- Introduced typed interfaces for analytics, network, and Supabase services.
 
 ## Environment
 

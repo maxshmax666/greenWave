@@ -1,4 +1,6 @@
-import { fetchWithTimeout } from '../network';
+import { network } from '../network';
+
+const { fetchWithTimeout } = network;
 
 describe('fetchWithTimeout', () => {
   const originalFetch = global.fetch;
