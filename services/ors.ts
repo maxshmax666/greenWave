@@ -1,6 +1,29 @@
-const { fetchWithTimeout } = require('./network');
+import { fetchWithTimeout } from './network';
 
-async function getRoute(start, end) {
+export interface LatLng {
+  latitude: number;
+  longitude: number;
+}
+
+export interface RouteStep {
+  instruction: string;
+  distance: number;
+  duration: number;
+  name: string;
+  speed: number;
+}
+
+export interface RouteResult {
+  geometry: LatLng[];
+  distance: number;
+  duration: number;
+  steps: RouteStep[];
+}
+
+export async function getRoute(
+  start: LatLng,
+  end: LatLng,
+): Promise<RouteResult> {
   const apiKey = process.env.EXPO_PUBLIC_ORS_API_KEY;
   if (!apiKey) {
     throw new Error('EXPO_PUBLIC_ORS_API_KEY is required');
@@ -8,7 +31,7 @@ async function getRoute(start, end) {
 
   const url = `https://api.openrouteservice.org/v2/directions/driving-car?start=${start.longitude},${start.latitude}&end=${end.longitude},${end.latitude}`;
 
-  let res;
+  let res: Response;
   try {
     res = await fetchWithTimeout(url, {
       headers: { Authorization: apiKey },
@@ -23,12 +46,22 @@ async function getRoute(start, end) {
   if (!feature) {
     throw new Error('Route not found');
   }
-  const coords = feature.geometry.coordinates.map(([lon, lat]) => ({
-    latitude: lat,
-    longitude: lon,
-  }));
-  const steps =
-    feature.properties?.segments?.[0]?.steps?.map(s => ({
+  const coords: LatLng[] = feature.geometry.coordinates.map(
+    ([lon, lat]: [number, number]) => ({
+      latitude: lat,
+      longitude: lon,
+    }),
+  );
+  interface ORSStep {
+    instruction: string;
+    distance: number;
+    duration: number;
+    name: string;
+    speed?: number;
+    speed_limit?: number;
+  }
+  const steps: RouteStep[] =
+    feature.properties?.segments?.[0]?.steps?.map((s: ORSStep) => ({
       instruction: s.instruction,
       distance: s.distance,
       duration: s.duration,
@@ -42,5 +75,3 @@ async function getRoute(start, end) {
     steps,
   };
 }
-
-module.exports = { getRoute };

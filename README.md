@@ -18,6 +18,7 @@ Minimal React Native (Expo) client showing a map with a car marker and driving H
 - Added file logging for diagnostics.
 - Refactored navigation logic into testable helpers.
 - Added GitHub Actions workflow for cached tests.
+- Configured ESLint and Prettier for consistent formatting.
 
 ## Environment
 

@@ -1,50 +1,71 @@
-import React, { useRef, useState, useEffect } from "react";
-import { Alert, StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import MapView, { Marker, Polyline } from "react-native-maps";
-import CarMarker from "./components/CarMarker";
-import DrivingHUD from "./components/DrivingHUD";
-import LightFormModal from "./components/LightFormModal";
-import CycleFormModal from "./components/CycleFormModal";
-import SpeedBanner from "./components/SpeedBanner";
-import MainMenu from "./components/MainMenu";
+import React, { useRef, useState, useEffect } from 'react';
+import { Alert, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import MapView, {
+  Marker,
+  Polyline,
+  MapPressEvent,
+  LongPressEvent,
+  UserLocationChangeEvent,
+  LatLng,
+} from 'react-native-maps';
+import CarMarker from './components/CarMarker';
+import DrivingHUD from './components/DrivingHUD';
+import LightFormModal from './components/LightFormModal';
+import CycleFormModal from './components/CycleFormModal';
+import SpeedBanner from './components/SpeedBanner';
+import MainMenu from './components/MainMenu';
 import {
   fetchLightsAndCycles,
   subscribeLightCycles,
   supabase,
-} from "./services/supabase";
-import { getRoute } from "./services/ors";
-import i18n from "./src/i18n";
-import { mapColorForRuntime } from "./src/domain/phases";
-import { projectLightsToRoute } from "./src/domain/matching";
-import { trackEvent } from "./services/analytics";
+} from './services/supabase';
+import { getRoute, RouteStep } from './services/ors';
+import i18n from './src/i18n';
+import { mapColorForRuntime } from './src/domain/phases';
+import { projectLightsToRoute } from './src/domain/matching';
+import { trackEvent } from './services/analytics';
 import {
   handleStartNavigation as startNavigation,
   handleClearRoute as clearRoute,
   computeRecommendation,
-} from "./src";
+  LightOnRoute,
+} from './src';
+import type { Light, LightCycle } from './src/domain/types';
 
-export default function App() {
-  const mapRef = useRef(null);
-  const [car, setCar] = useState(null);
-  const [lights, setLights] = useState([]);
-  const [cycles, setCycles] = useState({});
-  const [nowSec, setNowSec] = useState(Math.floor(Date.now() / 1000));
-  const [route, setRoute] = useState(null);
-  const [lightsOnRoute, setLightsOnRoute] = useState([]);
-  const [recommended, setRecommended] = useState(0);
-  const [nearestInfo, setNearestInfo] = useState({ dist: 0, time: 0 });
-  const [lightModal, setLightModal] = useState(null);
-  const [cycleModal, setCycleModal] = useState(null);
-  const [loadError, setLoadError] = useState(null);
+interface Car {
+  latitude: number;
+  longitude: number;
+  heading: number;
+  speed: number;
+}
+
+export default function App(): JSX.Element {
+  const mapRef = useRef<MapView | null>(null);
+  const [car, setCar] = useState<Car | null>(null);
+  const [lights, setLights] = useState<Light[]>([]);
+  const [cycles, setCycles] = useState<Record<string, LightCycle>>({});
+  const [nowSec, setNowSec] = useState<number>(Math.floor(Date.now() / 1000));
+  const [route, setRoute] = useState<LatLng[] | null>(null);
+  const [lightsOnRoute, setLightsOnRoute] = useState<LightOnRoute[]>([]);
+  const [recommended, setRecommended] = useState<number>(0);
+  const [nearestInfo, setNearestInfo] = useState<{
+    dist: number;
+    time: number;
+  }>({ dist: 0, time: 0 });
+  const [lightModal, setLightModal] = useState<LatLng | null>(null);
+  const [cycleModal, setCycleModal] = useState<{ light_id: string } | null>(
+    null,
+  );
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [hudInfo, setHudInfo] = useState({
-    maneuver: "",
+    maneuver: '',
     distance: 0,
-    street: "",
+    street: '',
     eta: 0,
     speedLimit: 0,
   });
-  const [steps, setSteps] = useState([]);
-  const [menuVisible, setMenuVisible] = useState(false);
+  const [, setSteps] = useState<RouteStep[]>([]);
+  const [menuVisible, setMenuVisible] = useState<boolean>(false);
 
   const onStartNavigation = () => {
     startNavigation(trackEvent);
@@ -53,11 +74,11 @@ export default function App() {
 
   const onClearRoute = () => {
     const state = clearRoute();
-    setRoute(state.route);
-    setSteps(state.steps);
+    setRoute(state.route as LatLng[] | null);
+    setSteps(state.steps as RouteStep[]);
     setHudInfo(state.hudInfo);
-    setLightsOnRoute(state.lightsOnRoute);
-    setRecommended(state.recommended);
+    setLightsOnRoute(state.lightsOnRoute as LightOnRoute[]);
+    setRecommended(state.recommended as number);
     setNearestInfo(state.nearestInfo);
     setMenuVisible(state.menuVisible);
   };
@@ -69,18 +90,18 @@ export default function App() {
   };
 
   const handleSettings = () => {
-    trackEvent("settings_change");
+    trackEvent('settings_change');
     setMenuVisible(false);
   };
 
   useEffect(() => {
     fetchLightsAndCycles().then(({ lights, cycles, error }) => {
       if (error) {
-        setLoadError("Failed to load data");
+        setLoadError('Failed to load data');
         return;
       }
       setLights(lights);
-      const map = {};
+      const map: Record<string, LightCycle> = {};
       for (const c of cycles) map[c.light_id] = c;
       setCycles(map);
     });
@@ -97,14 +118,15 @@ export default function App() {
     return () => clearInterval(t);
   }, []);
 
-  const onUserLocationChange = (e) => {
+  const onUserLocationChange = (e: UserLocationChangeEvent) => {
     const { coordinate } = e.nativeEvent;
+    if (!coordinate) return;
     const { latitude, longitude, heading, speed } = coordinate;
     setCar({ latitude, longitude, heading, speed: speed || 0 });
     mapRef.current?.animateCamera({ center: { latitude, longitude } });
   };
 
-  const onMapPress = async (e) => {
+  const onMapPress = async (e: MapPressEvent) => {
     if (!car) return;
     const dest = e.nativeEvent.coordinate;
     try {
@@ -121,34 +143,28 @@ export default function App() {
           speedLimit: first.speed,
         });
       }
-      const legs = [
-        {
-          distance_m: r.distance,
-          duration_s: r.duration,
-          coords: r.geometry.map((p) => [p.latitude, p.longitude]),
-        },
-      ];
-      const proj = projectLightsToRoute(lights, legs);
-      const arr = proj.map((p) => ({
-        light: p.light,
-        cycle: cycles[p.light.id] || null,
-        dist_m: p.order_m,
-        dirForDriver: p.light.direction,
-      }));
-      setLightsOnRoute(arr);
+      const projected = projectLightsToRoute(r.geometry, lights, cycles);
+      setLightsOnRoute(projected);
     } catch (err) {
-      setLoadError(i18n.t("errors.routeFetch"));
-      Alert.alert(i18n.t("errors.routeFetch"));
+      const message = err instanceof Error ? err.message : String(err);
+      Alert.alert(i18n.t('error'), message);
     }
   };
 
-  const onLongPress = (e) => {
-    setLightModal(e.nativeEvent.coordinate);
+  const onLongPress = (e: LongPressEvent) => {
+    if (!car) return;
+    const dest = e.nativeEvent.coordinate;
+    setLightModal(dest);
   };
 
-  const saveLight = async (data) => {
+  const saveLight = async (data: {
+    name: string;
+    direction: string;
+    lat: number;
+    lon: number;
+  }) => {
     const { data: inserted, error } = await supabase
-      .from("lights")
+      .from('lights')
       .insert({
         name: data.name,
         direction: data.direction,
@@ -158,21 +174,21 @@ export default function App() {
       .select()
       .single();
     if (!error) {
-      trackEvent("light_added", { id: inserted.id });
-      setLights((l) => [...l, inserted]);
+      trackEvent('light_added', { id: inserted.id });
+      setLights((l) => [...l, inserted as Light]);
       setLightModal(null);
       setCycleModal({ light_id: inserted.id });
     }
   };
 
-  const saveCycle = async (cycle) => {
+  const saveCycle = async (cycle: LightCycle) => {
     const { data: inserted, error } = await supabase
-      .from("light_cycles")
-      .insert({ ...cycle, light_id: cycleModal.light_id })
+      .from('light_cycles')
+      .insert({ ...cycle, light_id: cycleModal!.light_id })
       .select()
       .single();
     if (!error) {
-      setCycles((c) => ({ ...c, [inserted.light_id]: inserted }));
+      setCycles((c) => ({ ...c, [inserted.light_id]: inserted as LightCycle }));
       setCycleModal(null);
     }
   };
@@ -187,7 +203,7 @@ export default function App() {
     );
     setNearestInfo(nearestInfo);
     setRecommended(rec);
-  }, [lightsOnRoute, car, nowSec]);
+  }, [lightsOnRoute, car, nowSec, recommended]);
 
   return (
     <View style={styles.container}>
@@ -211,7 +227,7 @@ export default function App() {
             <Marker
               key={l.id}
               coordinate={{ latitude: l.lat, longitude: l.lon }}
-              pinColor={isNearest ? "yellow" : color}
+              pinColor={isNearest ? 'yellow' : color}
             />
           );
         })}
@@ -266,38 +282,41 @@ export default function App() {
 }
 
 const nightStyle = [
-  { elementType: "geometry", stylers: [{ color: "#212121" }] },
-  { elementType: "labels.icon", stylers: [{ visibility: "off" }] },
-  { elementType: "labels.text.fill", stylers: [{ color: "#757575" }] },
-  { elementType: "labels.text.stroke", stylers: [{ color: "#212121" }] },
+  { elementType: 'geometry', stylers: [{ color: '#212121' }] },
+  { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#757575' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#212121' }] },
   {
-    featureType: "road",
-    elementType: "geometry",
-    stylers: [{ color: "#484848" }],
+    featureType: 'road',
+    elementType: 'geometry',
+    stylers: [{ color: '#484848' }],
   },
   {
-    featureType: "water",
-    elementType: "geometry",
-    stylers: [{ color: "#000000" }],
+    featureType: 'water',
+    elementType: 'geometry',
+    stylers: [{ color: '#000000' }],
   },
 ];
 
+const FAB_BG = 'rgba(0,0,0,0.8)';
+const FAB_TEXT_COLOR = '#fff';
+
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  map: { flex: 1 },
   fab: {
-    position: "absolute",
+    alignItems: 'center',
+    backgroundColor: FAB_BG,
+    borderRadius: 25,
     bottom: 20,
+    height: 50,
+    justifyContent: 'center',
+    position: 'absolute',
     right: 20,
     width: 50,
-    height: 50,
-    backgroundColor: "rgba(0,0,0,0.8)",
-    borderRadius: 25,
-    alignItems: "center",
-    justifyContent: "center",
   },
   fabText: {
-    color: "#fff",
+    color: FAB_TEXT_COLOR,
     fontSize: 24,
   },
+  map: { flex: 1 },
 });
