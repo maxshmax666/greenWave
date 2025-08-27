@@ -4,6 +4,7 @@ Minimal React Native (Expo) client showing a map with a car marker and driving H
 
 ## Recent changes
 
+- Fixed HUD maneuver spacing and updated localization string spacing.
 - Added traffic light management forms for lights and cycles.
 - Introduced camera screen with traffic light detection.
 - Integrated premium subscription flow and analytics tracking.

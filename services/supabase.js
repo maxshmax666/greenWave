@@ -1,5 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 const { fetchWithTimeout } = require('./network');
+const { log } = require('./logger');
 
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
@@ -15,6 +16,7 @@ async function fetchLightsAndCycles() {
   } = await supabase.from('lights').select('*');
   if (lightsError) {
     console.error('Error fetching lights:', lightsError);
+    log('ERROR', `Error fetching lights: ${lightsError.message}`);
     return {
       lights: [],
       cycles: [],
@@ -28,6 +30,7 @@ async function fetchLightsAndCycles() {
   } = await supabase.from('light_cycles').select('*');
   if (cyclesError) {
     console.error('Error fetching cycles:', cyclesError);
+    log('ERROR', `Error fetching cycles: ${cyclesError.message}`);
     return {
       lights: lights || [],
       cycles: [],
