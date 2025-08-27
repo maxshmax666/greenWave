@@ -2,6 +2,7 @@ import {
   handleStartNavigation,
   handleClearRoute,
   computeRecommendation,
+  getNearestInfo,
 } from '../index';
 
 import { Light, LightCycle } from '../domain/types';
@@ -61,5 +62,15 @@ describe('computeRecommendation', () => {
     expect(recommended).toBeGreaterThanOrEqual(47);
     expect(recommended).toBeLessThanOrEqual(56);
     expect(nearestInfo.dist).toBe(500);
+  });
+
+  it('computes nearest info separately', () => {
+    const { nearestInfo, nearestStillGreen } = getNearestInfo(
+      { light, cycle, dist_m: 500, dirForDriver: 'MAIN' },
+      50,
+      0,
+    );
+    expect(nearestInfo.dist).toBe(500);
+    expect(typeof nearestStillGreen).toBe('boolean');
   });
 });

@@ -1,7 +1,10 @@
 import * as Analytics from 'expo-firebase-analytics';
 import { log } from './logger';
 
-export async function trackEvent(name: string, params?: Record<string, any>): Promise<void> {
+export async function trackEvent(
+  name: string,
+  params?: Record<string, unknown>,
+): Promise<void> {
   try {
     await Analytics.logEvent(name, params);
   } catch (err) {
