@@ -12,15 +12,16 @@ describe('fetchWithTimeout', () => {
   it('throws on timeout', async () => {
     jest.useFakeTimers();
 
-    global.fetch = jest.fn((_, { signal }: any) => {
-      return new Promise((resolve, reject) => {
-        signal.addEventListener('abort', () => {
-          const err: any = new Error('Aborted');
-          err.name = 'AbortError';
-          reject(err);
-        });
-      });
-    });
+    global.fetch = jest.fn(
+      (_: RequestInfo | URL, init?: RequestInit) =>
+        new Promise<Response>((_, reject) => {
+          init?.signal?.addEventListener('abort', () => {
+            const err = new Error('Aborted');
+            err.name = 'AbortError';
+            reject(err);
+          });
+        }),
+    ) as unknown as typeof fetch;
 
     const p = fetchWithTimeout('https://example.com', { timeout: 50 });
     jest.advanceTimersByTime(60);
@@ -48,7 +49,7 @@ describe('fetchWithTimeout', () => {
         throw new Error('bad json');
       },
       text: async () => 'Server error',
-    } as any);
+    } as unknown as Response);
 
     await expect(fetchWithTimeout('https://example.com')).rejects.toThrow(
       'Request failed with status 500: Server error',
