@@ -36,7 +36,7 @@
     "direction": "Direction"
   },
   "cycleForm": {
-    "cycleSeconds": "Cycle seconds",
+    "cycleSeconds": "Cycle length",
     "t0": "t0 ISO",
     "main": "Main green start/end",
     "secondary": "Secondary green start/end",
