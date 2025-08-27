@@ -11,6 +11,7 @@ Minimal React Native (Expo) client showing a map with a car marker and driving H
 - Implemented fetch helper with timeout and error handling.
 - Guarded route parsing and handled route fetch errors gracefully.
 - Externalized translations into locale files and expanded component test coverage.
+- Updated speed banner recommendation message.
 
 ## Environment
 

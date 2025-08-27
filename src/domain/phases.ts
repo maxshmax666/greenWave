@@ -19,6 +19,6 @@ export function mapColorForRuntime(
   const isGreen = phase >= gs && phase <= ge;
   if (dir === 'PEDESTRIAN') return isGreen ? 'blue' : 'gray';
   if (dir === 'SECONDARY') return isGreen ? 'green' : 'gray';
-  if (dir === 'MAIN') return isGreen ? 'red' : 'gray';
+  if (dir === 'MAIN') return isGreen ? 'green' : 'gray';
   return 'gray';
 }
