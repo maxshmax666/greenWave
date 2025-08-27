@@ -22,7 +22,7 @@
     }
   },
   "hud": {
-    "maneuver": "%{maneuver} через %{distance}м",
+    "maneuver": "%{maneuver} через %{distance} м",
     "speed": "Скорость: %{speed}",
     "limit": "Лимит: %{limit}",
     "eta": "ETA: %{eta}с"
