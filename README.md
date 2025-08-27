@@ -4,7 +4,8 @@ Minimal React Native (Expo) client showing a map with a car marker and driving H
 
 ## Recent changes
 
-- Fixed HUD maneuver spacing and updated localization string spacing.
+- Fixed HUD maneuver spacing.
+- Updated localization string spacing.
 - Added traffic light management forms for lights and cycles.
 - Introduced camera screen with traffic light detection.
 - Integrated premium subscription flow and analytics tracking.
@@ -31,7 +32,7 @@ Install dependencies and start Expo:
 
 ```
 npm install
-npx expo start
+npx expo start -c
 ```
 
 Run unit tests:
