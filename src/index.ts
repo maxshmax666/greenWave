@@ -6,9 +6,25 @@ export const handleStartNavigation = (track: (event: string) => void): void => {
   track('navigation_start');
 };
 
-export const handleClearRoute = () => ({
-  route: null as unknown,
-  steps: [] as unknown[],
+export interface NavigationState {
+  route: unknown;
+  steps: unknown[];
+  hudInfo: {
+    maneuver: string;
+    distance: number;
+    street: string;
+    eta: number;
+    speedLimit: number;
+  };
+  lightsOnRoute: LightOnRoute[];
+  recommended: number;
+  nearestInfo: { dist: number; time: number };
+  menuVisible: boolean;
+}
+
+export const initialState: NavigationState = {
+  route: null,
+  steps: [],
   hudInfo: {
     maneuver: '',
     distance: 0,
@@ -16,10 +32,17 @@ export const handleClearRoute = () => ({
     eta: 0,
     speedLimit: 0,
   },
-  lightsOnRoute: [] as LightOnRoute[],
+  lightsOnRoute: [],
   recommended: 0,
   nearestInfo: { dist: 0, time: 0 },
   menuVisible: false,
+};
+
+export const handleClearRoute = (): NavigationState => ({
+  ...initialState,
+  hudInfo: { ...initialState.hudInfo },
+  lightsOnRoute: [],
+  nearestInfo: { ...initialState.nearestInfo },
 });
 
 export interface LightOnRoute {
