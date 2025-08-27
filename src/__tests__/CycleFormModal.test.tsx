@@ -16,7 +16,7 @@ jest.mock('react-native', () => {
   };
 });
 
-import CycleFormModal from '../../components/CycleFormModal';
+import CycleFormModal from '../components/CycleFormModal';
 
 describe('CycleFormModal', () => {
   it('submits default values', () => {

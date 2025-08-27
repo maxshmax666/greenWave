@@ -8,7 +8,7 @@ jest.mock('react-native', () => ({
   StyleSheet: { create: () => ({}), flatten: () => ({}) },
 }));
 
-import SpeedBanner from '../../components/SpeedBanner';
+import SpeedBanner from '../components/SpeedBanner';
 
 describe('SpeedBanner', () => {
   it('renders recommendation text', () => {

@@ -1,4 +1,4 @@
-import type { Network, FetchOptions } from '../src/interfaces/network';
+import type { Network, FetchOptions } from '../interfaces/network';
 
 export const network: Network = {
   async fetchWithTimeout(input, options = {}) {

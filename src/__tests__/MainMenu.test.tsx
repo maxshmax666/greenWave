@@ -9,7 +9,7 @@ jest.mock('react-native', () => ({
   StyleSheet: { create: () => ({}), flatten: () => ({}) },
 }));
 
-import MainMenu from '../../components/MainMenu';
+import MainMenu from '../components/MainMenu';
 
 describe('MainMenu', () => {
   const noop = jest.fn();

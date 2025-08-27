@@ -23,7 +23,7 @@ jest.mock('react-native-svg', () => {
   return { __esModule: true, default: Svg, Path };
 });
 
-import CarMarker from '../../components/CarMarker';
+import CarMarker from '../components/CarMarker';
 
 describe('CarMarker', () => {
   it('renders marker with rotation', () => {

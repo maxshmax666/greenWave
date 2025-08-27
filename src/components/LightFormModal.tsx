@@ -8,8 +8,8 @@ import {
   Alert,
   StyleSheet,
 } from 'react-native';
-import i18n from '../src/i18n';
-import { validateLight } from '../src/validation';
+import i18n from '../i18n';
+import { validateLight } from '../validation';
 
 export interface LightFormModalProps {
   visible: boolean;

@@ -4,6 +4,7 @@ Minimal React Native (Expo) client showing a map with a car marker and driving H
 
 ## Recent changes
 
+- Consolidated project structure by moving `components/` and `services/` into `src/`.
 - Fixed HUD maneuver spacing.
 - Updated localization string spacing.
 - Added traffic light management forms for lights and cycles.
