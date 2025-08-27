@@ -1,0 +1,65 @@
+import {
+  handleStartNavigation,
+  handleClearRoute,
+  computeRecommendation,
+} from '../index';
+
+import { Light, LightCycle } from '../domain/types';
+
+describe('navigation helpers', () => {
+  it('tracks start navigation', () => {
+    const track = jest.fn();
+    handleStartNavigation(track);
+    expect(track).toHaveBeenCalledWith('navigation_start');
+  });
+
+  it('returns cleared state', () => {
+    const state = handleClearRoute();
+    expect(state).toEqual({
+      route: null,
+      steps: [],
+      hudInfo: {
+        maneuver: '',
+        distance: 0,
+        street: '',
+        eta: 0,
+        speedLimit: 0,
+      },
+      lightsOnRoute: [],
+      recommended: 0,
+      nearestInfo: { dist: 0, time: 0 },
+      menuVisible: false,
+    });
+  });
+});
+
+describe('computeRecommendation', () => {
+  const light: Light = {
+    id: 'l1',
+    name: 'L1',
+    lat: 0,
+    lon: 0,
+    direction: 'MAIN',
+  };
+  const cycle: LightCycle = {
+    id: 'c1',
+    light_id: 'l1',
+    cycle_seconds: 60,
+    t0_iso: new Date(0).toISOString(),
+    main_green: [30, 40],
+    secondary_green: [0, 10],
+    ped_green: [10, 20],
+  };
+
+  it('calculates speed and nearest info', () => {
+    const { recommended, nearestInfo } = computeRecommendation(
+      [{ light, cycle, dist_m: 500, dirForDriver: 'MAIN' }],
+      { speed: 50 / 3.6 },
+      0,
+      0,
+    );
+    expect(recommended).toBeGreaterThanOrEqual(47);
+    expect(recommended).toBeLessThanOrEqual(56);
+    expect(nearestInfo.dist).toBe(500);
+  });
+});
