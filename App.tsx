@@ -18,7 +18,7 @@ import { supabaseService, supabase } from './src/services/supabase';
 import { getRoute, RouteStep } from './src/services/ors';
 import { saveRoute, loadRoute } from './src/services/routeCache';
 import i18n from './src/i18n';
-import { mapColorForRuntime } from './src/navigation/phases';
+import { mapColorForRuntime } from './src/domain/phases';
 import { projectLightsToRoute } from './src/domain/matching';
 import { analytics } from './src/services/analytics';
 import {

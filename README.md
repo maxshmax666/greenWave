@@ -29,6 +29,9 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 - Configured ESLint and Prettier for consistent formatting.
 - Converted remaining JavaScript files to TypeScript.
 - Introduced typed interfaces for analytics, network, and Supabase services.
+- Fixed main-direction color mapping and exposed green windows as domain helpers.
+- Added notification service to emit signal change events.
+- Updated cycle seconds translation for clarity.
 
 ## Environment
 
