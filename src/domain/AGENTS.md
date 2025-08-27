@@ -8,5 +8,5 @@ Guidelines for traffic-light domain utilities.
 - After changes run:
   ```bash
   pre-commit run --files <files>
-  npm test -- src/domain/phases.ts src/domain/__tests__/phases.test.ts
+  npm test -- src/domain
   ```

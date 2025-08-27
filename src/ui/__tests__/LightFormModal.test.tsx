@@ -16,21 +16,27 @@ jest.mock('react-native', () => {
   };
 });
 
-import CycleFormModal from '../components/CycleFormModal';
+import LightFormModal from '../LightFormModal';
 
-describe('CycleFormModal', () => {
-  it('submits default values', () => {
+describe('LightFormModal', () => {
+  it('submits when name provided', () => {
     const onSubmit = jest.fn();
-    const { getByText } = render(
-      <CycleFormModal visible onSubmit={onSubmit} onCancel={jest.fn()} />
+    const { getByText, getByDisplayValue } = render(
+      <LightFormModal
+        visible
+        coordinate={{ latitude: 1, longitude: 2 }}
+        onSubmit={onSubmit}
+        onCancel={jest.fn()}
+      />
     );
+    const input = getByDisplayValue('');
+    fireEvent.changeText(input, 'Test');
     fireEvent.press(getByText('Save'));
     expect(onSubmit).toHaveBeenCalledWith({
-      cycle_seconds: 60,
-      t0_iso: expect.any(String),
-      main_green: [0, 10],
-      secondary_green: [10, 20],
-      ped_green: [20, 30],
+      name: 'Test',
+      direction: 'MAIN',
+      lat: 1,
+      lon: 2,
     });
   });
 });
