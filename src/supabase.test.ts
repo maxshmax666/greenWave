@@ -20,9 +20,10 @@ describe('fetchLightsAndCycles error handling', () => {
   it('returns error when fetching lights fails', async () => {
     const logger = await import('../services/logger');
     const logSpy = jest.spyOn(logger, 'log').mockResolvedValue(undefined);
-    const { fetchLightsAndCycles, supabase } = await import(
+    const { supabaseService, supabase } = await import(
       '../services/supabase'
     );
+    const { fetchLightsAndCycles } = supabaseService;
     const originalFrom = supabase.from;
 
     supabase.from = jest.fn().mockReturnValue({
@@ -44,9 +45,10 @@ describe('fetchLightsAndCycles error handling', () => {
   it('returns error when fetching cycles fails', async () => {
     const logger = await import('../services/logger');
     const logSpy = jest.spyOn(logger, 'log').mockResolvedValue(undefined);
-    const { fetchLightsAndCycles, supabase } = await import(
+    const { supabaseService, supabase } = await import(
       '../services/supabase'
     );
+    const { fetchLightsAndCycles } = supabaseService;
     const originalFrom = supabase.from;
 
     supabase.from = jest
