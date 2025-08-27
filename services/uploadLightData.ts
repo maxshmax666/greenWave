@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { log } from './logger';
 
 export interface Phase {
   color: string;
@@ -22,7 +23,7 @@ export async function uploadCycle(
     .from('light_cycles')
     .insert({ light_id: lightId, lat, lon, phases }); // entries can be validated via Supabase dashboard
   if (error) {
-    console.error('Failed to upload cycle', error);
+    await log('ERROR', `Failed to upload cycle: ${error.message}`);
     throw error;
   }
 }
