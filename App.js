@@ -14,10 +14,14 @@ import {
 } from "./services/supabase";
 import { getRoute } from "./services/ors";
 import i18n from "./src/i18n";
-import { mapColorForRuntime, getGreenWindow } from "./src/domain/phases";
+import { mapColorForRuntime } from "./src/domain/phases";
 import { projectLightsToRoute } from "./src/domain/matching";
-import { pickSpeed, applyHysteresis } from "./src/domain/advisor";
 import { trackEvent } from "./services/analytics";
+import {
+  handleStartNavigation as startNavigation,
+  handleClearRoute as clearRoute,
+  computeRecommendation,
+} from "./src";
 
 export default function App() {
   const mapRef = useRef(null);
@@ -42,25 +46,20 @@ export default function App() {
   const [steps, setSteps] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
 
-  const handleStartNavigation = () => {
-    trackEvent("navigation_start");
+  const onStartNavigation = () => {
+    startNavigation(trackEvent);
     setMenuVisible(false);
   };
 
-  const handleClearRoute = () => {
-    setRoute(null);
-    setSteps([]);
-    setHudInfo({
-      maneuver: "",
-      distance: 0,
-      street: "",
-      eta: 0,
-      speedLimit: 0,
-    });
-    setLightsOnRoute([]);
-    setRecommended(0);
-    setNearestInfo({ dist: 0, time: 0 });
-    setMenuVisible(false);
+  const onClearRoute = () => {
+    const state = clearRoute();
+    setRoute(state.route);
+    setSteps(state.steps);
+    setHudInfo(state.hudInfo);
+    setLightsOnRoute(state.lightsOnRoute);
+    setRecommended(state.recommended);
+    setNearestInfo(state.nearestInfo);
+    setMenuVisible(state.menuVisible);
   };
 
   const handleAddLight = () => {
@@ -180,28 +179,14 @@ export default function App() {
 
   useEffect(() => {
     if (!car) return;
-    const res = pickSpeed(nowSec, lightsOnRoute, car.speed * 3.6);
-    const nearest = lightsOnRoute[0];
-    let nearestStillGreen = false;
-    if (nearest && nearest.cycle) {
-      const cycleLen = nearest.cycle.cycle_seconds;
-      const t0 = Date.parse(nearest.cycle.t0_iso) / 1000;
-      const eta = nowSec + nearest.dist_m / ((res.recommended * 1000) / 3600);
-      const phase = (((eta - t0) % cycleLen) + cycleLen) % cycleLen;
-      const [gs, ge] = getGreenWindow(nearest.cycle, nearest.dirForDriver);
-      nearestStillGreen = phase >= gs + 2 && phase <= ge - 2;
-      let timeToWindow = 0;
-      if (phase < gs) timeToWindow = gs - phase;
-      else if (phase > ge) timeToWindow = cycleLen - phase + gs;
-      setNearestInfo({ dist: nearest.dist_m, time: timeToWindow });
-    } else {
-      setNearestInfo({ dist: 0, time: 0 });
-    }
-    setRecommended((prev) =>
-      prev
-        ? applyHysteresis(prev, res.recommended, nearestStillGreen)
-        : res.recommended,
+    const { recommended: rec, nearestInfo } = computeRecommendation(
+      lightsOnRoute,
+      car,
+      nowSec,
+      recommended,
     );
+    setNearestInfo(nearestInfo);
+    setRecommended(rec);
   }, [lightsOnRoute, car, nowSec]);
 
   return (
@@ -249,8 +234,8 @@ export default function App() {
       />
       <MainMenu
         visible={menuVisible}
-        onStartNavigation={handleStartNavigation}
-        onClearRoute={handleClearRoute}
+        onStartNavigation={onStartNavigation}
+        onClearRoute={onClearRoute}
         onAddLight={handleAddLight}
         onSettings={handleSettings}
       />

@@ -15,6 +15,8 @@ Minimal React Native (Expo) client showing a map with a car marker and driving H
 - Externalized translations into locale files and expanded component test coverage.
 - Refined speed banner recommendation copy.
 - Improved route fetch error handling.
+- Added file logging for diagnostics.
+- Refactored navigation logic into testable helpers.
 
 ## Environment
 
