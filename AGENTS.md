@@ -10,7 +10,7 @@ This repository contains a React Native (Expo) application.
 - `assets/` – static images and resources.
 - `App.js` – application entry point; renders map, HUD, and menus.
 
-Run logic tests with Jest; coverage is generated under `coverage/`.
+Run logic tests with `npm test -- --coverage`; coverage is generated under `coverage/`.
 
 ## Guidelines
 - Use functional components with hooks.

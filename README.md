@@ -31,10 +31,10 @@ npm install
 npx expo start
 ```
 
-Run unit tests:
+Run unit tests with coverage:
 
 ```
-npm test
+npm test -- --coverage
 ```
 
 ### Debug APK build
