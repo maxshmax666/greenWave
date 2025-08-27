@@ -1,4 +1,4 @@
-import type { Direction, Light, LightCycle } from './domain/types';
+import type { Direction, Light, LightCycle } from '../domain/types';
 
 export const handleStartNavigation = (track: (event: string) => void): void => {
   track('navigation_start');
@@ -50,5 +50,5 @@ export interface LightOnRoute {
   dirForDriver: Direction;
 }
 
-export { getNearestInfo } from './navigation/getNearestInfo';
-export { computeRecommendation } from './navigation/computeRecommendation';
+export { getNearestInfo } from './getNearestInfo';
+export { computeRecommendation } from './computeRecommendation';

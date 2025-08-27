@@ -1,4 +1,4 @@
-import { Direction, Light, LightCycle } from './types';
+import { Direction, Light, LightCycle } from '../domain/types';
 import { getGreenWindow } from './phases';
 
 export function pickSpeed(

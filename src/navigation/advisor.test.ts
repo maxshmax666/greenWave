@@ -1,5 +1,5 @@
-import { pickSpeed, applyHysteresis } from '../advisor';
-import { Light, LightCycle } from '../types';
+import { pickSpeed, applyHysteresis } from './advisor';
+import { Light, LightCycle } from '../domain/types';
 
 describe('advisor pickSpeed', () => {
   const light: Light = {

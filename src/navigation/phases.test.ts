@@ -1,5 +1,5 @@
-import { getGreenWindow, mapColorForRuntime } from '../phases';
-import { LightCycle } from '../types';
+import { getGreenWindow, mapColorForRuntime } from './phases';
+import { LightCycle } from '../domain/types';
 
 describe('phases utilities', () => {
   const cycle: LightCycle = {
