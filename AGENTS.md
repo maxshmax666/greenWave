@@ -5,9 +5,11 @@ This repository contains a React Native (Expo) application. New contributors can
 ## Structure
 
 - `src/components/` – React Native UI components.
-- `src/` – application logic, translations under `src/locales`, and Jest tests in `src/__tests__`.
+- `src/navigation/` – navigation state, helpers, and related tests.
+- `src/traffic/` – traffic aggregation utilities (placeholder for future work).
+- `src/ui/` – shared UI utilities (placeholder for future work).
 - `src/services/` – networking helpers and domain services.
-- `src/domain/` – pure domain logic shared by services and components.
+- `src/domain/` – shared domain types and matching utilities.
 - `assets/` – static images and resources.
 - `App.tsx` – application entry point; renders map, HUD, and menus.
 

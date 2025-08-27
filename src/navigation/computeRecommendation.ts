@@ -1,6 +1,6 @@
-import { pickSpeed, applyHysteresis } from '../domain/advisor';
+import { pickSpeed, applyHysteresis } from './advisor';
 import { getNearestInfo } from './getNearestInfo';
-import type { LightOnRoute } from '../index';
+import type { LightOnRoute } from './index';
 
 export function computeRecommendation(
   lightsOnRoute: LightOnRoute[],

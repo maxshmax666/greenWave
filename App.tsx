@@ -18,7 +18,7 @@ import { supabaseService, supabase } from './src/services/supabase';
 import { getRoute, RouteStep } from './src/services/ors';
 import { saveRoute, loadRoute } from './src/services/routeCache';
 import i18n from './src/i18n';
-import { mapColorForRuntime } from './src/domain/phases';
+import { mapColorForRuntime } from './src/navigation/phases';
 import { projectLightsToRoute } from './src/domain/matching';
 import { analytics } from './src/services/analytics';
 import {
@@ -26,7 +26,7 @@ import {
   handleClearRoute as clearRoute,
   computeRecommendation,
   LightOnRoute,
-} from './src';
+} from './src/navigation';
 import type { Light, LightCycle } from './src/domain/types';
 
 interface Car {

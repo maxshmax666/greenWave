@@ -1,4 +1,4 @@
-import { handleStartNavigation, handleClearRoute, initialState } from '../index';
+import { handleStartNavigation, handleClearRoute, initialState } from './index';
 
 describe('navigation helpers', () => {
   it('tracks start navigation', () => {
