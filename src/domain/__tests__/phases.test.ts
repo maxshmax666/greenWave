@@ -20,10 +20,17 @@ describe('phases utilities', () => {
 
   it('mapColorForRuntime picks colors by phase', () => {
     const t0 = Date.parse(cycle.t0_iso) / 1000;
-    expect(mapColorForRuntime(cycle, 'MAIN', t0 + 5)).toBe('red');
+    expect(mapColorForRuntime(cycle, 'MAIN', t0 + 5)).toBe('green');
     expect(mapColorForRuntime(cycle, 'SECONDARY', t0 + 15)).toBe('green');
     expect(mapColorForRuntime(cycle, 'PEDESTRIAN', t0 + 25)).toBe('blue');
     expect(mapColorForRuntime(cycle, 'MAIN', t0 + 35)).toBe('gray');
     expect(mapColorForRuntime(null, 'MAIN', t0 + 5)).toBe('gray');
+  });
+
+  it('mapColorForRuntime returns gray outside green windows for all directions', () => {
+    const t0 = Date.parse(cycle.t0_iso) / 1000;
+    expect(mapColorForRuntime(cycle, 'MAIN', t0 + 15)).toBe('gray');
+    expect(mapColorForRuntime(cycle, 'SECONDARY', t0 + 25)).toBe('gray');
+    expect(mapColorForRuntime(cycle, 'PEDESTRIAN', t0 + 5)).toBe('gray');
   });
 });
