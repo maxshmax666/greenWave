@@ -27,3 +27,10 @@ npm test -- --coverage
 ```
 
 Tests should pass and formatting hooks should run on the changed files.
+
+## For New Contributors
+- Start the app with `npm start` to launch the Expo dev server.
+- UI components live in `components/` and rely on hooks for state.
+- Core logic and translations live under `src/` (`src/i18n.ts` wires up `src/locales`).
+- Network and domain helpers are in `services/` and `domain/`.
+- Jest tests reside in `src/__tests__`; add tests alongside new features.

@@ -26,7 +26,7 @@ describe('DrivingHUD', () => {
         speedLimit={50}
       />
     );
-    expect(getByTestId('hud-maneuver').props.children).toBe('Turn left in 100m');
+    expect(getByTestId('hud-maneuver').props.children).toBe('Turn left in 100 m');
     expect(getByTestId('hud-street').props.children).toBe('Main St');
     expect(getByTestId('hud-eta').props.children).toBe('ETA: 60s');
     expect(getByTestId('hud-speed-limit').props.children).toBe('Limit: 50');
