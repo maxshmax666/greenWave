@@ -1,6 +1,6 @@
 # greenwave-rn
 
-Minimal React Native (Expo) client showing a map with a car marker and driving HUD.
+React Native (Expo) app with real-time traffic-light detection, premium subscriptions, and analytics.
 
 ## Recent changes
 
