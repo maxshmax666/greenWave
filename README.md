@@ -10,6 +10,8 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 - Fixed HUD maneuver spacing.
 - Updated localization string spacing.
 - Added traffic light management forms for lights and cycles.
+- Enabled manual cycle entry with what-if analysis.
+- Added database migrations and models for lights and cycles.
 - Introduced camera screen with traffic light detection.
 - Integrated premium subscription flow and analytics tracking.
 - Switched traffic light detector to TFLite model inference.
