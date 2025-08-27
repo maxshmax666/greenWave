@@ -1,6 +1,9 @@
 import i18n from './i18n';
 
-export const validateLight = (name: string, direction: string): string | null => {
+export const validateLight = (
+  name: string,
+  direction: string,
+): string | null => {
   if (!name.trim()) {
     return i18n.t('validation.light.nameRequired');
   }
@@ -30,8 +33,16 @@ export const validateCycle = ({
   pedStart,
   pedEnd,
 }: CycleFields): string | null => {
-  const values = [cycleSeconds, mainStart, mainEnd, secStart, secEnd, pedStart, pedEnd].map(Number);
-  if (values.some(v => Number.isNaN(v))) {
+  const values = [
+    cycleSeconds,
+    mainStart,
+    mainEnd,
+    secStart,
+    secEnd,
+    pedStart,
+    pedEnd,
+  ].map(Number);
+  if (values.some((v) => Number.isNaN(v))) {
     return i18n.t('validation.cycle.numeric');
   }
   if (Number(mainStart) >= Number(mainEnd)) {

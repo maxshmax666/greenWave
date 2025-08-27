@@ -26,7 +26,7 @@ import {
   handleClearRoute as clearRoute,
   computeRecommendation,
   LightOnRoute,
-} from './src/navigation';
+} from './src';
 import type { Light, LightCycle } from './src/domain/types';
 
 interface Car {

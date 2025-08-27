@@ -13,6 +13,12 @@ This repository contains a React Native (Expo) application. New contributors can
 - `assets/` – static images and resources.
 - `App.tsx` – application entry point; renders map, HUD, and menus.
 
+## Newcomer tips
+
+- Start with `README.md` and `CHANGELOG.md` to see recent changes.
+- Navigation helpers live in `src/navigation` and are re-exported from `src/index.ts`.
+- Tests sit next to code; see `src/navigation/__tests__` for examples.
+
 Tests live beside the code they verify, and coverage reports are stored under `coverage/`.
 
 ## Getting started

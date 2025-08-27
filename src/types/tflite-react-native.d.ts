@@ -1,14 +1,20 @@
 declare module 'tflite-react-native' {
   export default class Tflite {
     loadModel(
-      opts: any,
-      cb: (err: string | null, res?: any) => void,
+      opts: unknown,
+      cb: (err: string | null, res?: unknown) => void,
     ): void;
     runModelOnImage(
-      opts: any,
-      cb: (err: string | null, res?: any) => void,
+      opts: unknown,
+      cb: (err: string | null, res?: unknown) => void,
     ): void;
   }
-  export const runModelOnImageMock: any;
-  export const loadModelMock: any;
+  export const runModelOnImageMock: (
+    opts: unknown,
+    cb: (err: Error | null, res?: unknown) => void,
+  ) => void;
+  export const loadModelMock: (
+    opts: unknown,
+    cb: (err: Error | null, res?: unknown) => void,
+  ) => void;
 }
