@@ -7,14 +7,18 @@ jest.mock('@supabase/supabase-js', () => ({
 }));
 
 describe('fetchLightsAndCycles error handling', () => {
+  beforeEach(() => {
+    jest.resetModules();
+  });
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
   it('returns error when fetching lights fails', async () => {
+    const logger = require('../services/logger');
+    const logSpy = jest.spyOn(logger, 'log').mockResolvedValue(undefined);
     const { fetchLightsAndCycles, supabase } = require('../services/supabase');
     const originalFrom = supabase.from;
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     supabase.from = jest.fn().mockReturnValue({
       select: jest.fn().mockResolvedValue({ data: null, error: new Error('lights') }),
@@ -22,15 +26,16 @@ describe('fetchLightsAndCycles error handling', () => {
 
     const res = await fetchLightsAndCycles();
     expect(res.error).toBeTruthy();
-    expect(consoleSpy).toHaveBeenCalledWith('Error fetching lights:', expect.any(Error));
+    expect(logSpy).toHaveBeenCalledWith('ERROR', 'Error fetching lights: lights');
 
     supabase.from = originalFrom;
   });
 
   it('returns error when fetching cycles fails', async () => {
+    const logger = require('../services/logger');
+    const logSpy = jest.spyOn(logger, 'log').mockResolvedValue(undefined);
     const { fetchLightsAndCycles, supabase } = require('../services/supabase');
     const originalFrom = supabase.from;
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     supabase.from = jest
       .fn()
@@ -43,7 +48,7 @@ describe('fetchLightsAndCycles error handling', () => {
 
     const res = await fetchLightsAndCycles();
     expect(res.error).toBeTruthy();
-    expect(consoleSpy).toHaveBeenCalledWith('Error fetching cycles:', expect.any(Error));
+    expect(logSpy).toHaveBeenCalledWith('ERROR', 'Error fetching cycles: cycles');
 
     supabase.from = originalFrom;
   });

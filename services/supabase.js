@@ -15,8 +15,7 @@ async function fetchLightsAndCycles() {
     error: lightsError,
   } = await supabase.from('lights').select('*');
   if (lightsError) {
-    console.error('Error fetching lights:', lightsError);
-    log('ERROR', `Error fetching lights: ${lightsError.message}`);
+    await log('ERROR', `Error fetching lights: ${lightsError.message}`);
     return {
       lights: [],
       cycles: [],
@@ -29,8 +28,7 @@ async function fetchLightsAndCycles() {
     error: cyclesError,
   } = await supabase.from('light_cycles').select('*');
   if (cyclesError) {
-    console.error('Error fetching cycles:', cyclesError);
-    log('ERROR', `Error fetching cycles: ${cyclesError.message}`);
+    await log('ERROR', `Error fetching cycles: ${cyclesError.message}`);
     return {
       lights: lights || [],
       cycles: [],
