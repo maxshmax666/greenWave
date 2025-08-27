@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Camera, CameraType } from 'expo-camera';
 import { detectTrafficLight, TrafficLightDetection } from '../services/trafficLightDetector';
 import { uploadCycle } from '../services/uploadLightData';
+import { finalizePhase, ColorPhase } from '../services/colorPhases';
 import LightFormModal from './LightFormModal';
 import { supabase } from '../services/supabase';
 
@@ -17,7 +18,7 @@ const CameraScreen: React.FC = () => {
   const [lightModal, setLightModal] = useState<{ latitude: number; longitude: number } | null>(null);
   const [selectedLight, setSelectedLight] = useState<{ id: number; lat: number; lon: number } | null>(null);
   const cameraRef = useRef<Camera | null>(null);
-  const colorTimeline = useRef<{ color: string; timestamp: number }[]>([]);
+  const colorTimeline = useRef<ColorPhase[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -37,7 +38,7 @@ const CameraScreen: React.FC = () => {
           setDetection(result);
           if (result.color && result.color !== currentColor) {
             const now = Date.now();
-            colorTimeline.current.push({ color: result.color, timestamp: now });
+            finalizePhase(colorTimeline.current, currentColor, colorStartTime, now);
             setCurrentColor(result.color);
             setColorStartTime(now);
           }
@@ -113,22 +114,27 @@ const CameraScreen: React.FC = () => {
           if (isRecording) {
             setIsRecording(false);
             const end = Date.now();
-            const phases = colorTimeline.current.map((item, idx) => {
-              const next = colorTimeline.current[idx + 1]?.timestamp ?? end;
-              return { color: item.color, duration: next - item.timestamp };
-            });
+            finalizePhase(colorTimeline.current, currentColor, colorStartTime, end);
             try {
-              await AsyncStorage.setItem('colorPhases', JSON.stringify(phases));
+              await AsyncStorage.setItem('colorPhases', JSON.stringify(colorTimeline.current));
             } catch (e) {
               console.warn('Saving phases failed', e);
             }
             if (selectedLight) {
               try {
-                await uploadCycle(selectedLight.id, selectedLight.lat, selectedLight.lon, phases);
+                await uploadCycle(
+                  selectedLight.id,
+                  selectedLight.lat,
+                  selectedLight.lon,
+                  colorTimeline.current,
+                );
               } catch (e) {
                 console.warn('Uploading cycle failed', e);
               }
             }
+            colorTimeline.current = [];
+            setCurrentColor(null);
+            setColorStartTime(null);
           } else {
             colorTimeline.current = [];
             setCurrentColor(null);
