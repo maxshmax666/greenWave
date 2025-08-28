@@ -47,8 +47,9 @@ Consult `README.md` for environment variables and more detailed setup steps.
 - Use functional components with hooks.
 - Define component styles via `StyleSheet.create` blocks.
 - Keep code formatted with Prettier/ESLint for TS/JS files.
-- Python files, if added, must be formatted with `black` and sorted with `isort`.
-  These formatters run via pre-commit hooks.
+- Python files must be formatted with `black` (line length 88, Python 3.11)
+  and imports sorted with `isort` (profile "black", line length 88).
+  Run these via `pre-commit run --files <py_files>` before committing.
 
 ## Checks
 
