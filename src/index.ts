@@ -14,14 +14,24 @@ export interface NavigationDeps {
   computeRecommendation: typeof computeRecommendation;
 }
 
+export const defaultNavigationDeps: NavigationDeps = {
+  handleStartNavigation,
+  handleClearRoute,
+  getNearestInfo,
+  computeRecommendation,
+};
+
 export function resolveNavigationDeps(
   deps: Partial<NavigationDeps> = {},
 ): NavigationDeps {
   return {
-    handleStartNavigation: deps.handleStartNavigation ?? handleStartNavigation,
-    handleClearRoute: deps.handleClearRoute ?? handleClearRoute,
-    getNearestInfo: deps.getNearestInfo ?? getNearestInfo,
-    computeRecommendation: deps.computeRecommendation ?? computeRecommendation,
+    handleStartNavigation:
+      deps.handleStartNavigation ?? defaultNavigationDeps.handleStartNavigation,
+    handleClearRoute:
+      deps.handleClearRoute ?? defaultNavigationDeps.handleClearRoute,
+    getNearestInfo: deps.getNearestInfo ?? defaultNavigationDeps.getNearestInfo,
+    computeRecommendation:
+      deps.computeRecommendation ?? defaultNavigationDeps.computeRecommendation,
   };
 }
 

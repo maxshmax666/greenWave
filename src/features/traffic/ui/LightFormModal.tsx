@@ -14,7 +14,12 @@ import { validateLight } from '../../../validation';
 export interface LightFormModalProps {
   visible: boolean;
   coordinate: { latitude: number; longitude: number };
-  onSubmit: (data: { name: string; direction: string; lat: number; lon: number }) => void;
+  onSubmit: (data: {
+    name: string;
+    direction: string;
+    lat: number;
+    lon: number;
+  }) => void;
   onCancel: () => void;
 }
 
@@ -52,16 +57,20 @@ export default function LightFormModal({
           <TextInput style={styles.input} value={name} onChangeText={setName} />
           <Text>{i18n.t('lightForm.direction')}</Text>
           <View style={[styles.row, styles.buttonRow]}>
-            {['MAIN','SECONDARY','PEDESTRIAN'].map(d => (
+            {['MAIN', 'SECONDARY', 'PEDESTRIAN'].map((d) => (
               <Button
                 key={d}
                 title={i18n.t(`directions.${d}`)}
                 onPress={() => setDirection(d)}
-                color={direction===d ? 'blue' : undefined}
+                color={direction === d ? 'blue' : undefined}
               />
             ))}
           </View>
-          <Button title={i18n.t('common.save')} onPress={save} disabled={!!error} />
+          <Button
+            title={i18n.t('common.save')}
+            onPress={save}
+            disabled={!!error}
+          />
           <Button title={i18n.t('common.cancel')} onPress={onCancel} />
         </View>
       </View>
@@ -69,23 +78,26 @@ export default function LightFormModal({
   );
 }
 
+const OVERLAY_COLOR = 'rgba(0,0,0,0.5)';
+const MODAL_BG = '#ffffff';
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modal: {
-    margin: 20,
-    padding: 20,
-    backgroundColor: 'white',
-  },
-  row: {
-    flexDirection: 'row',
-  },
   buttonRow: {
     justifyContent: 'space-around',
     marginVertical: 10,
   },
+  container: {
+    backgroundColor: OVERLAY_COLOR,
+    flex: 1,
+    justifyContent: 'center',
+  },
   input: {},
+  modal: {
+    backgroundColor: MODAL_BG,
+    margin: 20,
+    padding: 20,
+  },
+  row: {
+    flexDirection: 'row',
+  },
 });

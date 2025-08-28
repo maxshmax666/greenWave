@@ -3,13 +3,19 @@ import { parseVoiceResult } from '../useVoicePhaseLogger';
 import { phaseSync, STORAGE_KEY } from '../../../../services/phaseSync';
 import { network } from '../../../../services/network';
 
-jest.mock('expo-voice', () => ({
-  startAsync: jest.fn(),
-  stopAsync: jest.fn(async () => ''),
-}), { virtual: true });
+jest.mock(
+  'expo-voice',
+  () => ({
+    startAsync: jest.fn(),
+    stopAsync: jest.fn(async () => ''),
+  }),
+  { virtual: true },
+);
 
 jest.mock('@react-native-async-storage/async-storage', () =>
-  require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
+  jest.requireActual(
+    '@react-native-async-storage/async-storage/jest/async-storage-mock',
+  ),
 );
 
 jest.mock('../../../../services/network', () => ({
@@ -18,7 +24,10 @@ jest.mock('../../../../services/network', () => ({
 
 describe('parseVoiceResult', () => {
   it('parses color and time', () => {
-    expect(parseVoiceResult('green 12')).toEqual({ color: 'green', startTime: 12 });
+    expect(parseVoiceResult('green 12')).toEqual({
+      color: 'green',
+      startTime: 12,
+    });
   });
 
   it('returns null for invalid input', () => {

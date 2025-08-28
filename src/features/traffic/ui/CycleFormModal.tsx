@@ -25,7 +25,11 @@ export interface CycleFormModalProps {
   onCancel: () => void;
 }
 
-export default function CycleFormModal({ visible, onSubmit, onCancel }: CycleFormModalProps) {
+export default function CycleFormModal({
+  visible,
+  onSubmit,
+  onCancel,
+}: CycleFormModalProps) {
   const [cycleSeconds, setCycleSeconds] = useState('60');
   const [t0, setT0] = useState(new Date().toISOString());
   const [mainStart, setMainStart] = useState('0');
@@ -125,7 +129,11 @@ export default function CycleFormModal({ visible, onSubmit, onCancel }: CycleFor
               keyboardType="numeric"
             />
           </View>
-          <Button title={i18n.t('common.save')} onPress={save} disabled={!!error} />
+          <Button
+            title={i18n.t('common.save')}
+            onPress={save}
+            disabled={!!error}
+          />
           <Button title={i18n.t('common.cancel')} onPress={onCancel} />
         </View>
       </View>
@@ -133,16 +141,20 @@ export default function CycleFormModal({ visible, onSubmit, onCancel }: CycleFor
   );
 }
 
+const OVERLAY_COLOR = 'rgba(0,0,0,0.5)';
+const MODAL_BG = '#ffffff';
+
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: OVERLAY_COLOR,
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
   },
+  input: {},
   modal: {
+    backgroundColor: MODAL_BG,
     margin: 20,
     padding: 20,
-    backgroundColor: 'white',
   },
   row: {
     flexDirection: 'row',
@@ -150,5 +162,4 @@ const styles = StyleSheet.create({
   rowInput: {
     flex: 1,
   },
-  input: {},
 });
