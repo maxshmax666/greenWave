@@ -6,6 +6,8 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Re-exported `cloneNavigationState` from the navigation feature and removed duplicate implementation.
+- Renamed project heading to "greenWave".
 - Added tests to ensure navigation maneuvers remain isolated between runs.
 - `createNavigation` now deep clones state to avoid mutating `hudInfo`.
 - Added coverage script for easier local test runs.
