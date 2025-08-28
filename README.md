@@ -83,6 +83,18 @@ Run unit tests:
 npm test -- --coverage
 ```
 
+### Debugging
+
+Write debug messages to `data/app.log` with the logger:
+
+```ts
+import { log } from './src/services/logger';
+
+await log('INFO', 'App started');
+```
+
+Each line follows `YYYY-MM-DD HH:MM:SS [LEVEL] message`.
+
 ### Voice phase logger
 
 On the traffic screen, tap the record button and speak a color followed by its start time (e.g., "green 12").
