@@ -6,6 +6,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Introduced `onMessage` service with dedicated parsing, validation, and handling helpers.
 - Added GitHub Actions test workflow with Codecov coverage uploads.
 - Split navigation factory into a dedicated `navigationFactory` module for easier testing.
 - Added typed configuration objects for Supabase and analytics services.
