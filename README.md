@@ -13,6 +13,8 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Pinned Expo, React, React Native, and Metro versions and switched to `pnpm`.
+- Added `clean` script for wiping caches and reinstalling dependencies.
 - Covered invalid JSON and missing type cases in `onMessage` tests.
 - Unified test command across documentation.
 - Dropped coverage npm script; run tests with `npm test -- --coverage`.
@@ -93,7 +95,7 @@ EXPO_PUBLIC_ORS_API_KEY
 Install dependencies and start Expo:
 
 ```
-npm install
+pnpm install
 npx expo start -c
 ```
 
@@ -126,6 +128,15 @@ To create a debug Android APK:
 
 ```
 npm run apk:debug
+```
+
+## Recovery build
+
+If dependencies become corrupted:
+
+```
+pnpm run clean
+pnpm install
 ```
 
 ## TypeScript migration plan
