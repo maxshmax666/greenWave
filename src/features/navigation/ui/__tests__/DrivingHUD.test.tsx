@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { render, waitFor } from '@testing-library/react-native';
 
 jest.mock('expo-localization');
 jest.mock('react-native', () => ({
@@ -11,6 +11,9 @@ jest.mock('react-native', () => ({
 jest.mock('../../../../premium/subscription', () => ({
   usePremium: () => ({ isPremium: true }),
 }));
+jest.mock('expo-speech');
+jest.mock('../../../../state/speech', () => ({ speechEnabled: true }));
+import * as Speech from 'expo-speech';
 
 import DrivingHUD from '../DrivingHUD';
 
@@ -30,5 +33,14 @@ describe('DrivingHUD', () => {
     expect(getByTestId('hud-street').props.children).toBe('Main St');
     expect(getByTestId('hud-eta').props.children).toBe('ETA: 60s');
     expect(getByTestId('hud-speed-limit').props.children).toBe('Limit: 50');
+  });
+
+  it('speaks maneuver when enabled', async () => {
+    render(
+      <DrivingHUD maneuver="Turn left" distance={100} street="" eta={0} speed={0} />,
+    );
+    await waitFor(() =>
+      expect(Speech.speak).toHaveBeenCalledWith('Turn left in 100 m'),
+    );
   });
 });

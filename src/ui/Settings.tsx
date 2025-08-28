@@ -1,6 +1,7 @@
-import React from 'react';
-import { Modal, View, Button, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { Modal, View, Button, StyleSheet, Switch, Text } from 'react-native';
 import { setColor } from '../state/theme';
+import { speechEnabled, setSpeechEnabled } from '../state/speech';
 
 export interface SettingsProps {
   visible: boolean;
@@ -17,10 +18,24 @@ export default function Settings({
     await setColor(c);
     onColor(c);
   };
+  const [voice, setVoice] = useState(speechEnabled);
+
+  const toggleSpeech = async (v: boolean) => {
+    setVoice(v);
+    await setSpeechEnabled(v);
+  };
 
   return (
     <Modal transparent visible={visible} animationType="slide">
       <View style={styles.container}>
+        <View style={styles.row}>
+          <Text style={styles.label}>Voice</Text>
+          <Switch
+            testID="speech-toggle"
+            value={voice}
+            onValueChange={toggleSpeech}
+          />
+        </View>
         <Button title="Red" onPress={() => choose('red')} />
         <Button title="Blue" onPress={() => choose('blue')} />
         <Button title="Close" onPress={onClose} />
@@ -28,6 +43,7 @@ export default function Settings({
     </Modal>
   );
 }
+const BG_COLOR = 'white';
 
 const styles = StyleSheet.create({
   container: {
@@ -36,6 +52,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  label: {
+    marginRight: 8,
+  },
+  row: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
 });
-
-const BG_COLOR = 'white';
