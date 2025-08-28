@@ -1,3 +1,8 @@
+import type { NavigationState } from './features/navigation';
+
+export const cloneNavigationState = (state: NavigationState): NavigationState =>
+  JSON.parse(JSON.stringify(state));
+
 export * from './navigationFactory';
 export * from './commands';
 export * from './processors';
