@@ -4,6 +4,8 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Introduced navigation factory helpers for modular routing and easier tests.
+- Added phase-change notifications to alert on traffic light transitions.
 - Switched analytics tracking to `@react-native-firebase/analytics` with a typed service wrapper.
 - Moved UI components to `src/ui` and traffic-light detectors to `src/traffic` for clearer separation.
 - Documented traffic-light domain guidelines and moved phase helpers to `src/domain`.
@@ -35,9 +37,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 - Converted remaining JavaScript files to TypeScript.
 - Introduced typed interfaces for analytics, network, and Supabase services.
 - Fixed main-direction color mapping and exposed green windows as domain helpers.
-- Added notification service to emit phase change notifications.
 - Updated cycle seconds translation for clarity.
-- Introduced a navigation factory for easier testing of navigation helpers.
 
 ## Environment
 
