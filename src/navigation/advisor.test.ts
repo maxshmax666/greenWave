@@ -20,14 +20,22 @@ describe('advisor pickSpeed', () => {
   };
 
   it('recommends speed hitting green window', () => {
-    const res = pickSpeed(0, [{ light, cycle: baseCycle, dist_m: 500, dirForDriver: 'MAIN' }], 50);
+    const res = pickSpeed(
+      0,
+      [{ light, cycle: baseCycle, dist_m: 500, dirForDriver: 'MAIN' }],
+      50,
+    );
     expect(res.reason).toBe('nearest-green');
     expect(res.recommended).toBeGreaterThanOrEqual(47); // within window
     expect(res.recommended).toBeLessThanOrEqual(56);
   });
 
   it('respects delta buffer at window edges', () => {
-    const res = pickSpeed(0, [{ light, cycle: baseCycle, dist_m: 500, dirForDriver: 'MAIN' }], 60);
+    const res = pickSpeed(
+      0,
+      [{ light, cycle: baseCycle, dist_m: 500, dirForDriver: 'MAIN' }],
+      60,
+    );
     // 60 km/h would arrive exactly at 30s, outside due to delta
     expect(res.recommended).not.toBe(60);
   });

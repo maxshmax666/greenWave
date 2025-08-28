@@ -10,7 +10,7 @@ function toXY([lat, lon]: [number, number]) {
 function projectPointToSegment(
   p: [number, number],
   a: [number, number],
-  b: [number, number]
+  b: [number, number],
 ) {
   const P = toXY(p);
   const A = toXY(a);
@@ -33,7 +33,7 @@ function projectPointToSegment(
 
 export function projectLightsToRoute(
   lights: Light[],
-  route: RouteLeg[]
+  route: RouteLeg[],
 ): { light: Light; dist_m: number; order_m: number }[] {
   const coords: [number, number][] = [];
   for (const leg of route) coords.push(...leg.coords);
@@ -60,7 +60,7 @@ export function projectLightsToRoute(
       const { dist, t } = projectPointToSegment(
         [light.lat, light.lon],
         seg.a,
-        seg.b
+        seg.b,
       );
       if (dist < bestDist) {
         bestDist = dist;

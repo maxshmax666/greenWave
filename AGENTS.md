@@ -12,11 +12,13 @@ New contributors can start by exploring the folders below to see how the app is 
 - `src/domain/` – shared domain types and matching utilities.
 - `assets/` – static images and resources.
 - `App.tsx` – application entry point; renders map, HUD, and menus.
+- `data/app.log` – file logger output written via `src/services/logger.ts`.
 
 ## Newcomer tips
 
 - Start with `README.md` and `CHANGELOG.md` to see recent changes.
 - Navigation helpers live in `src/navigation` and are re-exported from `src/index.ts`.
+- Use `createNavigation()` from `src/index.ts` to obtain test-friendly navigation helpers.
 - Tests sit next to code; see `src/navigation/__tests__` for examples.
 
 Tests live beside the code they verify, and coverage reports are stored under `coverage/`.
