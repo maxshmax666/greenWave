@@ -5,9 +5,9 @@ import {
   resolveNavigationDeps,
   defaultNavigationDeps,
   cloneNavigationState,
-} from './index';
+} from './navigationFactory';
 
-describe('index facade', () => {
+describe('navigationFactory', () => {
   it('creates navigation helpers', () => {
     const nav = createNavigation();
     const track = jest.fn();
