@@ -16,4 +16,10 @@ describe('index navigation facade', () => {
     nav.initialState.hudInfo.street = 'Other';
     expect(custom.hudInfo.street).toBe('Main');
   });
+
+  it('createNavigation isolates maneuver', () => {
+    const nav = createNavigation();
+    nav.initialState.hudInfo.maneuver = 'x';
+    expect(initialState.hudInfo.maneuver).toBe('');
+  });
 });
