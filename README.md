@@ -4,6 +4,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Extracted light detection into `useLightDetector` hook and cycle upload into `lightCycleUploader` service.
 - Retain previous recommendation when no traffic lights are on the route.
 - Introduced navigation factory helpers for modular routing and easier tests.
 - Added phase-change notifications to alert on traffic light transitions.
