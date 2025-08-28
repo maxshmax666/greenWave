@@ -34,7 +34,8 @@ Tests live beside the code they verify, and coverage reports are stored under `c
 
 ## Getting started
 
-- `npm install` – install dependencies.
+- `pnpm install` – install dependencies.
+- `pnpm run clean` – reset caches and lockfile.
 - `npx expo start` – launch the development server.
 - `npm test -- --coverage` – run the Jest suite with coverage (replaces `npm run coverage`).
 - `npm run lint` – check JavaScript and TypeScript code style.
