@@ -88,7 +88,7 @@ See [CHANGELOG.md](CHANGELOG.md) for a full history.
 
 ## Environment
 
-Set the following environment variables for API access:
+Copy `.env.example` to `.env` and set the following environment variables for API access:
 
 ```
 EXPO_PUBLIC_SUPABASE_URL
