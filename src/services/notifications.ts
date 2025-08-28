@@ -1,27 +1,27 @@
 import * as Notifications from 'expo-notifications';
 import type {
   NotificationsService,
-  SignalEmitter,
-  TrafficSignal,
+  PhaseColor,
+  PhaseEmitter,
 } from '../interfaces/notifications';
 
-export async function notifyDriver(signal: TrafficSignal): Promise<void> {
+export async function notifyDriver(phase: PhaseColor): Promise<void> {
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: 'Signal change',
-      body: `Signal is now ${signal}`,
+      title: 'Phase change',
+      body: `Phase is now ${phase}`,
     },
     trigger: null,
   });
 }
 
-export function subscribeToSignalChanges(emitter: SignalEmitter): void {
-  emitter.on('signal', (signal: TrafficSignal) => {
-    void notifyDriver(signal);
+export function subscribeToPhaseChanges(emitter: PhaseEmitter): void {
+  emitter.on('phase', (phase: PhaseColor) => {
+    void notifyDriver(phase);
   });
 }
 
 export const notifications: NotificationsService = {
-  subscribeToSignalChanges,
+  subscribeToPhaseChanges,
   notifyDriver,
 };

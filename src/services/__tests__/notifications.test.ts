@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import * as Notifications from 'expo-notifications';
-import { notifyDriver, subscribeToSignalChanges } from '../notifications';
-import type { SignalEmitter } from '../../interfaces/notifications';
+import { notifyDriver, subscribeToPhaseChanges } from '../notifications';
+import type { PhaseEmitter } from '../../interfaces/notifications';
 
 jest.mock('expo-notifications');
 
@@ -14,17 +14,17 @@ describe('notifications service', () => {
     await notifyDriver('green');
     expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledWith({
       content: {
-        title: 'Signal change',
-        body: 'Signal is now green',
+        title: 'Phase change',
+        body: 'Phase is now green',
       },
       trigger: null,
     });
   });
 
-  it('subscribes to signal changes', () => {
+  it('subscribes to phase changes', () => {
     const emitter = new EventEmitter();
-    subscribeToSignalChanges(emitter as unknown as SignalEmitter);
-    emitter.emit('signal', 'red');
+    subscribeToPhaseChanges(emitter as unknown as PhaseEmitter);
+    emitter.emit('phase', 'red');
     expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
   });
 });
