@@ -24,9 +24,9 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 - Refactored navigation facade with dependency resolver for easier testing.
 - Removed stray `UNKNOWN.egg-info` directory and ignored Python packaging artifacts.
 - Extracted light detection into `useLightDetector` hook and cycle upload into `lightCycleUploader` service.
-- Retain previous recommendation when no traffic lights are on the route.
+- Retain previous recommendation when no traffic-lights are on the route.
 - Introduced navigation factory helpers for modular routing and easier tests.
-- Added phase-change notifications to alert on traffic light transitions.
+- Added phase-change notifications to alert on traffic-light transitions.
 - Switched analytics tracking to `@react-native-firebase/analytics` with a typed service wrapper.
 - Grouped navigation and traffic modules under `src/features/` with co-located services, UI, and tests.
 - Documented traffic-light domain guidelines and moved phase helpers to `src/domain`.
@@ -42,12 +42,12 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 - Consolidated project structure by moving `components/` and `services/` into `src/`.
 - Fixed HUD maneuver spacing.
 - Updated localization string spacing.
-- Added traffic light management forms for lights and cycles.
+- Added traffic-light management forms for lights and cycles.
 - Enabled manual cycle entry with what-if analysis.
 - Added database migrations and models for lights and cycles.
-- Introduced camera screen with traffic light detection.
+- Introduced camera screen with traffic-light detection.
 - Integrated premium subscription flow and analytics tracking.
-- Switched traffic light detector to TFLite model inference.
+- Switched traffic-light detector to TFLite model inference.
 - Implemented fetch helper with timeout and error handling.
 - Guarded route parsing and handled route fetch errors gracefully.
 - Externalized translations into locale files and expanded component test coverage.
