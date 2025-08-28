@@ -2,19 +2,23 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 
 jest.mock('expo-localization');
-jest.mock('react-native', () => {
-  const React = require('react');
-  return {
-    Modal: 'Modal',
-    View: 'View',
-    Text: 'Text',
-    TextInput: 'TextInput',
-    Button: ({ title, onPress, disabled }: any) =>
-      React.createElement('Text', { onPress, disabled }, title),
-    Alert: { alert: jest.fn() },
-    StyleSheet: { create: () => ({}), flatten: () => ({}) },
-  };
-});
+jest.mock('react-native', () => ({
+  Modal: 'Modal',
+  View: 'View',
+  Text: 'Text',
+  TextInput: 'TextInput',
+  Button: ({
+    title,
+    onPress,
+    disabled,
+  }: {
+    title: string;
+    onPress: () => void;
+    disabled?: boolean;
+  }) => React.createElement('Text', { onPress, disabled }, title),
+  Alert: { alert: jest.fn() },
+  StyleSheet: { create: () => ({}), flatten: () => ({}) },
+}));
 
 import CycleFormModal from '../CycleFormModal';
 
@@ -22,7 +26,7 @@ describe('CycleFormModal', () => {
   it('submits default values', () => {
     const onSubmit = jest.fn();
     const { getByText } = render(
-      <CycleFormModal visible onSubmit={onSubmit} onCancel={jest.fn()} />
+      <CycleFormModal visible onSubmit={onSubmit} onCancel={jest.fn()} />,
     );
     fireEvent.press(getByText('Save'));
     expect(onSubmit).toHaveBeenCalledWith({

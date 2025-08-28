@@ -50,7 +50,12 @@ export * from './commands';
 export * from './processors';
 export * from './sources';
 export * from './stores';
-export type { Command } from './interfaces/command';
-export type { Processor, GroupedProcessor } from './interfaces/processor';
-export type { Source } from './interfaces/source';
-export type { Store } from './interfaces/store';
+export type {
+  Command,
+  CliCommand,
+  VoiceCommand,
+  Processor,
+  GroupedProcessor,
+  Source,
+  Store,
+} from './interfaces';
