@@ -1,6 +1,4 @@
-export interface Processor<TInput, TOutput> {
-  process(input: TInput): Promise<TOutput>;
-}
+import type { Processor } from '../processors';
 
 export interface GroupedProcessor<TGroup, TInput, TOutput>
   extends Processor<TInput, TOutput> {

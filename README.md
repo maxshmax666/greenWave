@@ -4,6 +4,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Centralized interface exports under `src/interfaces/index.ts`.
 - Added scaffolding for commands, processors, sources, and stores with shared interfaces.
 - Refactored navigation facade with dependency resolver for easier testing.
 - Removed stray `UNKNOWN.egg-info` directory and ignored Python packaging artifacts.

@@ -2,19 +2,23 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 
 jest.mock('expo-localization');
-jest.mock('react-native', () => {
-  const React = require('react');
-  return {
-    Modal: 'Modal',
-    View: 'View',
-    Text: 'Text',
-    TextInput: 'TextInput',
-    Button: ({ title, onPress, disabled }: any) =>
-      React.createElement('Text', { onPress, disabled }, title),
-    Alert: { alert: jest.fn() },
-    StyleSheet: { create: () => ({}), flatten: () => ({}) },
-  };
-});
+jest.mock('react-native', () => ({
+  Modal: 'Modal',
+  View: 'View',
+  Text: 'Text',
+  TextInput: 'TextInput',
+  Button: ({
+    title,
+    onPress,
+    disabled,
+  }: {
+    title: string;
+    onPress: () => void;
+    disabled?: boolean;
+  }) => React.createElement('Text', { onPress, disabled }, title),
+  Alert: { alert: jest.fn() },
+  StyleSheet: { create: () => ({}), flatten: () => ({}) },
+}));
 
 import LightFormModal from '../LightFormModal';
 
@@ -27,7 +31,7 @@ describe('LightFormModal', () => {
         coordinate={{ latitude: 1, longitude: 2 }}
         onSubmit={onSubmit}
         onCancel={jest.fn()}
-      />
+      />,
     );
     const input = getByDisplayValue('');
     fireEvent.changeText(input, 'Test');
