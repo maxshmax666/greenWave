@@ -2,7 +2,7 @@ import {
   createNavigation,
   initialState,
   resolveNavigationDeps,
-  handleStartNavigation,
+  defaultNavigationDeps,
 } from './index';
 
 describe('index facade', () => {
@@ -35,7 +35,7 @@ describe('index facade', () => {
 
   it('resolves default dependencies', () => {
     const deps = resolveNavigationDeps();
-    expect(deps.handleStartNavigation).toBe(handleStartNavigation);
+    expect(deps).toEqual(defaultNavigationDeps);
   });
 
   it('overrides dependencies', () => {
