@@ -6,6 +6,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Dropped coverage npm script; run tests with `npm test -- --coverage`.
 - Re-exported `cloneNavigationState` from the navigation feature and removed duplicate implementation.
 - Renamed project heading to "greenWave".
 - Added tests to ensure navigation maneuvers remain isolated between runs.
@@ -90,7 +91,7 @@ npx expo start -c
 Run unit tests:
 
 ```
-npm run coverage
+npm test -- --coverage
 ```
 
 ### Debugging
