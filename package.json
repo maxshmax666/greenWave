@@ -9,7 +9,8 @@
     "web": "expo start --web",
     "test": "node --import tsx node_modules/jest/bin/jest.js",
     "lint": "eslint src",
-    "apk:debug": "npx expo run:android --variant debug"
+    "apk:debug": "npx expo run:android --variant debug",
+    "coverage": "npm test -- --coverage"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.24.0",
