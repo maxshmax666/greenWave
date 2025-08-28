@@ -67,8 +67,11 @@ function subscribeLightCycles(
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'light_cycles' },
-      (payload: RealtimePostgresChangesPayload<LightCycle>) =>
-        cb(payload.new as LightCycle),
+      (payload: RealtimePostgresChangesPayload<LightCycle>) => {
+        if (payload.new) {
+          cb(payload.new as LightCycle);
+        }
+      },
     )
     .subscribe();
 }

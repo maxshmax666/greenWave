@@ -13,6 +13,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Added `.npmrc` with `shamefully-hoist=false` and expanded npm scripts for development and diagnostics.
 - Pinned Expo, React, React Native, and Metro versions and switched to `pnpm`.
 - Added `clean` script for wiping caches and reinstalling dependencies.
 - Covered invalid JSON and missing type cases in `onMessage` tests.
