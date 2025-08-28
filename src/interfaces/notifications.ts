@@ -1,10 +1,10 @@
-export type TrafficSignal = 'red' | 'yellow' | 'green';
+export type PhaseColor = 'red' | 'yellow' | 'green';
 
-export interface SignalEmitter {
-  on(event: 'signal', listener: (signal: TrafficSignal) => void): void;
+export interface PhaseEmitter {
+  on(event: 'phase', listener: (phase: PhaseColor) => void): void;
 }
 
 export interface NotificationsService {
-  subscribeToSignalChanges(emitter: SignalEmitter): void;
-  notifyDriver(signal: TrafficSignal): Promise<void>;
+  subscribeToPhaseChanges(emitter: PhaseEmitter): void;
+  notifyDriver(phase: PhaseColor): Promise<void>;
 }

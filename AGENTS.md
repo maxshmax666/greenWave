@@ -1,6 +1,7 @@
 # AGENTS
 
-This repository contains a React Native (Expo) application. New contributors can start by exploring the folders below to see how the app is assembled.
+This repository contains a React Native (Expo) application for navigating through traffic lights with real-time phase detection.
+New contributors can start by exploring the folders below to see how the app is assembled.
 
 ## Structure
 
