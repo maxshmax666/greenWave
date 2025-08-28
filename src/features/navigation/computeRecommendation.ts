@@ -8,6 +8,9 @@ export function computeRecommendation(
   nowSec: number,
   prevRecommended: number,
 ) {
+  if (lightsOnRoute.length === 0) {
+    return { recommended: prevRecommended, nearestInfo: { dist: 0, time: 0 } };
+  }
   const res = pickSpeed(nowSec, lightsOnRoute, car.speed * 3.6);
   const { nearestInfo, nearestStillGreen } = getNearestInfo(
     lightsOnRoute[0],
