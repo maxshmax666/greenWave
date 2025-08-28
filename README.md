@@ -7,6 +7,9 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 ## Recent changes
 
 - Added GitHub Actions test workflow with Codecov coverage uploads.
+- Split navigation factory into a dedicated `navigationFactory` module for easier testing.
+- Added typed configuration objects for Supabase and analytics services.
+- Exposed command, processor, source, and store interfaces via directory `index.ts` files.
 - Split map and menu UI into `MapViewWrapper` and `MenuContainer` components with hooks for Supabase data and menu state.
 - Exposed `cloneNavigationState` to deep copy navigation state and allow custom initial state injection.
 - Renamed service interfaces to `SupabaseService` and `AnalyticsService`.
@@ -107,3 +110,11 @@ To create a debug Android APK:
 ```
 npm run apk:debug
 ```
+
+## TypeScript migration plan
+
+- Adopt TypeScript incrementally; new files use `strictNullChecks`.
+- Expose interfaces from each module's `index.ts` to guide refactors.
+- Supabase and analytics services accept typed config objects.
+- Use the `tsx` loader directly without a build step.
+- Ensure `npm test -- --coverage` and `npm run lint` pass after each change.
