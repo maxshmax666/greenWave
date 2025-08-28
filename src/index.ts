@@ -33,11 +33,13 @@ export function cloneNavigationState(
   return { ...state };
 }
 
-export function createNavigationFactory(deps: Partial<NavigationDeps> = {}): (
+export type NavigationFactory = (
   state?: NavigationState,
-) => {
-  initialState: NavigationState;
-} & NavigationDeps {
+) => { initialState: NavigationState } & NavigationDeps;
+
+export function createNavigationFactory(
+  deps: Partial<NavigationDeps> = {},
+): NavigationFactory {
   const resolved = resolveNavigationDeps(deps);
   return (state: NavigationState = initialState) => ({
     ...resolved,

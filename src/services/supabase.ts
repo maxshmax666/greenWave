@@ -7,7 +7,7 @@ import {
 import { network } from './network';
 import { log } from './logger';
 import type { Light, LightCycle } from '../domain/types';
-import type { Supabase as SupabaseInterface } from '../interfaces/supabase';
+import type { SupabaseService } from '../interfaces/supabaseService';
 
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? '';
 const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '';
@@ -70,7 +70,7 @@ function subscribeLightCycles(
     .subscribe();
 }
 
-export const supabaseService: SupabaseInterface = {
+export const supabaseService: SupabaseService = {
   fetchLightsAndCycles,
   subscribeLightCycles,
 };

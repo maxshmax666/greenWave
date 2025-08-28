@@ -1,30 +1,25 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Alert, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, View, Text } from 'react-native';
 import Settings from './src/ui/Settings';
 import { color as themeColorValue, loadFromStorage } from './src/state/theme';
 import { loadSpeechEnabled } from './src/state/speech';
-import MapView, {
-  Marker,
-  Polyline,
-  MapPressEvent,
-  LongPressEvent,
-  UserLocationChangeEvent,
-  LatLng,
-} from 'react-native-maps';
-import CarMarker from './src/features/navigation/ui/CarMarker';
+import type MapView from 'react-native-maps';
+import { MapPressEvent, LongPressEvent, UserLocationChangeEvent, LatLng } from 'react-native-maps';
 import DrivingHUD from './src/features/navigation/ui/DrivingHUD';
 import LightFormModal from './src/features/traffic/ui/LightFormModal';
 import CycleFormModal from './src/features/traffic/ui/CycleFormModal';
 import SpeedBanner from './src/features/navigation/ui/SpeedBanner';
-import MainMenu from './src/ui/MainMenu';
-import { supabaseService, supabase } from './src/services/supabase';
+import MapViewWrapper from './src/ui/MapViewWrapper';
+import MenuContainer from './src/ui/MenuContainer';
+import { supabase } from './src/services/supabase';
+import { useSupabaseData } from './src/hooks/useSupabaseData';
+import { useMenu } from './src/hooks/useMenu';
 import { getRoute, RouteStep } from './src/features/navigation/services/ors';
 import {
   saveRoute,
   loadRoute,
 } from './src/features/navigation/services/routeCache';
 import i18n from './src/i18n';
-import { mapColorForRuntime } from './src/features/navigation/phases';
 import { projectLightsToRoute } from './src/domain/matching';
 import { analytics } from './src/services/analytics';
 import {
@@ -45,8 +40,14 @@ interface Car {
 export default function App(): JSX.Element {
   const mapRef = useRef<MapView | null>(null);
   const [car, setCar] = useState<Car | null>(null);
-  const [lights, setLights] = useState<Light[]>([]);
-  const [cycles, setCycles] = useState<Record<string, LightCycle>>({});
+  const {
+    lights,
+    cycles,
+    error: supabaseError,
+    setLights,
+    setCycles,
+  } = useSupabaseData();
+  const loadError = supabaseError ? 'Failed to load data' : null;
   const [nowSec, setNowSec] = useState<number>(Math.floor(Date.now() / 1000));
   const [route, setRoute] = useState<LatLng[] | null>(null);
   const [lightsOnRoute, setLightsOnRoute] = useState<LightOnRoute[]>([]);
@@ -59,7 +60,6 @@ export default function App(): JSX.Element {
   const [cycleModal, setCycleModal] = useState<{ light_id: string } | null>(
     null,
   );
-  const [loadError, setLoadError] = useState<string | null>(null);
   const [hudInfo, setHudInfo] = useState({
     maneuver: '',
     distance: 0,
@@ -68,13 +68,34 @@ export default function App(): JSX.Element {
     speedLimit: 0,
   });
   const [, setSteps] = useState<RouteStep[]>([]);
-  const [menuVisible, setMenuVisible] = useState<boolean>(false);
+  const { visible: menuVisible, toggle: toggleMenu, hide: hideMenu } =
+    useMenu(false);
   const [themeColor, setThemeColor] = useState(themeColorValue);
   const [settingsVisible, setSettingsVisible] = useState(false);
 
+  useEffect(() => {
+    if (!supabaseError) return;
+    loadRoute().then((cached) => {
+      if (cached) {
+        setRoute(cached.geometry as LatLng[]);
+        setSteps(cached.steps as RouteStep[]);
+        if (cached.steps.length) {
+          const first = cached.steps[0];
+          setHudInfo({
+            maneuver: first.instruction,
+            distance: first.distance,
+            street: first.name,
+            eta: first.duration,
+            speedLimit: first.speed,
+          });
+        }
+      }
+    });
+  }, [supabaseError]);
+
   const onStartNavigation = () => {
     startNavigation(analytics.trackEvent);
-    setMenuVisible(false);
+    hideMenu();
   };
 
   const onClearRoute = () => {
@@ -85,56 +106,20 @@ export default function App(): JSX.Element {
     setLightsOnRoute(state.lightsOnRoute as LightOnRoute[]);
     setRecommended(state.recommended as number);
     setNearestInfo(state.nearestInfo);
-    setMenuVisible(state.menuVisible);
+    hideMenu();
   };
 
   const handleAddLight = () => {
     if (car)
       setLightModal({ latitude: car.latitude, longitude: car.longitude });
-    setMenuVisible(false);
+    hideMenu();
   };
 
   const handleSettings = () => {
     analytics.trackEvent('settings_change');
-    setMenuVisible(false);
+    hideMenu();
     setSettingsVisible(true);
   };
-
-  useEffect(() => {
-    supabaseService
-      .fetchLightsAndCycles()
-      .then(async ({ lights, cycles, error }) => {
-        if (error) {
-          setLoadError('Failed to load data');
-          const cached = await loadRoute();
-          if (cached) {
-            setRoute(cached.geometry as LatLng[]);
-            setSteps(cached.steps as RouteStep[]);
-            if (cached.steps.length) {
-              const first = cached.steps[0];
-              setHudInfo({
-                maneuver: first.instruction,
-                distance: first.distance,
-                street: first.name,
-                eta: first.duration,
-                speedLimit: first.speed,
-              });
-            }
-          }
-          return;
-        }
-        setLights(lights);
-        const map: Record<string, LightCycle> = {};
-        for (const c of cycles) map[c.light_id] = c;
-        setCycles(map);
-      });
-    const sub = supabaseService.subscribeLightCycles((cycle) => {
-      setCycles((c) => ({ ...c, [cycle.light_id]: cycle }));
-    });
-    return () => {
-      supabase.removeChannel(sub);
-    };
-  }, []);
 
   useEffect(() => {
     loadFromStorage().then(() => setThemeColor(themeColorValue));
@@ -237,33 +222,18 @@ export default function App(): JSX.Element {
   return (
     <View style={[styles.container, { backgroundColor: themeColor }]}>
       {loadError && <Text testID="load-error">{loadError}</Text>}
-      <MapView
-        ref={mapRef}
-        style={styles.map}
-        showsUserLocation
-        onUserLocationChange={onUserLocationChange}
-        onPress={onMapPress}
+      <MapViewWrapper
+        mapRef={mapRef}
+        car={car}
+        lights={lights}
+        cycles={cycles}
+        nowSec={nowSec}
+        route={route}
+        lightsOnRoute={lightsOnRoute}
+        onMapPress={onMapPress}
         onLongPress={onLongPress}
-        customMapStyle={nightStyle}
-      >
-        {car && <CarMarker coordinate={car} heading={car.heading} />}
-        {lights.map((l) => {
-          const cycle = cycles[l.id] || null;
-          const color = mapColorForRuntime(cycle, l.direction, nowSec);
-          const isNearest =
-            lightsOnRoute.length && lightsOnRoute[0].light.id === l.id;
-          return (
-            <Marker
-              key={l.id}
-              coordinate={{ latitude: l.lat, longitude: l.lon }}
-              pinColor={isNearest ? 'yellow' : color}
-            />
-          );
-        })}
-        {route && (
-          <Polyline coordinates={route} strokeColor="yellow" strokeWidth={3} />
-        )}
-      </MapView>
+        onUserLocationChange={onUserLocationChange}
+      />
       <SpeedBanner
         speed={recommended}
         nearestDist={nearestInfo.dist}
@@ -277,20 +247,14 @@ export default function App(): JSX.Element {
         speed={car ? car.speed * 3.6 : 0}
         speedLimit={hudInfo.speedLimit}
       />
-      <MainMenu
+      <MenuContainer
         visible={menuVisible}
+        onToggle={toggleMenu}
         onStartNavigation={onStartNavigation}
         onClearRoute={onClearRoute}
         onAddLight={handleAddLight}
         onSettings={handleSettings}
       />
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() => setMenuVisible((v) => !v)}
-        testID="menu-button"
-      >
-        <Text style={styles.fabText}>☰</Text>
-      </TouchableOpacity>
       {lightModal && (
         <LightFormModal
           visible={true}
@@ -315,42 +279,6 @@ export default function App(): JSX.Element {
   );
 }
 
-const nightStyle = [
-  { elementType: 'geometry', stylers: [{ color: '#212121' }] },
-  { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-  { elementType: 'labels.text.fill', stylers: [{ color: '#757575' }] },
-  { elementType: 'labels.text.stroke', stylers: [{ color: '#212121' }] },
-  {
-    featureType: 'road',
-    elementType: 'geometry',
-    stylers: [{ color: '#484848' }],
-  },
-  {
-    featureType: 'water',
-    elementType: 'geometry',
-    stylers: [{ color: '#000000' }],
-  },
-];
-
-const FAB_BG = 'rgba(0,0,0,0.8)';
-const FAB_TEXT_COLOR = '#fff';
-
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  fab: {
-    alignItems: 'center',
-    backgroundColor: FAB_BG,
-    borderRadius: 25,
-    bottom: 20,
-    height: 50,
-    justifyContent: 'center',
-    position: 'absolute',
-    right: 20,
-    width: 50,
-  },
-  fabText: {
-    color: FAB_TEXT_COLOR,
-    fontSize: 24,
-  },
-  map: { flex: 1 },
 });

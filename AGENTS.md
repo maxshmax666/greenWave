@@ -19,6 +19,7 @@ New contributors can start by exploring the folders below to see how the app is 
 - `App.tsx` – application entry point; renders map, HUD, and menus.
 - `data/app.log` – file logger output written via `src/services/logger.ts`.
 - Analytics events are logged via `src/services/analytics.ts` which wraps `@react-native-firebase/analytics`.
+- UI is split into `MapViewWrapper` and `MenuContainer` under `src/ui/` with side effects handled in hooks like `useSupabaseData` and `useMenu`.
 
 ## Newcomer tips
 
@@ -26,6 +27,8 @@ New contributors can start by exploring the folders below to see how the app is 
 - Navigation helpers live in `src/features/navigation` and are re-exported from `src/index.ts`.
 - Use `createNavigation()` from `src/index.ts` to obtain test-friendly navigation helpers.
 - Tests sit next to code; see `src/features/navigation/__tests__` for examples.
+
+Service interfaces are named `SupabaseService`, `AnalyticsService`, etc., and live in `src/interfaces/`.
 
 Tests live beside the code they verify, and coverage reports are stored under `coverage/`.
 
