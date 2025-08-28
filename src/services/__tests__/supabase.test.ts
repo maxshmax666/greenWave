@@ -1,6 +1,9 @@
 import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import type { LightCycle } from '../../domain/types';
 
+process.env.PUBLIC_SUPABASE_URL = 'http://localhost';
+process.env.PUBLIC_SUPABASE_ANON_KEY = 'anon';
+
 jest.mock('@supabase/supabase-js', () => ({
   createClient: jest.fn(() => ({
     channel: jest.fn(() => ({

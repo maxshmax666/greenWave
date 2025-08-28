@@ -1,27 +1,13 @@
 import {
-  createClient,
-  SupabaseClient,
   RealtimeChannel,
   RealtimePostgresChangesPayload,
 } from '@supabase/supabase-js';
-import { network } from './network';
 import { log } from './logger';
 import type { Light, LightCycle } from '../domain/types';
 import type { SupabaseService } from '../interfaces/supabaseService';
-import type { SupabaseConfig } from '../interfaces/config';
+import { supabase } from '../lib/supabase';
 
-export function createSupabaseClient(config: SupabaseConfig): SupabaseClient {
-  return createClient(config.url, config.anonKey, {
-    global: { fetch: network.fetchWithTimeout },
-  });
-}
-
-const defaultConfig: SupabaseConfig = {
-  url: process.env.EXPO_PUBLIC_SUPABASE_URL ?? '',
-  anonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '',
-};
-
-export const supabase = createSupabaseClient(defaultConfig);
+export { supabase };
 
 async function fetchLightsAndCycles(): Promise<{
   lights: Light[];

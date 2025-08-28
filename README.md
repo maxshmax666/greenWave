@@ -13,6 +13,8 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Introduced shared Supabase client (`src/lib/supabase.ts`) and a lights service with CRUD and phase helpers backed by Vitest tests.
+- Added lights migration and seed data for traffic-light management.
 - Added `.npmrc` with `shamefully-hoist=false` and expanded npm scripts for development and diagnostics.
 - Pinned Expo, React, React Native, and Metro versions and switched to `pnpm`.
 - Added `clean` script for wiping caches and reinstalling dependencies.

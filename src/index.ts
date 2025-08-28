@@ -1,6 +1,6 @@
 export { cloneNavigationState } from './features/navigation/cloneNavigationState';
 
-export * from './navigationFactory';
+export { createNavigation, initialState } from './navigationFactory';
 export * from './commands';
 export * from './processors';
 export * from './sources';
