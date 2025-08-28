@@ -36,7 +36,7 @@ Tests live beside the code they verify, and coverage reports are stored under `c
 
 - `npm install` – install dependencies.
 - `npx expo start` – launch the development server.
-- `npm test -- --coverage` – run the Jest suite with coverage.
+- `npm test -- --coverage` – run the Jest suite with coverage (replaces `npm run coverage`).
 - `npm run lint` – check JavaScript and TypeScript code style.
 - Node scripts use the [`tsx`](https://github.com/privatenumber/tsx) loader via `node --loader tsx`.
 
