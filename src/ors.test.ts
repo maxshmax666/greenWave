@@ -1,4 +1,5 @@
 import { getRoute } from './services/ors';
+import { network } from './services/network';
 
 const start = { latitude: 1, longitude: 2 };
 const end = { latitude: 3, longitude: 4 };
@@ -32,6 +33,56 @@ describe('getRoute', () => {
     await expect(getRoute(start, end)).rejects.toThrow(
       'Unable to fetch route. Request failed with status 500: server error',
     );
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns parsed route data on success', async () => {
+    const json = {
+      features: [
+        {
+          geometry: { coordinates: [[2, 1], [4, 3]] },
+          properties: {
+            summary: { distance: 100, duration: 200 },
+            segments: [
+              {
+                steps: [
+                  {
+                    instruction: 'Head north',
+                    distance: 100,
+                    duration: 200,
+                    name: 'Main St',
+                    speed: 50,
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    };
+    const fetchSpy = jest
+      .spyOn(network, 'fetchWithTimeout')
+      .mockResolvedValue({ json: async () => json } as any);
+
+    const route = await getRoute(start, end);
+
+    expect(route).toEqual({
+      geometry: [
+        { latitude: 1, longitude: 2 },
+        { latitude: 3, longitude: 4 },
+      ],
+      distance: 100,
+      duration: 200,
+      steps: [
+        {
+          instruction: 'Head north',
+          distance: 100,
+          duration: 200,
+          name: 'Main St',
+          speed: 50,
+        },
+      ],
+    });
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 });
