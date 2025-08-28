@@ -3,11 +3,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import MapView from 'react-native-maps';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Camera, CameraType } from 'expo-camera';
-import { detectTrafficLight, TrafficLightDetection } from '../traffic/trafficLightDetector';
-import { uploadCycle } from '../services/uploadLightData';
+import { detectTrafficLight, TrafficLightDetection } from '../trafficLightDetector';
+import { uploadCycle } from '../../../services/uploadLightData';
 import { finalizePhase, ColorPhase } from '../services/colorPhases';
 import LightFormModal from './LightFormModal';
-import { supabase } from '../services/supabase';
+import { supabase } from '../../../services/supabase';
 
 const CameraScreen: React.FC = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);

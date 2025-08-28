@@ -1,5 +1,5 @@
 import { computeRecommendation } from '../computeRecommendation';
-import type { Light, LightCycle } from '../../domain/types';
+import type { Light, LightCycle } from '../../../domain/types';
 
 const light: Light = {
   id: 'l1',

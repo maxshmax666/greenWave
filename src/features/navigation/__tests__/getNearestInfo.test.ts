@@ -1,5 +1,5 @@
 import { getNearestInfo } from '../getNearestInfo';
-import type { Light, LightCycle } from '../../domain/types';
+import type { Light, LightCycle } from '../../../domain/types';
 
 const light: Light = {
   id: 'l1',

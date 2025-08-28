@@ -1,11 +1,11 @@
 import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
-import i18n from '../i18n';
-import { usePremium } from '../premium/subscription';
+import i18n from '../../../i18n';
+import { usePremium } from '../../../premium/subscription';
 import {
   PremiumFeature,
   requiresPremium,
-} from '../premium/features';
+} from '../../../premium/features';
 
 export interface DrivingHUDProps {
   maneuver?: string;

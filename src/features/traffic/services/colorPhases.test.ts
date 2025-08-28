@@ -1,4 +1,4 @@
-import { finalizePhase, ColorPhase } from '../colorPhases';
+import { finalizePhase, ColorPhase } from './colorPhases';
 
 describe('finalizePhase', () => {
   it('records duration using start time', () => {
