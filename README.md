@@ -13,7 +13,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 - Modularized navigation helpers for easier testing and reuse.
 - Exposed navigation helpers via `src/index.ts` facade for simpler imports.
 - Handled zero recommended speed to avoid divide-by-zero in nearest info calculation.
-- Tracked traffic light phase durations for analytics.
+- Tracked traffic-light phase durations for analytics.
 - Added offline route caching to reuse the last fetched route when connectivity fails.
 - Introduced persistent theme color with settings screen.
 - Added voice guidance for maneuvers with Expo Speech and a settings toggle.
