@@ -40,4 +40,15 @@ describe('computeRecommendation', () => {
     );
     expect(recommended).toBe(52);
   });
+
+  it('returns previous recommendation when no lights on route', () => {
+    const { recommended, nearestInfo } = computeRecommendation(
+      [],
+      { speed: 50 / 3.6 },
+      0,
+      42,
+    );
+    expect(recommended).toBe(42);
+    expect(nearestInfo).toEqual({ dist: 0, time: 0 });
+  });
 });
