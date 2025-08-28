@@ -4,6 +4,7 @@ import {
   initialState,
   resolveNavigationDeps,
   defaultNavigationDeps,
+  cloneNavigationState,
 } from './index';
 
 describe('index facade', () => {
@@ -51,5 +52,11 @@ describe('index facade', () => {
     const custom = jest.fn();
     const deps = resolveNavigationDeps({ handleStartNavigation: custom });
     expect(deps.handleStartNavigation).toBe(custom);
+  });
+
+  it('clones navigation state', () => {
+    const clone = cloneNavigationState(initialState);
+    expect(clone).toEqual(initialState);
+    expect(clone).not.toBe(initialState);
   });
 });

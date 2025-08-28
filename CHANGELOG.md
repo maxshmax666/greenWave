@@ -12,3 +12,4 @@
 - feat: add speech guidance for maneuvers
 - feat: add theme state with settings screen
 - refactor: group navigation and traffic modules under `src/features`
+- refactor: simplify navigation dependency resolution and expose `cloneNavigationState` helper

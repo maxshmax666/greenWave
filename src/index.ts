@@ -24,15 +24,13 @@ export const defaultNavigationDeps: NavigationDeps = {
 export function resolveNavigationDeps(
   deps: Partial<NavigationDeps> = {},
 ): NavigationDeps {
-  return {
-    handleStartNavigation:
-      deps.handleStartNavigation ?? defaultNavigationDeps.handleStartNavigation,
-    handleClearRoute:
-      deps.handleClearRoute ?? defaultNavigationDeps.handleClearRoute,
-    getNearestInfo: deps.getNearestInfo ?? defaultNavigationDeps.getNearestInfo,
-    computeRecommendation:
-      deps.computeRecommendation ?? defaultNavigationDeps.computeRecommendation,
-  };
+  return { ...defaultNavigationDeps, ...deps };
+}
+
+export function cloneNavigationState(
+  state: NavigationState = initialState,
+): NavigationState {
+  return { ...state };
 }
 
 export function createNavigationFactory(deps: Partial<NavigationDeps> = {}): (
@@ -43,7 +41,7 @@ export function createNavigationFactory(deps: Partial<NavigationDeps> = {}): (
   const resolved = resolveNavigationDeps(deps);
   return (state: NavigationState = initialState) => ({
     ...resolved,
-    initialState: { ...state },
+    initialState: cloneNavigationState(state),
   });
 }
 

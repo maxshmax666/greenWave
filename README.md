@@ -4,6 +4,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Expanded test coverage for navigation helpers and cycle upload failure paths.
 - Converted remaining `.js` files to TypeScript and configured the `tsx` loader for Node scripts.
 - Exported additional types and removed legacy interface stubs.
 - Centralized interface exports under `src/interfaces/index.ts`.

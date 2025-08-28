@@ -45,6 +45,7 @@ Consult `README.md` for environment variables and more detailed setup steps.
 - Define component styles via `StyleSheet.create` blocks.
 - Keep code formatted with Prettier/ESLint for TS/JS files.
 - Python files, if added, must be formatted with `black` and sorted with `isort`.
+  These formatters run via pre-commit hooks.
 
 ## Checks
 
