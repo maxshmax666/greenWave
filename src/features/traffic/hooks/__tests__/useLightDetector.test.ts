@@ -3,6 +3,7 @@ jest.mock('tflite-react-native');
 import { renderHook, act } from '@testing-library/react-hooks';
 import useLightDetector from '../useLightDetector';
 import { runModelOnImageMock as runModelOnImageMockRaw } from 'tflite-react-native';
+import type { CameraCapturedPicture } from 'expo-camera';
 const runModelOnImageMock = runModelOnImageMockRaw as jest.Mock;
 
 jest.mock('../../../../services/lightCycleUploader', () => ({
@@ -28,7 +29,12 @@ describe('useLightDetector', () => {
       },
     );
     const { result } = renderHook(() => useLightDetector(null));
-    const res = await result.current.detect({ base64: 'img' });
+    const res = await result.current.detect({
+      base64: 'img',
+      width: 0,
+      height: 0,
+      uri: '',
+    } as CameraCapturedPicture);
     expect(res).toEqual({
       color: 'green',
       boundingBox: { x: 1, y: 2, width: 3, height: 4 },
@@ -41,7 +47,14 @@ describe('useLightDetector', () => {
         cb(new Error('fail')),
     );
     const { result } = renderHook(() => useLightDetector(null));
-    await expect(result.current.detect({ base64: 'img' })).resolves.toBeNull();
+    await expect(
+      result.current.detect({
+        base64: 'img',
+        width: 0,
+        height: 0,
+        uri: '',
+      } as CameraCapturedPicture),
+    ).resolves.toBeNull();
   });
 
   it('uploads cycle on stop', async () => {

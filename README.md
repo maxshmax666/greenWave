@@ -4,8 +4,17 @@
 
 React Native (Expo) app with real-time traffic-light detection, premium subscriptions, and analytics.
 
+## Branches
+
+- `main` – protected, production-ready releases.
+- `develop` – integration branch for upcoming work.
+- `feature/*` – feature development branches.
+- `hotfix/*` – urgent fixes based off `main`.
+
 ## Recent changes
 
+- Covered invalid JSON and missing type cases in `onMessage` tests.
+- Unified test command across documentation.
 - Dropped coverage npm script; run tests with `npm test -- --coverage`.
 - Re-exported `cloneNavigationState` from the navigation feature and removed duplicate implementation.
 - Renamed project heading to "greenWave".

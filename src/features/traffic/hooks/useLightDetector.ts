@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Tflite from 'tflite-react-native';
+import type { CameraView, CameraCapturedPicture } from 'expo-camera';
 import { finalizePhase, ColorPhase } from '../services/colorPhases';
 import { uploadLightCycle } from '../../../services/lightCycleUploader';
 
@@ -13,13 +14,6 @@ export interface TrafficLightDetection {
   };
 }
 
-interface CameraRef {
-  takePictureAsync(opts: {
-    skipProcessing: boolean;
-    base64: boolean;
-  }): Promise<{ base64?: string }>;
-}
-
 interface ModelResult {
   detectedClass: string;
   rect: { x: number; y: number; w: number; h: number };
@@ -28,7 +22,7 @@ interface ModelResult {
 export function useLightDetector(
   light: { id: number | string; lat: number; lon: number } | null,
 ) {
-  const cameraRef = useRef<CameraRef | null>(null);
+  const cameraRef = useRef<CameraView | null>(null);
   const modelRef = useRef<Tflite | null>(null);
   const [detection, setDetection] = useState<TrafficLightDetection | null>(
     null,
@@ -40,7 +34,7 @@ export function useLightDetector(
 
   const detect = useCallback(
     async (
-      photo: { base64?: string } | null,
+      photo: CameraCapturedPicture | null,
     ): Promise<TrafficLightDetection | null> => {
       if (!photo?.base64) return null;
       try {
@@ -92,7 +86,7 @@ export function useLightDetector(
             skipProcessing: true,
             base64: true,
           });
-          const result = await detect(photo);
+          const result = await detect(photo ?? null);
           setDetection(result);
           if (result?.color && result.color !== currentColor) {
             const now = Date.now();
