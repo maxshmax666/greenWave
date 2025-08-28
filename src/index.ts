@@ -33,25 +33,31 @@ export function cloneNavigationState(
   return { ...state };
 }
 
+export interface NavigationConfig {
+  deps?: Partial<NavigationDeps>;
+  cloneState?: (state: NavigationState) => NavigationState;
+}
+
 export type NavigationFactory = (
   state?: NavigationState,
 ) => { initialState: NavigationState } & NavigationDeps;
 
 export function createNavigationFactory(
-  deps: Partial<NavigationDeps> = {},
+  config: NavigationConfig = {},
 ): NavigationFactory {
-  const resolved = resolveNavigationDeps(deps);
+  const resolved = resolveNavigationDeps(config.deps);
+  const clone = config.cloneState ?? cloneNavigationState;
   return (state: NavigationState = initialState) => ({
     ...resolved,
-    initialState: cloneNavigationState(state),
+    initialState: clone(state),
   });
 }
 
 export function createNavigation(
   state?: NavigationState,
-  deps: Partial<NavigationDeps> = {},
+  config: NavigationConfig = {},
 ) {
-  return createNavigationFactory(deps)(state);
+  return createNavigationFactory(config)(state);
 }
 
 export {

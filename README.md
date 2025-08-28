@@ -1,9 +1,12 @@
 # greenwave-rn
 
+[![codecov](https://codecov.io/gh/maxshmax666/greenWave/branch/main/graph/badge.svg)](https://codecov.io/gh/maxshmax666/greenWave)
+
 React Native (Expo) app with real-time traffic-light detection, premium subscriptions, and analytics.
 
 ## Recent changes
 
+- Added GitHub Actions test workflow with Codecov coverage uploads.
 - Split map and menu UI into `MapViewWrapper` and `MenuContainer` components with hooks for Supabase data and menu state.
 - Exposed `cloneNavigationState` to deep copy navigation state and allow custom initial state injection.
 - Renamed service interfaces to `SupabaseService` and `AnalyticsService`.
