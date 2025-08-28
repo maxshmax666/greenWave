@@ -3,10 +3,7 @@ import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
 import * as Speech from 'expo-speech';
 import i18n from '../../../i18n';
 import { usePremium } from '../../../premium/subscription';
-import {
-  PremiumFeature,
-  requiresPremium,
-} from '../../../premium/features';
+import { PremiumFeature, requiresPremium } from '../../../premium/features';
 import { speechEnabled } from '../../../state/speech';
 
 export interface DrivingHUDProps {
@@ -65,7 +62,9 @@ export default function DrivingHUD({
         </View>
       ) : null}
       <View style={styles.streetPanel}>
-        <Text testID="hud-street" style={styles.text}>{street}</Text>
+        <Text testID="hud-street" style={styles.text}>
+          {street}
+        </Text>
       </View>
       <View style={styles.etaPanel}>
         <Text testID="hud-eta" style={styles.text}>

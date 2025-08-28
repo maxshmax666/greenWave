@@ -17,7 +17,7 @@ New contributors can start by exploring the folders below to see how the app is 
 
 ## Newcomer tips
 
-- Start with `README.md` and `CHANGELOG.md` to see recent changes.
+- Start with [`README.md`](README.md) and [`CHANGELOG.md`](CHANGELOG.md) to see recent changes.
 - Navigation helpers live in `src/features/navigation` and are re-exported from `src/index.ts`.
 - Use `createNavigation()` from `src/index.ts` to obtain test-friendly navigation helpers.
 - Tests sit next to code; see `src/features/navigation/__tests__` for examples.

@@ -26,27 +26,27 @@ describe('validateCycle', () => {
   };
 
   test('numbers required', () => {
-    expect(
-      validateCycle({ ...base, cycleSeconds: 'abc' })
-    ).toBe('All numeric fields must be valid numbers');
+    expect(validateCycle({ ...base, cycleSeconds: 'abc' })).toBe(
+      'All numeric fields must be valid numbers',
+    );
   });
 
   test('main start must be less than end', () => {
-    expect(
-      validateCycle({ ...base, mainStart: '5', mainEnd: '5' })
-    ).toBe('Main start must be less than end');
+    expect(validateCycle({ ...base, mainStart: '5', mainEnd: '5' })).toBe(
+      'Main start must be less than end',
+    );
   });
 
   test('secondary start must be less than end', () => {
-    expect(
-      validateCycle({ ...base, secStart: '15', secEnd: '15' })
-    ).toBe('Secondary start must be less than end');
+    expect(validateCycle({ ...base, secStart: '15', secEnd: '15' })).toBe(
+      'Secondary start must be less than end',
+    );
   });
 
   test('pedestrian start must be less than end', () => {
-    expect(
-      validateCycle({ ...base, pedStart: '25', pedEnd: '25' })
-    ).toBe('Pedestrian start must be less than end');
+    expect(validateCycle({ ...base, pedStart: '25', pedEnd: '25' })).toBe(
+      'Pedestrian start must be less than end',
+    );
   });
 
   test('passes for valid data', () => {
