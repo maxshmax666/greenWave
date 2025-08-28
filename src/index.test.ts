@@ -20,4 +20,11 @@ describe('index facade', () => {
     expect(nav.initialState).toEqual(custom);
     expect(nav.initialState).not.toBe(custom);
   });
+
+  it('allows injecting handlers', () => {
+    const custom = jest.fn();
+    const nav = createNavigation(undefined, { handleStartNavigation: custom });
+    nav.handleStartNavigation(jest.fn());
+    expect(custom).toHaveBeenCalled();
+  });
 });

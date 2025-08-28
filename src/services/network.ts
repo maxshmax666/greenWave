@@ -1,4 +1,4 @@
-import type { Network, FetchOptions } from '../interfaces/network';
+import type { Network } from '../interfaces/network';
 
 export const network: Network = {
   async fetchWithTimeout(input, options = {}) {
@@ -23,11 +23,14 @@ export const network: Network = {
         throw new Error(`Request failed with status ${res.status}: ${message}`);
       }
       return res;
-    } catch (err: any) {
-      if (err.name === 'AbortError') {
-        throw new Error('Request timed out. Please try again.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        if (err.name === 'AbortError') {
+          throw new Error('Request timed out. Please try again.');
+        }
+        throw new Error(err.message || 'Network request failed.');
       }
-      throw new Error(err.message || 'Network request failed.');
+      throw new Error('Network request failed.');
     } finally {
       clearTimeout(id);
     }

@@ -1,5 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Alert, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import Settings from './src/ui/Settings';
+import { color as themeColorValue, loadFromStorage } from './src/state/theme';
 import MapView, {
   Marker,
   Polyline,
@@ -16,7 +18,10 @@ import SpeedBanner from './src/features/navigation/ui/SpeedBanner';
 import MainMenu from './src/ui/MainMenu';
 import { supabaseService, supabase } from './src/services/supabase';
 import { getRoute, RouteStep } from './src/features/navigation/services/ors';
-import { saveRoute, loadRoute } from './src/features/navigation/services/routeCache';
+import {
+  saveRoute,
+  loadRoute,
+} from './src/features/navigation/services/routeCache';
 import i18n from './src/i18n';
 import { mapColorForRuntime } from './src/features/navigation/phases';
 import { projectLightsToRoute } from './src/domain/matching';
@@ -63,6 +68,8 @@ export default function App(): JSX.Element {
   });
   const [, setSteps] = useState<RouteStep[]>([]);
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
+  const [themeColor, setThemeColor] = useState(themeColorValue);
+  const [settingsVisible, setSettingsVisible] = useState(false);
 
   const onStartNavigation = () => {
     startNavigation(analytics.trackEvent);
@@ -89,6 +96,7 @@ export default function App(): JSX.Element {
   const handleSettings = () => {
     analytics.trackEvent('settings_change');
     setMenuVisible(false);
+    setSettingsVisible(true);
   };
 
   useEffect(() => {
@@ -125,6 +133,10 @@ export default function App(): JSX.Element {
     return () => {
       supabase.removeChannel(sub);
     };
+  }, []);
+
+  useEffect(() => {
+    loadFromStorage().then(() => setThemeColor(themeColorValue));
   }, []);
 
   useEffect(() => {
@@ -221,7 +233,7 @@ export default function App(): JSX.Element {
   }, [lightsOnRoute, car, nowSec, recommended]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: themeColor }]}>
       {loadError && <Text testID="load-error">{loadError}</Text>}
       <MapView
         ref={mapRef}
@@ -292,6 +304,11 @@ export default function App(): JSX.Element {
           onCancel={() => setCycleModal(null)}
         />
       )}
+      <Settings
+        visible={settingsVisible}
+        onClose={() => setSettingsVisible(false)}
+        onColor={(c) => setThemeColor(c)}
+      />
     </View>
   );
 }

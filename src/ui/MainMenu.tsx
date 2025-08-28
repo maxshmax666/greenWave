@@ -2,10 +2,10 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import i18n from '../i18n';
 import { usePremium } from '../premium/subscription';
-import {
-  PremiumFeature,
-  requiresPremium,
-} from '../premium/features';
+import { PremiumFeature, requiresPremium } from '../premium/features';
+
+const MENU_BG = 'rgba(0,0,0,0.8)';
+const TEXT_COLOR = '#fff';
 
 export interface MainMenuProps {
   visible: boolean;
@@ -46,19 +46,18 @@ export default function MainMenu({
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    bottom: 80,
-    right: 20,
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    padding: 8,
+    backgroundColor: MENU_BG,
     borderRadius: 6,
+    bottom: 80,
+    padding: 8,
+    position: 'absolute',
+    right: 20,
   },
   item: {
     paddingVertical: 4,
   },
   text: {
-    color: '#fff',
+    color: TEXT_COLOR,
     fontSize: 16,
   },
 });
-

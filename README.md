@@ -15,6 +15,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 - Handled zero recommended speed to avoid divide-by-zero in nearest info calculation.
 - Tracked traffic light phase durations for analytics.
 - Added offline route caching to reuse the last fetched route when connectivity fails.
+- Introduced persistent theme color with settings screen.
 - Consolidated project structure by moving `components/` and `services/` into `src/`.
 - Fixed HUD maneuver spacing.
 - Updated localization string spacing.
