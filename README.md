@@ -106,6 +106,15 @@ Run unit tests:
 npm test -- --coverage
 ```
 
+### Database
+
+Manage Supabase migrations with the CLI:
+
+```
+supabase db reset   # recreate database with latest migrations
+supabase db push    # apply migrations to the remote project
+```
+
 ### Debugging
 
 Write debug messages to `data/app.log` with the logger:
