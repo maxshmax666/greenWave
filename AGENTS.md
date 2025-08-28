@@ -60,7 +60,7 @@ npm run lint
 npm test -- --coverage
 ```
 
-Tests should pass and formatting hooks should run on the changed files.
+Tests should pass and formatting hooks should run on the changed files. The `test` workflow uploads `coverage/lcov.info` to Codecov.
 
 ## For New Contributors
 

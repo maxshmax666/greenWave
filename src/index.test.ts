@@ -30,14 +30,18 @@ describe('index facade', () => {
 
   it('allows injecting handlers', () => {
     const custom = jest.fn();
-    const nav = createNavigation(undefined, { handleStartNavigation: custom });
+    const nav = createNavigation(undefined, {
+      deps: { handleStartNavigation: custom },
+    });
     nav.handleStartNavigation(jest.fn());
     expect(custom).toHaveBeenCalled();
   });
 
   it('creates factory with injected deps', () => {
     const custom = jest.fn();
-    const factory = createNavigationFactory({ handleStartNavigation: custom });
+    const factory = createNavigationFactory({
+      deps: { handleStartNavigation: custom },
+    });
     const nav = factory();
     nav.handleStartNavigation(jest.fn());
     expect(custom).toHaveBeenCalled();
@@ -58,5 +62,12 @@ describe('index facade', () => {
     const clone = cloneNavigationState(initialState);
     expect(clone).toEqual(initialState);
     expect(clone).not.toBe(initialState);
+  });
+
+  it('allows custom state cloning', () => {
+    const customClone = jest.fn().mockReturnValue(initialState);
+    const nav = createNavigation(undefined, { cloneState: customClone });
+    expect(customClone).toHaveBeenCalled();
+    expect(nav.initialState).toEqual(initialState);
   });
 });
