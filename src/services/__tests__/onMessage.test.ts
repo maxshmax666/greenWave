@@ -41,8 +41,22 @@ describe('handleMessage', () => {
 });
 
 describe('onMessage', () => {
+  beforeEach(() => {
+    (log as jest.Mock).mockClear();
+  });
+
   it('runs full pipeline', async () => {
     await onMessage('{"type":"ping"}');
     expect(log).toHaveBeenCalledWith('INFO', 'received ping');
+  });
+
+  it('throws on invalid JSON and skips logging', async () => {
+    await expect(onMessage('bad')).rejects.toThrow();
+    expect(log).not.toHaveBeenCalled();
+  });
+
+  it('throws on missing type and skips logging', async () => {
+    await expect(onMessage('{}')).rejects.toThrow('Invalid message');
+    expect(log).not.toHaveBeenCalled();
   });
 });
