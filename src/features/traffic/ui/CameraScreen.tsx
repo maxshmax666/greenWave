@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import MapView from 'react-native-maps';
-import { Camera, CameraType } from 'expo-camera';
+import { Camera, CameraView } from 'expo-camera';
 import LightFormModal from './LightFormModal';
 import useLightDetector from '../hooks/useLightDetector';
 import { supabase } from '../../../services/supabase';
@@ -88,7 +88,7 @@ const CameraScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={CameraType.back} ref={cameraRef} />
+      <CameraView style={styles.camera} facing="back" ref={cameraRef} />
       {detection && (
         <View style={styles.result}>
           <Text style={styles.resultText}>Color: {detection.color}</Text>

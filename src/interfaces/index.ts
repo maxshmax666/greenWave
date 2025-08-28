@@ -5,7 +5,7 @@ export type { Source } from './sources';
 export type { Store } from './stores';
 export type { AnalyticsService } from './analyticsService';
 export type { Network } from './network';
-export type { Notifications, PhaseEmitter } from './notifications';
+export type { NotificationsService, PhaseEmitter } from './notifications';
 export type { PhaseSync, PhaseRecord } from './phaseSync';
 export type { SupabaseService } from './supabaseService';
 export type { SupabaseConfig, AnalyticsConfig } from './config';
