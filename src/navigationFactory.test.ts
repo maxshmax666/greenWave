@@ -4,8 +4,8 @@ import {
   initialState,
   resolveNavigationDeps,
   defaultNavigationDeps,
-  cloneNavigationState,
 } from './navigationFactory';
+import { cloneNavigationState } from './index';
 
 describe('navigationFactory', () => {
   it('creates navigation helpers', () => {

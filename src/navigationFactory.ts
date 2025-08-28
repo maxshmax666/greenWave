@@ -6,6 +6,7 @@ import {
   computeRecommendation,
 } from './features/navigation';
 import type { NavigationState, LightOnRoute } from './features/navigation';
+import { cloneNavigationState } from './index';
 
 export interface NavigationDeps {
   handleStartNavigation: typeof handleStartNavigation;
@@ -25,12 +26,6 @@ export function resolveNavigationDeps(
   deps: Partial<NavigationDeps> = {},
 ): NavigationDeps {
   return { ...defaultNavigationDeps, ...deps };
-}
-
-export function cloneNavigationState(
-  state: NavigationState = initialState,
-): NavigationState {
-  return { ...state };
 }
 
 export interface NavigationConfig {

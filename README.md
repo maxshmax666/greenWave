@@ -6,6 +6,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- `createNavigation` now deep clones state to avoid mutating `hudInfo`.
 - Added coverage script for easier local test runs.
 - Improved map reference mocking in tests.
 - Introduced `onMessage` service with dedicated parsing, validation, and handling helpers.
