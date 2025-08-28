@@ -47,4 +47,20 @@ describe('getNearestInfo', () => {
     expect(nearestInfo).toEqual({ dist: 0, time: 0 });
     expect(nearestStillGreen).toBe(false);
   });
+
+  it('handles undefined nearest', () => {
+    const { nearestInfo, nearestStillGreen } = getNearestInfo(undefined, 50, 0);
+    expect(nearestInfo).toEqual({ dist: 0, time: 0 });
+    expect(nearestStillGreen).toBe(false);
+  });
+
+  it('handles negative recommended speed', () => {
+    const { nearestInfo, nearestStillGreen } = getNearestInfo(
+      { light, cycle, dist_m: 500, dirForDriver: 'MAIN' },
+      -10,
+      0,
+    );
+    expect(nearestInfo).toEqual({ dist: 0, time: 0 });
+    expect(nearestStillGreen).toBe(false);
+  });
 });

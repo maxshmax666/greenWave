@@ -16,7 +16,9 @@ export function usePremium() {
       try {
         await InAppPurchases.connectAsync();
         const history = await InAppPurchases.getPurchaseHistoryAsync();
-        const active = history.results?.some(r => r.productId === SUBSCRIPTION_ID);
+        const active = history.results?.some(
+          (r) => r.productId === SUBSCRIPTION_ID,
+        );
         if (mounted) setPremium(!!active);
       } catch (e) {
         console.warn('IAP error', e);

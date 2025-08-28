@@ -35,15 +35,23 @@ export function resolveNavigationDeps(
   };
 }
 
-export function createNavigation(
-  state: NavigationState = initialState,
-  deps: Partial<NavigationDeps> = {},
-) {
+export function createNavigationFactory(deps: Partial<NavigationDeps> = {}): (
+  state?: NavigationState,
+) => {
+  initialState: NavigationState;
+} & NavigationDeps {
   const resolved = resolveNavigationDeps(deps);
-  return {
+  return (state: NavigationState = initialState) => ({
     ...resolved,
     initialState: { ...state },
-  };
+  });
+}
+
+export function createNavigation(
+  state?: NavigationState,
+  deps: Partial<NavigationDeps> = {},
+) {
+  return createNavigationFactory(deps)(state);
 }
 
 export {

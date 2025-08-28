@@ -2,6 +2,9 @@
 
 ## 2025-08
 
+- refactor: convert remaining `.js` files to `.ts`/`.tsx` and add `tsx` loader
+- chore: refine navigation initialization for improved testability
+- feat: scaffold command and data layers
 - feat: centralize command, processor, source, and store interfaces
 - chore: remove stray `UNKNOWN.egg-info` directory and ignore Python packaging artifacts
 - fix: handle empty lights array to preserve recommendations when no lights are present

@@ -27,9 +27,11 @@ describe('DrivingHUD', () => {
         eta={60}
         speed={30}
         speedLimit={50}
-      />
+      />,
     );
-    expect(getByTestId('hud-maneuver').props.children).toBe('Turn left in 100 m');
+    expect(getByTestId('hud-maneuver').props.children).toBe(
+      'Turn left in 100 m',
+    );
     expect(getByTestId('hud-street').props.children).toBe('Main St');
     expect(getByTestId('hud-eta').props.children).toBe('ETA: 60s');
     expect(getByTestId('hud-speed-limit').props.children).toBe('Limit: 50');
@@ -37,7 +39,13 @@ describe('DrivingHUD', () => {
 
   it('speaks maneuver when enabled', async () => {
     render(
-      <DrivingHUD maneuver="Turn left" distance={100} street="" eta={0} speed={0} />,
+      <DrivingHUD
+        maneuver="Turn left"
+        distance={100}
+        street=""
+        eta={0}
+        speed={0}
+      />,
     );
     await waitFor(() =>
       expect(Speech.speak).toHaveBeenCalledWith('Turn left in 100 m'),
