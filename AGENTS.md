@@ -13,6 +13,7 @@ New contributors can start by exploring the folders below to see how the app is 
 - `assets/` – static images and resources.
 - `App.tsx` – application entry point; renders map, HUD, and menus.
 - `data/app.log` – file logger output written via `src/services/logger.ts`.
+- Analytics events are logged via `src/services/analytics.ts` which wraps `@react-native-firebase/analytics`.
 
 ## Newcomer tips
 

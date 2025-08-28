@@ -4,6 +4,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Switched analytics tracking to `@react-native-firebase/analytics` with a typed service wrapper.
 - Moved UI components to `src/ui` and traffic-light detectors to `src/traffic` for clearer separation.
 - Documented traffic-light domain guidelines and moved phase helpers to `src/domain`.
 - Standardized phase color mapping to green for clearer signal status.
