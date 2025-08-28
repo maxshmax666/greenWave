@@ -10,8 +10,15 @@ jest.mock('react-native', () => ({
 
 jest.mock('react-native-maps', () => ({
   __esModule: true,
-  default: (props: Record<string, unknown> & { children?: React.ReactNode }) =>
-    React.createElement('MapView', props, props.children),
+  default: React.forwardRef<unknown, Record<string, unknown>>(
+    function MockMapView(props, ref) {
+      return React.createElement(
+        'MapView',
+        { ...props, ref },
+        props.children as React.ReactNode,
+      );
+    },
+  ),
   Marker: 'Marker',
   Polyline: 'Polyline',
 }));

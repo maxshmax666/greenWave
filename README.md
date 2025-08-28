@@ -84,7 +84,7 @@ npx expo start -c
 Run unit tests:
 
 ```
-npm test -- --coverage
+npm run coverage
 ```
 
 ### Debugging
