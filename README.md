@@ -69,5 +69,5 @@ npm test -- --coverage
 To create a debug Android APK:
 
 ```
-npx expo run:android --variant debug
+npm run apk:debug
 ```
