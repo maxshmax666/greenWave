@@ -34,6 +34,7 @@ Tests live beside the code they verify, and coverage reports are stored under `c
 
 ## Getting started
 
+- Copy `.env.example` to `.env` and fill in the keys.
 - `pnpm install` – install dependencies.
 - `pnpm run clean` – reset caches and lockfile.
 - `npx expo start` – launch the development server.
