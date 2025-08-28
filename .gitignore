@@ -57,6 +57,9 @@ ios/Pods/
 *.pb
 *.tflite
 
+# --- Python packaging ---
+*.egg-info/
+
 # --- Flutter leftovers / IDE ---
 .dart_tool/
 .flutter-plugins
