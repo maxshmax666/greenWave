@@ -1,7 +1,7 @@
-import type { Light, LightCycle } from '../domain/types';
 import type { RealtimeChannel } from '@supabase/supabase-js';
+import type { Light, LightCycle } from '../domain/types';
 
-export interface Supabase {
+export interface SupabaseService {
   fetchLightsAndCycles(): Promise<{
     lights: Light[];
     cycles: LightCycle[];

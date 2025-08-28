@@ -1,8 +1,8 @@
 import firebaseAnalytics from '@react-native-firebase/analytics';
 import { log } from './logger';
-import type { Analytics as AnalyticsInterface } from '../interfaces/analytics';
+import type { AnalyticsService } from '../interfaces/analyticsService';
 
-export const analytics: AnalyticsInterface = {
+export const analytics: AnalyticsService = {
   async trackEvent(name, params) {
     try {
       await firebaseAnalytics().logEvent(name, params);
