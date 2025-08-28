@@ -1,4 +1,12 @@
-import { createNavigation, initialState, cloneNavigationState } from './index';
+import {
+  createNavigation,
+  initialState,
+  cloneNavigationState,
+  commands,
+  processors,
+  sources,
+  stores,
+} from './index';
 
 describe('index navigation facade', () => {
   it('deep clones navigation state', () => {
@@ -21,5 +29,12 @@ describe('index navigation facade', () => {
     const nav = createNavigation();
     nav.initialState.hudInfo.maneuver = 'x';
     expect(initialState.hudInfo.maneuver).toBe('');
+  });
+
+  it('exposes grouped modules for testing', () => {
+    expect(typeof commands).toBe('object');
+    expect(typeof processors).toBe('object');
+    expect(typeof sources).toBe('object');
+    expect(typeof stores).toBe('object');
   });
 });
