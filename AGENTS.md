@@ -11,6 +11,10 @@ New contributors can start by exploring the folders below to see how the app is 
 - `src/ui/` – shared React Native UI components.
 - `src/services/` – networking helpers and cross-cutting domain services.
 - `src/domain/` – shared domain types and matching utilities.
+- `src/commands/` – application command handlers.
+- `src/processors/` – data processors transforming inputs.
+- `src/sources/` – external data sources.
+- `src/stores/` – persistence adapters.
 - `assets/` – static images and resources.
 - `App.tsx` – application entry point; renders map, HUD, and menus.
 - `data/app.log` – file logger output written via `src/services/logger.ts`.
