@@ -1,5 +1,6 @@
 import {
   createNavigation,
+  createNavigationFactory,
   initialState,
   resolveNavigationDeps,
   defaultNavigationDeps,
@@ -29,6 +30,14 @@ describe('index facade', () => {
   it('allows injecting handlers', () => {
     const custom = jest.fn();
     const nav = createNavigation(undefined, { handleStartNavigation: custom });
+    nav.handleStartNavigation(jest.fn());
+    expect(custom).toHaveBeenCalled();
+  });
+
+  it('creates factory with injected deps', () => {
+    const custom = jest.fn();
+    const factory = createNavigationFactory({ handleStartNavigation: custom });
+    const nav = factory();
     nav.handleStartNavigation(jest.fn());
     expect(custom).toHaveBeenCalled();
   });

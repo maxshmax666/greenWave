@@ -21,4 +21,11 @@ describe('theme state', () => {
     await setColor('blue');
     expect(await AsyncStorage.getItem('theme_color')).toBe('blue');
   });
+
+  it('propagates storage failure', async () => {
+    (AsyncStorage.getItem as jest.Mock).mockRejectedValueOnce(
+      new Error('fail'),
+    );
+    await expect(loadFromStorage()).rejects.toThrow('fail');
+  });
 });

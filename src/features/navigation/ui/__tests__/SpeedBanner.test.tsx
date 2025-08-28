@@ -13,10 +13,10 @@ import SpeedBanner from '../SpeedBanner';
 describe('SpeedBanner', () => {
   it('renders recommendation text', () => {
     const { getByText } = render(
-      <SpeedBanner speed={30} nearestDist={100} timeToWindow={20} />
+      <SpeedBanner speed={30} nearestDist={100} timeToWindow={20} />,
     );
     expect(
-      getByText('Recommended 30 km/h • next light in 100 m • window in 20 s')
+      getByText('Recommended 30 km/h • next light in 100 m • window in 20 s'),
     ).toBeTruthy();
   });
 
