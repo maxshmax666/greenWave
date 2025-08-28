@@ -4,8 +4,8 @@ import {
   initialState,
   getNearestInfo,
   computeRecommendation,
-} from './navigation';
-import type { NavigationState, LightOnRoute } from './navigation';
+} from './features/navigation';
+import type { NavigationState, LightOnRoute } from './features/navigation';
 
 export {
   handleStartNavigation,
@@ -17,11 +17,13 @@ export {
   type LightOnRoute,
 };
 
-export function createNavigation() {
+export function createNavigation(
+  state: NavigationState = initialState,
+) {
   return {
     handleStartNavigation,
     handleClearRoute,
-    initialState: { ...initialState },
+    initialState: { ...state },
     getNearestInfo,
     computeRecommendation,
   };

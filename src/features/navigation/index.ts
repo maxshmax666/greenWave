@@ -1,4 +1,4 @@
-import type { Direction, Light, LightCycle } from '../domain/types';
+import type { Direction, Light, LightCycle } from '../../domain/types';
 
 export const handleStartNavigation = (track: (event: string) => void): void => {
   track('navigation_start');

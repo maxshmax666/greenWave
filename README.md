@@ -7,10 +7,9 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 - Introduced navigation factory helpers for modular routing and easier tests.
 - Added phase-change notifications to alert on traffic light transitions.
 - Switched analytics tracking to `@react-native-firebase/analytics` with a typed service wrapper.
-- Moved UI components to `src/ui` and traffic-light detectors to `src/traffic` for clearer separation.
+- Grouped navigation and traffic modules under `src/features/` with co-located services, UI, and tests.
 - Documented traffic-light domain guidelines and moved phase helpers to `src/domain`.
 - Standardized phase color mapping to green for clearer signal status.
-- Reorganized navigation logic under `src/navigation` and scaffolded `src/traffic` and `src/ui` for upcoming features.
 - Modularized navigation helpers for easier testing and reuse.
 - Exposed navigation helpers via `src/index.ts` facade for simpler imports.
 - Handled zero recommended speed to avoid divide-by-zero in nearest info calculation.

@@ -13,4 +13,11 @@ describe('index facade', () => {
     expect(nav.initialState).toEqual(initialState);
     expect(nav.initialState).not.toBe(initialState);
   });
+
+  it('uses provided initial state copy', () => {
+    const custom = { ...initialState, recommended: 42 };
+    const nav = createNavigation(custom);
+    expect(nav.initialState).toEqual(custom);
+    expect(nav.initialState).not.toBe(custom);
+  });
 });

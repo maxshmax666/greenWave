@@ -5,10 +5,10 @@ New contributors can start by exploring the folders below to see how the app is 
 
 ## Structure
 
-- `src/navigation/` – navigation state, helpers, and related tests.
-- `src/traffic/` – traffic-light detectors and related utilities.
-- `src/ui/` – React Native UI components.
-- `src/services/` – networking helpers and domain services.
+- `src/features/navigation/` – navigation state, helpers, services, UI, and tests.
+- `src/features/traffic/` – traffic-light detectors with feature-specific services and UI.
+- `src/ui/` – shared React Native UI components.
+- `src/services/` – networking helpers and cross-cutting domain services.
 - `src/domain/` – shared domain types and matching utilities.
 - `assets/` – static images and resources.
 - `App.tsx` – application entry point; renders map, HUD, and menus.
@@ -18,9 +18,9 @@ New contributors can start by exploring the folders below to see how the app is 
 ## Newcomer tips
 
 - Start with `README.md` and `CHANGELOG.md` to see recent changes.
-- Navigation helpers live in `src/navigation` and are re-exported from `src/index.ts`.
+- Navigation helpers live in `src/features/navigation` and are re-exported from `src/index.ts`.
 - Use `createNavigation()` from `src/index.ts` to obtain test-friendly navigation helpers.
-- Tests sit next to code; see `src/navigation/__tests__` for examples.
+- Tests sit next to code; see `src/features/navigation/__tests__` for examples.
 
 Tests live beside the code they verify, and coverage reports are stored under `coverage/`.
 
@@ -55,7 +55,7 @@ Tests should pass and formatting hooks should run on the changed files.
 ## For New Contributors
 
 - Start the app with `npm start` to launch the Expo dev server.
-- UI components live in `src/ui/` and rely on hooks for state.
+- Feature modules under `src/features/` contain their own UI and services.
 - Core logic and translations live under `src/` (`src/i18n.ts` wires up `src/locales`).
-- Network and domain helpers are in `src/services/` and `src/domain/`.
+- Shared services are in `src/services/` and domain types in `src/domain/`.
 - Jest tests reside in `src/__tests__`; add tests alongside new features.

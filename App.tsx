@@ -8,17 +8,17 @@ import MapView, {
   UserLocationChangeEvent,
   LatLng,
 } from 'react-native-maps';
-import CarMarker from './src/ui/CarMarker';
-import DrivingHUD from './src/ui/DrivingHUD';
-import LightFormModal from './src/ui/LightFormModal';
-import CycleFormModal from './src/ui/CycleFormModal';
-import SpeedBanner from './src/ui/SpeedBanner';
+import CarMarker from './src/features/navigation/ui/CarMarker';
+import DrivingHUD from './src/features/navigation/ui/DrivingHUD';
+import LightFormModal from './src/features/traffic/ui/LightFormModal';
+import CycleFormModal from './src/features/traffic/ui/CycleFormModal';
+import SpeedBanner from './src/features/navigation/ui/SpeedBanner';
 import MainMenu from './src/ui/MainMenu';
 import { supabaseService, supabase } from './src/services/supabase';
-import { getRoute, RouteStep } from './src/services/ors';
-import { saveRoute, loadRoute } from './src/services/routeCache';
+import { getRoute, RouteStep } from './src/features/navigation/services/ors';
+import { saveRoute, loadRoute } from './src/features/navigation/services/routeCache';
 import i18n from './src/i18n';
-import { mapColorForRuntime } from './src/navigation/phases';
+import { mapColorForRuntime } from './src/features/navigation/phases';
 import { projectLightsToRoute } from './src/domain/matching';
 import { analytics } from './src/services/analytics';
 import {

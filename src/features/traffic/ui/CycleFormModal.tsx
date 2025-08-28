@@ -8,8 +8,8 @@ import {
   Alert,
   StyleSheet,
 } from 'react-native';
-import i18n from '../i18n';
-import { validateCycle } from '../validation';
+import i18n from '../../../i18n';
+import { validateCycle } from '../../../validation';
 
 interface CycleData {
   cycle_seconds: number;
