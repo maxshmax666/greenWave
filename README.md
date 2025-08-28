@@ -4,6 +4,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Removed stray `UNKNOWN.egg-info` directory and ignored Python packaging artifacts.
 - Extracted light detection into `useLightDetector` hook and cycle upload into `lightCycleUploader` service.
 - Retain previous recommendation when no traffic lights are on the route.
 - Introduced navigation factory helpers for modular routing and easier tests.
