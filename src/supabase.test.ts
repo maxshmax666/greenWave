@@ -1,3 +1,6 @@
+process.env.PUBLIC_SUPABASE_URL = 'http://localhost';
+process.env.PUBLIC_SUPABASE_ANON_KEY = 'anon';
+
 jest.mock('@supabase/supabase-js', () => ({
   createClient: jest.fn(() => ({
     from: jest.fn(),
