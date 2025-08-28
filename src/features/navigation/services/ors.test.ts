@@ -40,7 +40,12 @@ describe('getRoute', () => {
     const json = {
       features: [
         {
-          geometry: { coordinates: [[2, 1], [4, 3]] },
+          geometry: {
+            coordinates: [
+              [2, 1],
+              [4, 3],
+            ],
+          },
           properties: {
             summary: { distance: 100, duration: 200 },
             segments: [
@@ -62,7 +67,7 @@ describe('getRoute', () => {
     };
     const fetchSpy = jest
       .spyOn(network, 'fetchWithTimeout')
-      .mockResolvedValue({ json: async () => json } as any);
+      .mockResolvedValue({ json: async () => json } as unknown as Response);
 
     const route = await getRoute(start, end);
 

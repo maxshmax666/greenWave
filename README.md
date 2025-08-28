@@ -41,6 +41,8 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 - Fixed main-direction color mapping and exposed green windows as domain helpers.
 - Updated cycle seconds translation for clarity.
 
+See [CHANGELOG.md](CHANGELOG.md) for a full history.
+
 ## Environment
 
 Set the following environment variables for API access:

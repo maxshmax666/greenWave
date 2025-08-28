@@ -8,7 +8,11 @@ export interface SpeedBannerProps {
   timeToWindow?: number;
 }
 
-export default function SpeedBanner({ speed, nearestDist, timeToWindow }: SpeedBannerProps) {
+export default function SpeedBanner({
+  speed,
+  nearestDist,
+  timeToWindow,
+}: SpeedBannerProps) {
   if (!speed) return null;
   return (
     <View style={styles.container} pointerEvents="none">
@@ -23,14 +27,17 @@ export default function SpeedBanner({ speed, nearestDist, timeToWindow }: SpeedB
   );
 }
 
+const BG_COLOR = 'rgba(0,0,0,0.6)';
+const TEXT_COLOR = '#fff';
+
 const styles = StyleSheet.create({
   container: {
+    alignSelf: 'center',
+    backgroundColor: BG_COLOR,
+    borderRadius: 6,
+    padding: 8,
     position: 'absolute',
     top: 40,
-    alignSelf: 'center',
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    padding: 8,
-    borderRadius: 6,
   },
-  text: { color: '#fff' },
+  text: { color: TEXT_COLOR },
 });
