@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Alert, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Settings from './src/ui/Settings';
 import { color as themeColorValue, loadFromStorage } from './src/state/theme';
+import { loadSpeechEnabled } from './src/state/speech';
 import MapView, {
   Marker,
   Polyline,
@@ -137,6 +138,7 @@ export default function App(): JSX.Element {
 
   useEffect(() => {
     loadFromStorage().then(() => setThemeColor(themeColorValue));
+    loadSpeechEnabled();
   }, []);
 
   useEffect(() => {

@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import * as Speech from 'expo-speech';
 import i18n from '../../../i18n';
 import { usePremium } from '../../../premium/subscription';
 import {
   PremiumFeature,
   requiresPremium,
 } from '../../../premium/features';
+import { speechEnabled } from '../../../state/speech';
 
 export interface DrivingHUDProps {
   maneuver?: string;
@@ -27,6 +29,19 @@ export default function DrivingHUD({
   const { isPremium } = usePremium();
   const speedKmh = Math.round(speed || 0);
   const limit = speedLimit ? Math.round(speedLimit) : '--';
+  const spoken = useRef<string | undefined>();
+
+  useEffect(() => {
+    if (speechEnabled && maneuver && spoken.current !== maneuver) {
+      Speech.speak(
+        i18n.t('hud.maneuver', {
+          maneuver,
+          distance: Math.round(distance ?? 0),
+        }),
+      );
+      spoken.current = maneuver;
+    }
+  }, [maneuver, distance]);
   return (
     <SafeAreaView style={styles.container} pointerEvents="none">
       <View style={styles.maneuvers}>
@@ -61,41 +76,49 @@ export default function DrivingHUD({
   );
 }
 
+const PANEL_BG = 'rgba(0,0,0,0.6)';
+const TEXT_COLOR = '#fff';
+
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'space-between',
   },
-  maneuvers: {
-    alignSelf: 'center',
-    marginTop: 10,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    padding: 8,
-    borderRadius: 6,
-  },
-  speedPanel: {
-    position: 'absolute',
-    left: 10,
-    bottom: 60,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    padding: 8,
-    borderRadius: 6,
-  },
-  streetPanel: {
-    position: 'absolute',
-    alignSelf: 'center',
-    bottom: 60,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    padding: 8,
-    borderRadius: 6,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: 200,
-  },
   etaPanel: {
     alignSelf: 'stretch',
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: PANEL_BG,
     padding: 8,
   },
-  text: { color: '#fff', textAlign: 'center', fontSize: 16, fontWeight: '600' }
+  maneuvers: {
+    alignSelf: 'center',
+    backgroundColor: PANEL_BG,
+    borderRadius: 6,
+    marginTop: 10,
+    padding: 8,
+  },
+  speedPanel: {
+    backgroundColor: PANEL_BG,
+    borderRadius: 6,
+    bottom: 60,
+    left: 10,
+    padding: 8,
+    position: 'absolute',
+  },
+  streetPanel: {
+    alignSelf: 'center',
+    backgroundColor: PANEL_BG,
+    borderRadius: 6,
+    bottom: 60,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 8,
+    position: 'absolute',
+    width: 200,
+  },
+  text: {
+    color: TEXT_COLOR,
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
 });
