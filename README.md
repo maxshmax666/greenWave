@@ -1,4 +1,4 @@
-# greenwave-rn
+# greenWave
 
 [![codecov](https://codecov.io/gh/maxshmax666/greenWave/branch/main/graph/badge.svg)](https://codecov.io/gh/maxshmax666/greenWave)
 
@@ -6,6 +6,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Added tests to ensure navigation maneuvers remain isolated between runs.
 - `createNavigation` now deep clones state to avoid mutating `hudInfo`.
 - Added coverage script for easier local test runs.
 - Improved map reference mocking in tests.
