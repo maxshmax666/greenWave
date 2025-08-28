@@ -5,10 +5,28 @@ import * as storeModules from './stores';
 
 export { cloneNavigationState } from './features/navigation/cloneNavigationState';
 export { createNavigation, initialState } from './navigationFactory';
-export const commands = commandModules;
-export const processors = processorModules;
-export const sources = sourceModules;
-export const stores = storeModules;
+
+export function getCommands() {
+  return { ...commandModules };
+}
+
+export function getProcessors() {
+  return { ...processorModules };
+}
+
+export function getSources() {
+  return { ...sourceModules };
+}
+
+export function getStores() {
+  return { ...storeModules };
+}
+
+export const commands = getCommands();
+export const processors = getProcessors();
+export const sources = getSources();
+export const stores = getStores();
+
 export * from './commands';
 export * from './processors';
 export * from './sources';

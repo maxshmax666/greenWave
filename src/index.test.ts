@@ -6,6 +6,8 @@ import {
   processors,
   sources,
   stores,
+  getCommands,
+  getStores,
 } from './index';
 
 describe('index navigation facade', () => {
@@ -36,5 +38,15 @@ describe('index navigation facade', () => {
     expect(typeof processors).toBe('object');
     expect(typeof sources).toBe('object');
     expect(typeof stores).toBe('object');
+  });
+
+  it('returns fresh copies from getters', () => {
+    const a = getCommands() as Record<string, unknown>;
+    (a as Record<string, unknown>)['foo'] = 1;
+    const b = getCommands() as Record<string, unknown>;
+    expect(b['foo']).toBeUndefined();
+    const s1 = getStores();
+    const s2 = getStores();
+    expect(s1).not.toBe(s2);
   });
 });
