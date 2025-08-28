@@ -7,6 +7,7 @@ New contributors can start by exploring the folders below to see how the app is 
 
 - `src/features/navigation/` – navigation state, helpers, services, UI, and tests.
 - `src/features/traffic/` – traffic-light detectors with feature-specific services and UI.
+- `src/features/traffic/ui` – includes a voice phase logger hook and record button.
 - `src/ui/` – shared React Native UI components.
 - `src/services/` – networking helpers and cross-cutting domain services.
 - `src/domain/` – shared domain types and matching utilities.

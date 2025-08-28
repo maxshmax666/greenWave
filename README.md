@@ -18,6 +18,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 - Added offline route caching to reuse the last fetched route when connectivity fails.
 - Introduced persistent theme color with settings screen.
 - Added voice guidance for maneuvers with Expo Speech and a settings toggle.
+- Introduced voice phase logger with offline storage and synchronization service.
 - Consolidated project structure by moving `components/` and `services/` into `src/`.
 - Fixed HUD maneuver spacing.
 - Updated localization string spacing.
@@ -67,6 +68,11 @@ Run unit tests:
 ```
 npm test -- --coverage
 ```
+
+### Voice phase logger
+
+On the traffic screen, tap the record button and speak a color followed by its start time (e.g., "green 12").
+Records are stored locally and uploaded with `phaseSync.syncPhases()`.
 
 ### Debug APK build
 
