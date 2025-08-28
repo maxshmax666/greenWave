@@ -1,4 +1,10 @@
-import { handleStartNavigation, handleClearRoute, initialState } from './index';
+import type { NavigationState } from './index';
+import {
+  handleStartNavigation,
+  handleClearRoute,
+  initialState,
+  cloneNavigationState,
+} from './index';
 
 describe('navigation helpers', () => {
   it('tracks start navigation', () => {
@@ -7,9 +13,22 @@ describe('navigation helpers', () => {
     expect(track).toHaveBeenCalledWith('navigation_start');
   });
 
-  it('returns cleared state', () => {
-    const state = handleClearRoute();
-    expect(state).toEqual(initialState);
-    expect(state).not.toBe(initialState);
+  it('deep clones navigation state', () => {
+    const copy = cloneNavigationState(initialState);
+    copy.hudInfo.street = 'foo';
+    expect(initialState.hudInfo.street).toBe('');
+  });
+
+  it('returns cloned custom state', () => {
+    const custom: NavigationState = {
+      ...initialState,
+      hudInfo: { ...initialState.hudInfo, street: 'Main' },
+      steps: [{ id: 1 }],
+    };
+    const state = handleClearRoute(custom);
+    expect(state).toEqual(custom);
+    expect(state).not.toBe(custom);
+    state.hudInfo.street = 'Other';
+    expect(custom.hudInfo.street).toBe('Main');
   });
 });

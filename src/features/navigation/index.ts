@@ -1,4 +1,5 @@
 import type { Direction, Light, LightCycle } from '../../domain/types';
+import { cloneNavigationState } from './cloneNavigationState';
 
 export const handleStartNavigation = (track: (event: string) => void): void => {
   track('navigation_start');
@@ -36,12 +37,9 @@ export const initialState: NavigationState = {
   menuVisible: false,
 };
 
-export const handleClearRoute = (): NavigationState => ({
-  ...initialState,
-  hudInfo: { ...initialState.hudInfo },
-  lightsOnRoute: [],
-  nearestInfo: { ...initialState.nearestInfo },
-});
+export const handleClearRoute = (
+  state: NavigationState = initialState,
+): NavigationState => cloneNavigationState(state);
 
 export interface LightOnRoute {
   light: Light;
@@ -52,3 +50,4 @@ export interface LightOnRoute {
 
 export { getNearestInfo } from './getNearestInfo';
 export { computeRecommendation } from './computeRecommendation';
+export { cloneNavigationState } from './cloneNavigationState';

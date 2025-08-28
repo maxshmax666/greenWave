@@ -5,6 +5,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 ## Recent changes
 
 - Split map and menu UI into `MapViewWrapper` and `MenuContainer` components with hooks for Supabase data and menu state.
+- Exposed `cloneNavigationState` to deep copy navigation state and allow custom initial state injection.
 - Renamed service interfaces to `SupabaseService` and `AnalyticsService`.
 - Expanded test coverage for navigation helpers and cycle upload failure paths.
 - Converted remaining `.js` files to TypeScript and configured the `tsx` loader for Node scripts.
