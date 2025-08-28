@@ -22,7 +22,7 @@ describe('MainMenu', () => {
         onClearRoute={noop}
         onAddLight={noop}
         onSettings={noop}
-      />
+      />,
     );
     expect(getByTestId('main-menu')).toBeTruthy();
     expect(getByText('Start Navigation')).toBeTruthy();
@@ -36,7 +36,7 @@ describe('MainMenu', () => {
         onClearRoute={noop}
         onAddLight={noop}
         onSettings={noop}
-      />
+      />,
     );
     expect(queryByTestId('main-menu')).toBeNull();
   });
