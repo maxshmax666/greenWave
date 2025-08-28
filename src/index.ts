@@ -14,22 +14,25 @@ export interface NavigationDeps {
   computeRecommendation: typeof computeRecommendation;
 }
 
+export function resolveNavigationDeps(
+  deps: Partial<NavigationDeps> = {},
+): NavigationDeps {
+  return {
+    handleStartNavigation: deps.handleStartNavigation ?? handleStartNavigation,
+    handleClearRoute: deps.handleClearRoute ?? handleClearRoute,
+    getNearestInfo: deps.getNearestInfo ?? getNearestInfo,
+    computeRecommendation: deps.computeRecommendation ?? computeRecommendation,
+  };
+}
+
 export function createNavigation(
   state: NavigationState = initialState,
   deps: Partial<NavigationDeps> = {},
 ) {
-  const {
-    handleStartNavigation: start = handleStartNavigation,
-    handleClearRoute: clear = handleClearRoute,
-    getNearestInfo: nearest = getNearestInfo,
-    computeRecommendation: compute = computeRecommendation,
-  } = deps;
+  const resolved = resolveNavigationDeps(deps);
   return {
-    handleStartNavigation: start,
-    handleClearRoute: clear,
+    ...resolved,
     initialState: { ...state },
-    getNearestInfo: nearest,
-    computeRecommendation: compute,
   };
 }
 
@@ -42,3 +45,12 @@ export {
   type NavigationState,
   type LightOnRoute,
 };
+
+export * from './commands';
+export * from './processors';
+export * from './sources';
+export * from './stores';
+export type { Command } from './interfaces/command';
+export type { Processor, GroupedProcessor } from './interfaces/processor';
+export type { Source } from './interfaces/source';
+export type { Store } from './interfaces/store';

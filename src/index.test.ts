@@ -1,4 +1,9 @@
-import { createNavigation, initialState } from './index';
+import {
+  createNavigation,
+  initialState,
+  resolveNavigationDeps,
+  handleStartNavigation,
+} from './index';
 
 describe('index facade', () => {
   it('creates navigation helpers', () => {
@@ -26,5 +31,16 @@ describe('index facade', () => {
     const nav = createNavigation(undefined, { handleStartNavigation: custom });
     nav.handleStartNavigation(jest.fn());
     expect(custom).toHaveBeenCalled();
+  });
+
+  it('resolves default dependencies', () => {
+    const deps = resolveNavigationDeps();
+    expect(deps.handleStartNavigation).toBe(handleStartNavigation);
+  });
+
+  it('overrides dependencies', () => {
+    const custom = jest.fn();
+    const deps = resolveNavigationDeps({ handleStartNavigation: custom });
+    expect(deps.handleStartNavigation).toBe(custom);
   });
 });
