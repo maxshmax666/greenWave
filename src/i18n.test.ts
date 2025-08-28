@@ -1,7 +1,7 @@
 jest.mock(
   'expo-localization',
   () => ({ getLocales: () => [{ languageTag: 'en-US' }] }),
-  { virtual: true }
+  { virtual: true },
 );
 
 import i18n from './i18n';
@@ -15,7 +15,7 @@ describe('i18n translations', () => {
       time: 20,
     });
     expect(res).toBe(
-      'Рекомендуем 40 км/ч • ближайший светофор через 100 м • окно через 20 с'
+      'Рекомендуем 40 км/ч • ближайший светофор через 100 м • окно через 20 с',
     );
   });
 
@@ -27,7 +27,7 @@ describe('i18n translations', () => {
       time: 20,
     });
     expect(res).toBe(
-      'Recommended 40 km/h • next light in 100 m • window in 20 s'
+      'Recommended 40 km/h • next light in 100 m • window in 20 s',
     );
   });
 

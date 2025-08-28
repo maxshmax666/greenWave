@@ -56,7 +56,9 @@ async function fetchLightsAndCycles(): Promise<{
   };
 }
 
-function subscribeLightCycles(cb: (cycle: LightCycle) => void): RealtimeChannel {
+function subscribeLightCycles(
+  cb: (cycle: LightCycle) => void,
+): RealtimeChannel {
   return supabase
     .channel('public:light_cycles')
     .on(

@@ -36,6 +36,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 - Fixed main-direction color mapping and exposed green windows as domain helpers.
 - Added notification service to emit phase change notifications.
 - Updated cycle seconds translation for clarity.
+- Introduced a navigation factory for easier testing of navigation helpers.
 
 ## Environment
 
