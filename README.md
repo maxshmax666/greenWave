@@ -35,6 +35,7 @@ Open a pull request on GitHub and request a review.
 ## Recent changes
 
 
+- Driving HUD now reacts to speech setting toggles for voice guidance.
 - Renamed maneuver panel style for consistent naming.
 - Consolidated traffic services under `src/features/traffic/services` with new guidelines.
 - Streamlined registry manager exports and covered them with tests.
