@@ -1,4 +1,9 @@
-import { initRegistry, getRegistry } from './index';
+import { initRegistry, getRegistry, setRegistry, resetRegistry } from './index';
+import { createRegistry } from './registry';
+
+afterEach(() => {
+  resetRegistry();
+});
 
 describe('registry', () => {
   it('merges overrides into default modules', () => {
@@ -18,5 +23,18 @@ describe('registry', () => {
     const otherCommand = () => {};
     initRegistry({ commands: { otherCommand } });
     expect(getRegistry().commands.otherCommand).toBe(otherCommand);
+  });
+
+  it('allows injecting a custom registry', () => {
+    const custom = createRegistry({});
+    setRegistry(custom);
+    expect(getRegistry()).toBe(custom);
+  });
+
+  it('resetRegistry clears existing instance', () => {
+    const first = getRegistry();
+    resetRegistry();
+    const second = getRegistry();
+    expect(second).not.toBe(first);
   });
 });
