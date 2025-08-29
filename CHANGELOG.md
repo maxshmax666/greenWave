@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-09
+
+- refactor: extract registry manager into its own module for improved testability
+
 ## 2025-08
 
 - refactor: extract registry manager factory for isolated tests
