@@ -23,6 +23,7 @@ import {
 import i18n from './src/i18n';
 import { projectLightsToRoute } from './src/domain/matching';
 import { analytics } from './src/services/analytics';
+import { notifyGreenPhase } from './src/services/notifications';
 import {
   handleStartNavigation as startNavigation,
   handleClearRoute as clearRoute,
@@ -131,6 +132,15 @@ export default function App(): JSX.Element {
     const t = setInterval(() => setNowSec(Math.floor(Date.now() / 1000)), 1000);
     return () => clearInterval(t);
   }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      lights.forEach((l) => {
+        void notifyGreenPhase(l.id);
+      });
+    }, 30000);
+    return () => clearInterval(id);
+  }, [lights]);
 
   const onUserLocationChange = (e: UserLocationChangeEvent) => {
     const { coordinate } = e.nativeEvent;
