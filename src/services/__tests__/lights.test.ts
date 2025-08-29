@@ -87,4 +87,20 @@ describe('lights service', () => {
     const phase = await getUpcomingPhase('1', new Date(cycle.t0_iso));
     expect(phase?.direction).toBe('MAIN');
   });
+
+  it('returns current phase when already green', async () => {
+    const now = new Date();
+    const cycle: LightCycle = {
+      id: 'c1',
+      light_id: '1',
+      cycle_seconds: 60,
+      t0_iso: new Date(now.getTime() - 5 * 1000).toISOString(),
+      main_green: [0, 10],
+      secondary_green: [20, 30],
+      ped_green: [40, 50],
+    };
+    singleCycle.mockResolvedValueOnce({ data: cycle, error: null });
+    const phase = await getUpcomingPhase('1', now);
+    expect(phase).toEqual({ direction: 'MAIN', startIn: 0 });
+  });
 });

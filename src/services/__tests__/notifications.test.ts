@@ -1,9 +1,16 @@
 import { EventEmitter } from 'events';
 import * as Notifications from 'expo-notifications';
-import { notifyDriver, subscribeToPhaseChanges } from '../notifications';
 import type { PhaseEmitter } from '../../interfaces/notifications';
 
 jest.mock('expo-notifications');
+jest.mock('../lights', () => ({ getUpcomingPhase: jest.fn() }));
+
+import {
+  notifyDriver,
+  notifyGreenPhase,
+  subscribeToPhaseChanges,
+} from '../notifications';
+import { getUpcomingPhase } from '../lights';
 
 describe('notifications service', () => {
   beforeEach(() => {
@@ -26,5 +33,17 @@ describe('notifications service', () => {
     subscribeToPhaseChanges(emitter as unknown as PhaseEmitter);
     emitter.emit('phase', 'red');
     expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
+  });
+
+  it('notifies upcoming green phase', async () => {
+    (getUpcomingPhase as jest.Mock).mockResolvedValueOnce({
+      direction: 'MAIN',
+      startIn: 5,
+    });
+    await notifyGreenPhase('1');
+    expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledWith({
+      content: { title: 'Upcoming green', body: 'MAIN in 5s' },
+      trigger: { seconds: 5 },
+    });
   });
 });

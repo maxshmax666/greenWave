@@ -34,8 +34,11 @@ Open a pull request on GitHub and request a review.
 
 ## Recent changes
 
+ 
 - Streamlined registry manager exports and covered them with tests.
 - Added log viewer screen to inspect `data/app.log` from the menu.
+
+- Added green-phase notifications with periodic checks at st
 - Extracted registry manager into dedicated module for improved testability.
 - Added registry manager factory for isolated module registries in tests.
 - Added modular GPT service with API client, prompt formatter, and utilities.
