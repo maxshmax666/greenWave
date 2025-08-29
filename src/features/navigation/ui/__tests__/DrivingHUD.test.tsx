@@ -86,4 +86,34 @@ describe('DrivingHUD', () => {
       expect(Speech.speak).toHaveBeenCalledWith('Turn left in 100 m'),
     );
   });
+
+  it('calls Speech.speak once when speechEnabled goes from false to true', async () => {
+    speechState.speechEnabled = false;
+    const { rerender } = render(
+      <DrivingHUD
+        maneuver="Turn left"
+        distance={100}
+        street=""
+        eta={0}
+        speed={0}
+      />,
+    );
+    expect(Speech.speak).not.toHaveBeenCalled();
+
+    speechState.speechEnabled = true;
+    rerender(
+      <DrivingHUD
+        maneuver="Turn left"
+        distance={100}
+        street=""
+        eta={0}
+        speed={0}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(Speech.speak).toHaveBeenCalledTimes(1);
+      expect(Speech.speak).toHaveBeenCalledWith('Turn left in 100 m');
+    });
+  });
 });
