@@ -72,7 +72,7 @@ Open a pull request on GitHub and request a review.
 - Added LightStatusBadge component showing upcoming traffic-light phases.
 - Added markup mode toggle for map overlays.
 - Exposed grouped modules in `index.ts` for easier testing.
-- Introduced shared Supabase client (`src/lib/supabase.ts`) and a lights service with CRUD and phase helpers backed by Vitest tests.
+- Introduced shared Supabase client (`src/lib/supabase.ts`) and a lights service with CRUD and phase helpers, backed by Vitest tests.
 - Added lights migration and seed data for traffic-light management.
 - Added `.npmrc` with `shamefully-hoist=false` and expanded npm scripts for development and diagnostics.
 - Pinned Expo, React, React Native, and Metro versions and switched to `pnpm`.
