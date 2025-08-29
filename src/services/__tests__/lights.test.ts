@@ -6,14 +6,14 @@ const singleLight = vi.fn();
 interface LightInsert {
   select: () => { single: typeof singleLight };
 }
-const insert = vi.fn<(arg: unknown) => LightInsert>();
+const insert = vi.fn<[unknown], LightInsert>();
 
 const singleCycle = vi.fn();
 interface CycleSelect {
   eq: () => { order: () => { limit: () => { single: typeof singleCycle } } };
 }
 const upsert = vi.fn();
-const selectCycle = vi.fn<() => CycleSelect>();
+const selectCycle = vi.fn<[], CycleSelect>();
 
 vi.mock('../../lib/supabase', () => ({
   supabase: {
