@@ -34,6 +34,7 @@ Open a pull request on GitHub and request a review.
 
 ## Recent changes
 
+- Added registry manager factory for isolated module registries in tests.
 - Added modular GPT service with API client, prompt formatter, and utilities.
 - Routed `onMessage` handling through a type-specific handler map.
 - Split `onMessage` into parsing, validation, and handling modules.
