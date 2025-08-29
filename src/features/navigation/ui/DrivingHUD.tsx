@@ -41,7 +41,7 @@ export default function DrivingHUD({
   }, [maneuver, distance]);
   return (
     <SafeAreaView style={styles.container} pointerEvents="none">
-      <View style={styles.maneuvers}>
+      <View style={styles.maneuverPanel}>
         <Text testID="hud-maneuver" style={styles.text}>
           {maneuver
             ? i18n.t('hud.maneuver', {
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: PANEL_BG,
     padding: 8,
   },
-  maneuvers: {
+  maneuverPanel: {
     alignSelf: 'center',
     backgroundColor: PANEL_BG,
     borderRadius: 6,
