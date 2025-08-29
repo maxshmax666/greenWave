@@ -12,6 +12,7 @@ export interface MainMenuProps {
   onStartNavigation: () => void;
   onClearRoute: () => void;
   onAddLight: () => void;
+  onLogs: () => void;
   onSettings: () => void;
 }
 
@@ -20,6 +21,7 @@ export default function MainMenu({
   onStartNavigation,
   onClearRoute,
   onAddLight,
+  onLogs,
   onSettings,
 }: MainMenuProps) {
   const { isPremium } = usePremium();
@@ -37,6 +39,9 @@ export default function MainMenu({
           <Text style={styles.text}>{i18n.t('menu.addLight')}</Text>
         </TouchableOpacity>
       ) : null}
+      <TouchableOpacity onPress={onLogs} style={styles.item}>
+        <Text style={styles.text}>{i18n.t('menu.logs')}</Text>
+      </TouchableOpacity>
       <TouchableOpacity onPress={onSettings} style={styles.item}>
         <Text style={styles.text}>{i18n.t('menu.settings')}</Text>
       </TouchableOpacity>

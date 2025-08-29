@@ -8,6 +8,7 @@ interface Props {
   onStartNavigation: () => void;
   onClearRoute: () => void;
   onAddLight: () => void;
+  onLogs: () => void;
   onSettings: () => void;
 }
 
@@ -17,6 +18,7 @@ export default function MenuContainer({
   onStartNavigation,
   onClearRoute,
   onAddLight,
+  onLogs,
   onSettings,
 }: Props): JSX.Element {
   return (
@@ -26,6 +28,7 @@ export default function MenuContainer({
         onStartNavigation={onStartNavigation}
         onClearRoute={onClearRoute}
         onAddLight={onAddLight}
+        onLogs={onLogs}
         onSettings={onSettings}
       />
       <TouchableOpacity

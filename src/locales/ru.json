@@ -6,6 +6,7 @@
     "startNavigation": "Начать навигацию",
     "clearRoute": "Очистить маршрут",
     "addLight": "Добавить светофор",
+    "logs": "Логи",
     "settings": "Настройки"
   },
   "validation": {
