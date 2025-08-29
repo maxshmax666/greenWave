@@ -34,6 +34,7 @@ Open a pull request on GitHub and request a review.
 
 ## Recent changes
 
+- Routed `onMessage` handling through a type-specific handler map.
 - Split `onMessage` into parsing, validation, and handling modules.
 - Moved validation helpers to `src/utils` for reuse.
 - Made module registry injectable for easier overriding in tests.

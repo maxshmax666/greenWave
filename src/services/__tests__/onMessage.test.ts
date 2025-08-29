@@ -2,6 +2,7 @@ import {
   parseMessage,
   validateMessage,
   handleMessage,
+  handlers,
   onMessage,
 } from '../onMessage';
 import { log } from '../logger';
@@ -9,6 +10,10 @@ import { log } from '../logger';
 jest.mock('../logger', () => ({
   log: jest.fn().mockResolvedValue(undefined),
 }));
+
+beforeEach(() => {
+  (log as jest.Mock).mockClear();
+});
 
 describe('parseMessage', () => {
   it('parses JSON string', () => {
@@ -34,17 +39,25 @@ describe('validateMessage', () => {
 });
 
 describe('handleMessage', () => {
-  it('logs received type', async () => {
+  it('dispatches to handler', async () => {
     await handleMessage({ type: 'ping' });
+    expect(log).toHaveBeenCalledWith('INFO', 'received ping');
+  });
+
+  it('ignores unknown types', async () => {
+    await handleMessage({ type: 'other' });
+    expect(log).not.toHaveBeenCalled();
+  });
+});
+
+describe('handlers', () => {
+  it('ping handler logs message', async () => {
+    await handlers.ping({ type: 'ping' });
     expect(log).toHaveBeenCalledWith('INFO', 'received ping');
   });
 });
 
 describe('onMessage', () => {
-  beforeEach(() => {
-    (log as jest.Mock).mockClear();
-  });
-
   it('runs full pipeline', async () => {
     await onMessage('{"type":"ping"}');
     expect(log).toHaveBeenCalledWith('INFO', 'received ping');

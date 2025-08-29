@@ -1,6 +1,9 @@
-import { log } from '../logger';
 import type { Message } from './types';
+import { handlers } from './handlers';
 
 export async function handleMessage(message: Message): Promise<void> {
-  await log('INFO', `received ${message.type}`);
+  const handler = handlers[message.type];
+  if (handler) {
+    await handler(message);
+  }
 }
