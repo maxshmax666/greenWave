@@ -7,4 +7,5 @@ export interface PhaseEmitter {
 export interface NotificationsService {
   subscribeToPhaseChanges(emitter: PhaseEmitter): void;
   notifyDriver(phase: PhaseColor): Promise<void>;
+  notifyGreenPhase(lightId: string): Promise<void>;
 }

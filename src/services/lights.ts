@@ -104,6 +104,15 @@ function computeUpcomingPhase(cycle: LightCycle, at: Date): UpcomingPhase {
     { direction: 'SECONDARY', range: cycle.secondary_green },
     { direction: 'PEDESTRIAN', range: cycle.ped_green },
   ];
+
+  for (const { direction, range } of phases) {
+    const [start, end] = range;
+    const inGreen = elapsed >= start && elapsed < end;
+    if (inGreen) {
+      return { direction, startIn: 0 };
+    }
+  }
+
   let best: UpcomingPhase | null = null;
   for (const { direction, range } of phases) {
     const [start] = range;

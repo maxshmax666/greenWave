@@ -4,6 +4,7 @@ import type {
   PhaseColor,
   PhaseEmitter,
 } from '../interfaces/notifications';
+import { getUpcomingPhase } from './lights';
 
 export async function notifyDriver(phase: PhaseColor): Promise<void> {
   await Notifications.scheduleNotificationAsync({
@@ -21,7 +22,21 @@ export function subscribeToPhaseChanges(emitter: PhaseEmitter): void {
   });
 }
 
+export async function notifyGreenPhase(lightId: string): Promise<void> {
+  const upcoming = await getUpcomingPhase(lightId);
+  if (!upcoming) return;
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: 'Upcoming green',
+      body: `${upcoming.direction} in ${Math.round(upcoming.startIn)}s`,
+    },
+    trigger:
+      upcoming.startIn > 0 ? { seconds: Math.ceil(upcoming.startIn) } : null,
+  });
+}
+
 export const notifications: NotificationsService = {
   subscribeToPhaseChanges,
   notifyDriver,
+  notifyGreenPhase,
 };
