@@ -15,7 +15,7 @@ jobs:
           cache: 'pnpm'
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
-      - run: pnpm test --coverage
+      - run: npm test -- --coverage
       - run: pnpm test:vitest
       - uses: codecov/codecov-action@v4
         with:

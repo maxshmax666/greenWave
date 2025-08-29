@@ -20,7 +20,7 @@ See [docs/API.md](docs/API.md) for available REST endpoints.
 git checkout -b feature/<name>
 pre-commit run --files <files>
 pnpm lint --format unix
-pnpm test --coverage
+npm test -- --coverage
 git commit -am "feat: add amazing thing"
 git push origin feature/<name>
 ```
@@ -34,6 +34,9 @@ Open a pull request on GitHub and request a review.
 
 ## Recent changes
 
+- Added API reference documentation and `.env.example` template.
+- Added pull request guide and template for contributors.
+- Added quality workflow to CI.
 - Added design tokens (`src/styles/tokens.ts`) and a reusable `Card` UI component.
 - Introduced light/dark theme switcher with persisted preference.
 - Integrated combobox-based search in the toolbar.
@@ -55,7 +58,7 @@ Open a pull request on GitHub and request a review.
 - Added `clean` script for wiping caches and reinstalling dependencies.
 - Covered invalid JSON and missing type cases in `onMessage` tests.
 - Unified test command across documentation.
- - Dropped coverage npm script; run tests with `pnpm test --coverage`.
+- Dropped coverage npm script; run tests with `npm test -- --coverage`.
 - Re-exported `cloneNavigationState` from the navigation feature and removed duplicate implementation.
 - Renamed project heading to "greenWave".
 - Added tests to ensure navigation maneuvers remain isolated between runs.
@@ -140,7 +143,7 @@ npx expo start -c
 Run unit tests:
 
 ```
-pnpm test --coverage
+npm test -- --coverage
 ```
 
 ### Database
