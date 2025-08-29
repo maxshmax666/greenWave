@@ -20,7 +20,7 @@ See [docs/API.md](docs/API.md) for available REST endpoints.
 git checkout -b feature/<name>
 pre-commit run --files <files>
 pnpm lint --format unix
-pnpm test --coverage
+pnpm test -- --coverage
 git commit -am "feat: add amazing thing"
 git push origin feature/<name>
 ```
@@ -75,7 +75,7 @@ Open a pull request on GitHub and request a review.
 - Added `clean` script for wiping caches and reinstalling dependencies.
 - Covered invalid JSON and missing type cases in `onMessage` tests.
 - Unified test command across documentation.
-- Dropped coverage npm script; run tests with `pnpm test --coverage`.
+- Dropped coverage npm script; run tests with `pnpm test -- --coverage`.
 - Re-exported `cloneNavigationState` from the navigation feature and removed duplicate implementation.
 - Renamed project heading to "greenWave".
 - Added tests to ensure navigation maneuvers remain isolated between runs.
@@ -160,7 +160,7 @@ npx expo start -c
 Run unit tests:
 
 ```
-pnpm test --coverage
+pnpm test -- --coverage
 ```
 
 ### Database
@@ -212,4 +212,4 @@ pnpm install
 - Expose interfaces from each module's `index.ts` to guide refactors.
 - Supabase and analytics services accept typed config objects.
 - Use the `tsx` loader directly without a build step.
-- Ensure `pnpm test --coverage` and `pnpm run lint` pass after each change.
+- Ensure `pnpm test -- --coverage` and `pnpm run lint` pass after each change.

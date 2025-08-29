@@ -9,5 +9,5 @@ Guidelines for the traffic feature.
 - After changes run:
   ```bash
   pre-commit run --files <files>
-  npm test -- --coverage
+  pnpm test -- --coverage
   ```

@@ -8,5 +8,5 @@ Guidelines for React Native UI components.
 - After changes run:
   ```bash
   pre-commit run --files <files>
-  npm test -- --coverage
+  pnpm test -- --coverage
   ```
