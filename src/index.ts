@@ -28,20 +28,20 @@ export function resetRegistry(): void {
   setRegistry(null);
 }
 
-export function getCommands() {
-  return getRegistry().commands;
+export function getCommands(reg = getRegistry()) {
+  return reg.commands;
 }
 
-export function getProcessors() {
-  return getRegistry().processors;
+export function getProcessors(reg = getRegistry()) {
+  return reg.processors;
 }
 
-export function getSources() {
-  return getRegistry().sources;
+export function getSources(reg = getRegistry()) {
+  return reg.sources;
 }
 
-export function getStores() {
-  return getRegistry().stores;
+export function getStores(reg = getRegistry()) {
+  return reg.stores;
 }
 
 export * from './commands';

@@ -1,4 +1,10 @@
-import { initRegistry, getRegistry, setRegistry, resetRegistry } from './index';
+import {
+  initRegistry,
+  getRegistry,
+  setRegistry,
+  resetRegistry,
+  getCommands,
+} from './index';
 import { createRegistry } from './registry';
 
 afterEach(() => {
@@ -36,5 +42,10 @@ describe('registry', () => {
     resetRegistry();
     const second = getRegistry();
     expect(second).not.toBe(first);
+  });
+
+  it('getCommands uses provided registry', () => {
+    const custom = createRegistry({ commands: { foo: () => {} } });
+    expect(getCommands(custom).foo).toBeDefined();
   });
 });

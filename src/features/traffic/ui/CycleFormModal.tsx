@@ -9,7 +9,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import i18n from '../../../i18n';
-import { validateCycle } from '../../../validation';
+import { validateCycle } from '../../../utils/validation';
 
 interface CycleData {
   cycle_seconds: number;

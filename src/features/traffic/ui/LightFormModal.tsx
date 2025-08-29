@@ -9,7 +9,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import i18n from '../../../i18n';
-import { validateLight } from '../../../validation';
+import { validateLight } from '../../../utils/validation';
 
 export interface LightFormModalProps {
   visible: boolean;
