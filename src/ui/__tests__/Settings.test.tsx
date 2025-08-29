@@ -8,6 +8,7 @@ jest.mock('react-native', () => ({
   StyleSheet: { create: () => ({}), flatten: () => ({}) },
   Switch: 'Switch',
   Text: 'Text',
+  TextInput: 'TextInput',
 }));
 
 jest.mock('../../state/theme', () => ({ setTheme: jest.fn(), theme: 'light' }));
@@ -15,6 +16,11 @@ const setSpeechEnabled = jest.fn();
 jest.mock('../../state/speech', () => ({
   speechEnabled: true,
   setSpeechEnabled: (v: boolean) => setSpeechEnabled(v),
+}));
+const setLeadTimeSec = jest.fn();
+jest.mock('../../state/leadTime', () => ({
+  leadTimeSec: 0,
+  setLeadTimeSec: (v: number) => setLeadTimeSec(v),
 }));
 
 import Settings from '../Settings';
@@ -31,5 +37,7 @@ describe('Settings', () => {
     expect(onTheme).toHaveBeenCalledWith('dark');
     fireEvent(getByTestId('speech-toggle'), 'valueChange', false);
     expect(setSpeechEnabled).toHaveBeenCalledWith(false);
+    fireEvent.changeText(getByTestId('lead-input'), '7');
+    expect(setLeadTimeSec).toHaveBeenCalledWith(7);
   });
 });

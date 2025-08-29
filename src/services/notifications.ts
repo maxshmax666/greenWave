@@ -22,16 +22,19 @@ export function subscribeToPhaseChanges(emitter: PhaseEmitter): void {
   });
 }
 
-export async function notifyGreenPhase(lightId: string): Promise<void> {
+export async function notifyGreenPhase(
+  lightId: string,
+  leadTimeSec = 0,
+): Promise<void> {
   const upcoming = await getUpcomingPhase(lightId);
   if (!upcoming) return;
+  const startIn = Math.max(0, upcoming.startIn - leadTimeSec);
   await Notifications.scheduleNotificationAsync({
     content: {
       title: 'Upcoming green',
-      body: `${upcoming.direction} in ${Math.round(upcoming.startIn)}s`,
+      body: `${upcoming.direction} in ${Math.round(startIn)}s`,
     },
-    trigger:
-      upcoming.startIn > 0 ? { seconds: Math.ceil(upcoming.startIn) } : null,
+    trigger: upcoming.startIn > 0 ? { seconds: Math.ceil(startIn) } : null,
   });
 }
 

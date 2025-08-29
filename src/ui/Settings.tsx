@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
-import { Modal, View, StyleSheet, Switch, Text, Button } from 'react-native';
+import {
+  Modal,
+  View,
+  StyleSheet,
+  Switch,
+  Text,
+  Button,
+  TextInput,
+} from 'react-native';
 import { setTheme, theme } from '../state/theme';
 import { speechEnabled, setSpeechEnabled } from '../state/speech';
+import { leadTimeSec, setLeadTimeSec } from '../state/leadTime';
 
 export interface SettingsProps {
   visible: boolean;
@@ -16,6 +25,7 @@ export default function Settings({
 }: SettingsProps): JSX.Element {
   const [voice, setVoice] = useState(speechEnabled);
   const [dark, setDark] = useState(theme === 'dark');
+  const [lead, setLead] = useState(String(leadTimeSec));
 
   const toggleTheme = async (v: boolean) => {
     setDark(v);
@@ -27,6 +37,12 @@ export default function Settings({
   const toggleSpeech = async (v: boolean) => {
     setVoice(v);
     await setSpeechEnabled(v);
+  };
+
+  const changeLead = async (v: string) => {
+    setLead(v);
+    const parsed = parseInt(v, 10);
+    if (!Number.isNaN(parsed)) await setLeadTimeSec(parsed);
   };
 
   return (
@@ -48,12 +64,23 @@ export default function Settings({
             onValueChange={toggleSpeech}
           />
         </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>Lead time (s)</Text>
+          <TextInput
+            testID="lead-input"
+            style={styles.input}
+            keyboardType="numeric"
+            value={lead}
+            onChangeText={changeLead}
+          />
+        </View>
         <Button title="Close" onPress={onClose} />
       </View>
     </Modal>
   );
 }
 const BG_COLOR = 'white';
+const BORDER_COLOR = '#ccc';
 
 const styles = StyleSheet.create({
   container: {
@@ -61,6 +88,13 @@ const styles = StyleSheet.create({
     backgroundColor: BG_COLOR,
     flex: 1,
     justifyContent: 'center',
+  },
+  input: {
+    borderColor: BORDER_COLOR,
+    borderWidth: 1,
+    minWidth: 40,
+    paddingHorizontal: 4,
+    textAlign: 'center',
   },
   label: {
     marginRight: 8,

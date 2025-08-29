@@ -31,6 +31,7 @@ import {
   computeRecommendation,
   LightOnRoute,
 } from './src';
+import { loadLeadTimeSec, leadTimeSec } from './src/state/leadTime';
 import type { Light, LightCycle } from './src/domain/types';
 
 interface Car {
@@ -133,6 +134,7 @@ export default function App(): JSX.Element {
   useEffect(() => {
     loadTheme().then(() => setThemeName(themeNameValue));
     loadSpeechEnabled();
+    loadLeadTimeSec();
   }, []);
 
   useEffect(() => {
@@ -143,7 +145,7 @@ export default function App(): JSX.Element {
   useEffect(() => {
     const id = setInterval(() => {
       lights.forEach((l) => {
-        void notifyGreenPhase(l.id);
+        void notifyGreenPhase(l.id, leadTimeSec);
       });
     }, 30000);
     return () => clearInterval(id);
