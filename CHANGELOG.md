@@ -2,6 +2,7 @@
 
 ## 2025-08
 
+- refactor: extract registry manager factory for isolated tests
 - refactor: convert remaining `.js` files to `.ts`/`.tsx` and add `tsx` loader
 - chore: refine navigation initialization for improved testability
 - feat: scaffold command and data layers
