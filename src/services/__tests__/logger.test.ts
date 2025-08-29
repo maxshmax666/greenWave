@@ -9,11 +9,14 @@ describe('logger', () => {
   });
 
   it('writes formatted log line', async () => {
-    await log('INFO', 'test message');
+    const level = 'INFO';
+    const message = 'test message';
+    await log(level, message);
     const content = fs.readFileSync(file, 'utf8').trim();
     const line = content.split('\n').pop();
-    expect(line).toMatch(
-      /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \[INFO\] test message/,
+    const pattern = new RegExp(
+      `^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} \\[${level}\\] ${message}$`,
     );
+    expect(line).toMatch(pattern);
   });
 });
