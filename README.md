@@ -12,6 +12,24 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 - `feature/*` – feature development branches.
 - `hotfix/*` – urgent fixes based off `main`.
 
+## Creating a Pull Request
+
+```bash
+git checkout -b feature/<name>
+pre-commit run --files <files>
+pnpm lint --format unix
+pnpm test --coverage
+git commit -am "feat: add amazing thing"
+git push origin feature/<name>
+```
+
+Open a pull request on GitHub and request a review.
+
+### Branch protection
+
+- Direct pushes to `main` are blocked.
+- Merging into `main` requires at least one approved review.
+
 ## Recent changes
 
 - Added design tokens (`src/styles/tokens.ts`) and a reusable `Card` UI component.
