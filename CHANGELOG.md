@@ -4,6 +4,7 @@
 
 - refactor: rename maneuver panel style
 - feat: schedule notifications for upcoming green phases
+- fix: guard NaN speeds in navigation advisor
 
 ## 2025-09
 
