@@ -34,6 +34,7 @@ Open a pull request on GitHub and request a review.
 
 ## Recent changes
 
+- Documented GitHub Actions `test` workflow and provided logger usage example.
 - CI now runs tests with coverage and uploads reports to Codecov.
 - Added API reference documentation and `.env.example` template.
 - Added pull request guide and template for contributors.

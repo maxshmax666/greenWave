@@ -6,15 +6,26 @@ export { createRegistry } from './registry';
 
 let registry: ReturnType<typeof createRegistry> | null = null;
 
+export function setRegistry(
+  reg: ReturnType<typeof createRegistry> | null,
+): void {
+  registry = reg;
+}
+
 export function initRegistry(
   overrides?: Parameters<typeof createRegistry>[0],
 ): ReturnType<typeof createRegistry> {
-  registry = createRegistry(overrides);
-  return registry;
+  const reg = createRegistry(overrides);
+  setRegistry(reg);
+  return reg;
 }
 
 export function getRegistry(): ReturnType<typeof createRegistry> {
   return registry ?? initRegistry();
+}
+
+export function resetRegistry(): void {
+  setRegistry(null);
 }
 
 export function getCommands() {
