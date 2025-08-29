@@ -14,10 +14,11 @@ export function pickSpeed(
   recommended: number;
   reason: 'nearest-green' | 'global-score' | 'no-data';
 } {
+  const vReal = Number.isFinite(vRealKmh) ? vRealKmh : 0;
   const candidates = Array.from({ length: 61 }, (_, i) => 20 + i);
   if (!lightsOnRoute.length)
     return {
-      recommended: Math.max(20, Math.min(80, Math.round(vRealKmh || 50))),
+      recommended: Math.max(20, Math.min(80, Math.round(vReal || 50))),
       reason: 'no-data',
     };
 
@@ -46,7 +47,7 @@ export function pickSpeed(
       else if (i === 0) okNearest = false;
     }
     const finalScore =
-      (okNearest ? 10000 : 0) + score - Math.abs(v - vRealKmh) * 2;
+      (okNearest ? 10000 : 0) + score - Math.abs(v - vReal) * 2;
     if (finalScore > best.score)
       best = {
         v,

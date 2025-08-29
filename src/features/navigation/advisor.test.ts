@@ -45,6 +45,20 @@ describe('advisor pickSpeed', () => {
     expect(res.reason).toBe('no-data');
     expect(res.recommended).toBe(52);
   });
+
+  it('handles NaN speed as zero', () => {
+    const withNaN = pickSpeed(
+      0,
+      [{ light, cycle: baseCycle, dist_m: 500, dirForDriver: 'MAIN' }],
+      Number.NaN,
+    );
+    const withZero = pickSpeed(
+      0,
+      [{ light, cycle: baseCycle, dist_m: 500, dirForDriver: 'MAIN' }],
+      0,
+    );
+    expect(withNaN).toEqual(withZero);
+  });
 });
 
 describe('advisor hysteresis', () => {

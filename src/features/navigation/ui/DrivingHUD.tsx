@@ -27,9 +27,10 @@ export default function DrivingHUD({
   const speedKmh = Math.round(speed || 0);
   const limit = speedLimit ? Math.round(speedLimit) : '--';
   const spoken = useRef<string | undefined>();
+  const enabled = speechEnabled;
 
   useEffect(() => {
-    if (speechEnabled && maneuver && spoken.current !== maneuver) {
+    if (enabled && maneuver && spoken.current !== maneuver) {
       Speech.speak(
         i18n.t('hud.maneuver', {
           maneuver,
@@ -38,7 +39,7 @@ export default function DrivingHUD({
       );
       spoken.current = maneuver;
     }
-  }, [speechEnabled, maneuver, distance]);
+  }, [enabled, maneuver, distance]);
   return (
     <SafeAreaView style={styles.container} pointerEvents="none">
       <View style={styles.maneuverPanel}>
