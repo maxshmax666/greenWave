@@ -47,6 +47,18 @@ describe('notifications service', () => {
     });
   });
 
+  it('honors lead time', async () => {
+    (getUpcomingPhase as jest.Mock).mockResolvedValueOnce({
+      direction: 'SIDE',
+      startIn: 10,
+    });
+    await notifyGreenPhase('2', 4);
+    expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledWith({
+      content: { title: 'Upcoming green', body: 'SIDE in 6s' },
+      trigger: { seconds: 6 },
+    });
+  });
+
   it('does not schedule when no upcoming phase', async () => {
     (getUpcomingPhase as jest.Mock).mockResolvedValueOnce(null);
     await notifyGreenPhase('1');
