@@ -12,6 +12,7 @@ import CycleFormModal from './src/features/traffic/ui/CycleFormModal';
 import SpeedBanner from './src/features/navigation/ui/SpeedBanner';
 import MapViewWrapper from './src/ui/MapViewWrapper';
 import MenuContainer from './src/ui/MenuContainer';
+import LogViewer from './src/features/logs/LogViewer';
 import { supabase } from './src/services/supabase';
 import { useSupabaseData } from './src/hooks/useSupabaseData';
 import { useMenu } from './src/hooks/useMenu';
@@ -73,6 +74,7 @@ export default function App(): JSX.Element {
     useMenu(false);
   const [themeName, setThemeName] = useState(themeNameValue);
   const [settingsVisible, setSettingsVisible] = useState(false);
+  const [logsVisible, setLogsVisible] = useState(false);
 
   useEffect(() => {
     if (!supabaseError) return;
@@ -120,6 +122,11 @@ export default function App(): JSX.Element {
     analytics.trackEvent('settings_change');
     hideMenu();
     setSettingsVisible(true);
+  };
+
+  const handleLogs = () => {
+    hideMenu();
+    setLogsVisible(true);
   };
 
   useEffect(() => {
@@ -256,6 +263,7 @@ export default function App(): JSX.Element {
         onStartNavigation={onStartNavigation}
         onClearRoute={onClearRoute}
         onAddLight={handleAddLight}
+        onLogs={handleLogs}
         onSettings={handleSettings}
       />
       {lightModal && (
@@ -277,6 +285,10 @@ export default function App(): JSX.Element {
         visible={settingsVisible}
         onClose={() => setSettingsVisible(false)}
         onTheme={(t) => setThemeName(t)}
+      />
+      <LogViewer
+        visible={logsVisible}
+        onClose={() => setLogsVisible(false)}
       />
     </View>
   );

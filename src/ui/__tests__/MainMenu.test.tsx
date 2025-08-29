@@ -21,11 +21,13 @@ describe('MainMenu', () => {
         onStartNavigation={noop}
         onClearRoute={noop}
         onAddLight={noop}
+        onLogs={noop}
         onSettings={noop}
       />,
     );
     expect(getByTestId('main-menu')).toBeTruthy();
     expect(getByText('Start Navigation')).toBeTruthy();
+    expect(getByText('Logs')).toBeTruthy();
   });
 
   it('returns null when not visible', () => {
@@ -35,6 +37,7 @@ describe('MainMenu', () => {
         onStartNavigation={noop}
         onClearRoute={noop}
         onAddLight={noop}
+        onLogs={noop}
         onSettings={noop}
       />,
     );

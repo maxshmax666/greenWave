@@ -21,6 +21,7 @@ describe('MenuContainer', () => {
         onStartNavigation={noop}
         onClearRoute={noop}
         onAddLight={noop}
+        onLogs={noop}
         onSettings={noop}
       />,
     );
