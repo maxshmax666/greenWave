@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Alert, StyleSheet, View, Text } from 'react-native';
 import Settings from './src/ui/Settings';
-import { color as themeColorValue, loadFromStorage } from './src/state/theme';
+import { theme as themeNameValue, loadTheme } from './src/state/theme';
+import { colors } from './src/styles/tokens';
 import { loadSpeechEnabled } from './src/state/speech';
 import type MapView from 'react-native-maps';
 import { MapPressEvent, LongPressEvent, UserLocationChangeEvent, LatLng } from 'react-native-maps';
@@ -70,7 +71,7 @@ export default function App(): JSX.Element {
   const [, setSteps] = useState<RouteStep[]>([]);
   const { visible: menuVisible, toggle: toggleMenu, hide: hideMenu } =
     useMenu(false);
-  const [themeColor, setThemeColor] = useState(themeColorValue);
+  const [themeName, setThemeName] = useState(themeNameValue);
   const [settingsVisible, setSettingsVisible] = useState(false);
 
   useEffect(() => {
@@ -122,7 +123,7 @@ export default function App(): JSX.Element {
   };
 
   useEffect(() => {
-    loadFromStorage().then(() => setThemeColor(themeColorValue));
+    loadTheme().then(() => setThemeName(themeNameValue));
     loadSpeechEnabled();
   }, []);
 
@@ -220,7 +221,9 @@ export default function App(): JSX.Element {
   }, [lightsOnRoute, car, nowSec, recommended]);
 
   return (
-    <View style={[styles.container, { backgroundColor: themeColor }]}>
+    <View
+      style={[styles.container, { backgroundColor: colors[themeName].background }]}
+    >
       {loadError && <Text testID="load-error">{loadError}</Text>}
       <MapViewWrapper
         mapRef={mapRef}
@@ -273,7 +276,7 @@ export default function App(): JSX.Element {
       <Settings
         visible={settingsVisible}
         onClose={() => setSettingsVisible(false)}
-        onColor={(c) => setThemeColor(c)}
+        onTheme={(t) => setThemeName(t)}
       />
     </View>
   );

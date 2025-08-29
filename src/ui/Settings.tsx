@@ -1,24 +1,28 @@
 import React, { useState } from 'react';
-import { Modal, View, Button, StyleSheet, Switch, Text } from 'react-native';
-import { setColor } from '../state/theme';
+import { Modal, View, StyleSheet, Switch, Text, Button } from 'react-native';
+import { setTheme, theme } from '../state/theme';
 import { speechEnabled, setSpeechEnabled } from '../state/speech';
 
 export interface SettingsProps {
   visible: boolean;
   onClose: () => void;
-  onColor: (c: string) => void;
+  onTheme: (t: 'light' | 'dark') => void;
 }
 
 export default function Settings({
   visible,
   onClose,
-  onColor,
+  onTheme,
 }: SettingsProps): JSX.Element {
-  const choose = async (c: string) => {
-    await setColor(c);
-    onColor(c);
-  };
   const [voice, setVoice] = useState(speechEnabled);
+  const [dark, setDark] = useState(theme === 'dark');
+
+  const toggleTheme = async (v: boolean) => {
+    setDark(v);
+    const next = v ? 'dark' : 'light';
+    await setTheme(next);
+    onTheme(next);
+  };
 
   const toggleSpeech = async (v: boolean) => {
     setVoice(v);
@@ -29,6 +33,14 @@ export default function Settings({
     <Modal transparent visible={visible} animationType="slide">
       <View style={styles.container}>
         <View style={styles.row}>
+          <Text style={styles.label}>Dark mode</Text>
+          <Switch
+            testID="theme-toggle"
+            value={dark}
+            onValueChange={toggleTheme}
+          />
+        </View>
+        <View style={styles.row}>
           <Text style={styles.label}>Voice</Text>
           <Switch
             testID="speech-toggle"
@@ -36,8 +48,6 @@ export default function Settings({
             onValueChange={toggleSpeech}
           />
         </View>
-        <Button title="Red" onPress={() => choose('red')} />
-        <Button title="Blue" onPress={() => choose('blue')} />
         <Button title="Close" onPress={onClose} />
       </View>
     </Modal>

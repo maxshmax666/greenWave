@@ -13,6 +13,9 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Added design tokens (`src/styles/tokens.ts`) and a reusable `Card` UI component.
+- Introduced light/dark theme switcher with persisted preference.
+- Extracted `calcSpeedRange` helper for isolated testing.
 - Added avatar upload and selection for customizable map markers.
 - Module registries can now be overridden for easier testing.
 - Implemented speed range calculation for green-window recommendations in `SpeedAdvisor`.
