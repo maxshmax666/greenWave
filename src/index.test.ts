@@ -1,58 +1,13 @@
-import {
-  createNavigation,
-  initialState,
-  cloneNavigationState,
-  commands,
-  processors,
-  sources,
-  stores,
-  getCommands,
-  getStores,
-} from './index';
+import { createRegistry } from './index';
 
-describe('index navigation facade', () => {
-  it('deep clones navigation state', () => {
-    const clone = cloneNavigationState(initialState);
-    clone.hudInfo.street = 'foo';
-    expect(initialState.hudInfo.street).toBe('');
-  });
-
-  it('createNavigation isolates nested hudInfo', () => {
-    const custom = {
-      ...initialState,
-      hudInfo: { ...initialState.hudInfo, street: 'Main' },
-    };
-    const nav = createNavigation(custom);
-    nav.initialState.hudInfo.street = 'Other';
-    expect(custom.hudInfo.street).toBe('Main');
-  });
-
-  it('createNavigation isolates maneuver', () => {
-    const nav = createNavigation();
-    nav.initialState.hudInfo.maneuver = 'x';
-    expect(initialState.hudInfo.maneuver).toBe('');
-  });
-
-  it('exposes grouped modules for testing', () => {
-    expect(typeof commands).toBe('object');
-    expect(typeof processors).toBe('object');
-    expect(typeof sources).toBe('object');
-    expect(typeof stores).toBe('object');
-  });
-
-  it('returns fresh copies from getters', () => {
-    const a = getCommands() as Record<string, unknown>;
-    (a as any).foo = 1;
-    const b = getCommands() as Record<string, unknown>;
-    expect((b as any).foo).toBeUndefined();
-    const s1 = getStores();
-    const s2 = getStores();
-    expect(s1).not.toBe(s2);
-  });
-
-  it('merges overrides without mutating defaults', () => {
-    const custom = getCommands({ test: () => true } as any);
-    expect(typeof (custom as any).test).toBe('function');
-    expect((commands as any).test).toBeUndefined();
+describe('createRegistry', () => {
+  it('merges overrides into default modules', () => {
+    const customCommand = () => {};
+    const reg = createRegistry({ commands: { customCommand } });
+    expect(reg.commands.customCommand).toBe(customCommand);
+    // ensure other groups exist
+    expect(reg.processors).toBeDefined();
+    expect(reg.sources).toBeDefined();
+    expect(reg.stores).toBeDefined();
   });
 });
