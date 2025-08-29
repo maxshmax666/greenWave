@@ -1,15 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import type { ThemeName } from '../styles/tokens';
 
-const KEY = 'theme_color';
+const KEY = 'theme';
 
-export let color = 'light';
+export let theme: ThemeName = 'light';
 
-export async function setColor(value: string): Promise<void> {
-  color = value;
+export async function setTheme(value: ThemeName): Promise<void> {
+  theme = value;
   await AsyncStorage.setItem(KEY, value);
 }
 
-export async function loadFromStorage(): Promise<void> {
+export async function loadTheme(): Promise<void> {
   const stored = await AsyncStorage.getItem(KEY);
-  if (stored) color = stored;
+  if (stored === 'light' || stored === 'dark') theme = stored;
 }

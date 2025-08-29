@@ -1,4 +1,4 @@
-import { calcSpeedRange } from './SpeedAdvisor';
+import { calcSpeedRange } from './calcSpeedRange';
 
 describe('calcSpeedRange', () => {
   it('returns clamped range within 10-60 km/h', () => {
