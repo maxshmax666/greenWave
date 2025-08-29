@@ -30,9 +30,15 @@ describe('notifications service', () => {
 
   it('subscribes to phase changes', () => {
     const emitter = new EventEmitter();
-    subscribeToPhaseChanges(emitter as unknown as PhaseEmitter);
+    const unsubscribe = subscribeToPhaseChanges(
+      emitter as unknown as PhaseEmitter,
+    );
     emitter.emit('phase', 'red');
     expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
+    (Notifications.scheduleNotificationAsync as jest.Mock).mockClear();
+    unsubscribe();
+    emitter.emit('phase', 'green');
+    expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
   });
 
   it('schedules notification when startIn > 0', async () => {

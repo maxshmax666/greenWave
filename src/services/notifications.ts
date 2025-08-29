@@ -16,10 +16,14 @@ export async function notifyDriver(phase: PhaseColor): Promise<void> {
   });
 }
 
-export function subscribeToPhaseChanges(emitter: PhaseEmitter): void {
-  emitter.on('phase', (phase: PhaseColor) => {
+export function subscribeToPhaseChanges(emitter: PhaseEmitter): () => void {
+  const listener = (phase: PhaseColor) => {
     void notifyDriver(phase);
-  });
+  };
+  emitter.on('phase', listener);
+  return () => {
+    emitter.off('phase', listener);
+  };
 }
 
 export async function notifyGreenPhase(
