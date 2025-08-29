@@ -13,11 +13,13 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
-      - run: corepack enable
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - run: pnpm install --frozen-lockfile
-      - run: npm test -- --coverage
-      - run: pnpm test:vitest
+      - run: pnpm test --coverage
       - uses: codecov/codecov-action@v4
+        if: secrets.CODECOV_TOKEN != ''
         with:
           files: coverage/lcov.info
           token: ${{ secrets.CODECOV_TOKEN }}
