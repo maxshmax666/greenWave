@@ -13,6 +13,8 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Added avatar upload and selection for customizable map markers.
+- Module registries can now be overridden for easier testing.
 - Implemented speed range calculation for green-window recommendations in `SpeedAdvisor`.
 - Added destination selection to navigation helpers.
 - Included `.env.example` with required keys.
