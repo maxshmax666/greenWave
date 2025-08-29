@@ -38,8 +38,8 @@ Tests live beside the code they verify, and coverage reports are stored under `c
 - `pnpm install` – install dependencies.
 - `pnpm run clean` – reset caches and lockfile.
 - `npx expo start` – launch the development server.
-- `npm test -- --coverage` – run the Jest suite with coverage (replaces `npm run coverage`).
-- `npm run lint` – check JavaScript and TypeScript code style.
+- `pnpm test --coverage` – run the Jest suite with coverage.
+- `pnpm lint` – check JavaScript and TypeScript code style.
 - Node scripts use the [`tsx`](https://github.com/privatenumber/tsx) loader via `node --loader tsx`.
 
 Consult `README.md` for environment variables and more detailed setup steps.
@@ -59,8 +59,8 @@ Run these commands before committing:
 
 ```bash
 pre-commit run --files <files>
-npm run lint
-npm test -- --coverage
+pnpm lint --format unix
+pnpm test --coverage
 ```
 
 Tests should pass and formatting hooks should run on the changed files. The `test` workflow uploads `coverage/lcov.info` to Codecov.

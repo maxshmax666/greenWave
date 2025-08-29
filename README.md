@@ -1,5 +1,6 @@
 # greenWave
 
+[![CI](https://github.com/maxshmax666/greenWave/actions/workflows/ci.yml/badge.svg)](https://github.com/maxshmax666/greenWave/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/maxshmax666/greenWave/branch/main/graph/badge.svg)](https://codecov.io/gh/maxshmax666/greenWave)
 
 React Native (Expo) app with real-time traffic-light detection, premium subscriptions, and analytics.
@@ -15,6 +16,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 - Added design tokens (`src/styles/tokens.ts`) and a reusable `Card` UI component.
 - Introduced light/dark theme switcher with persisted preference.
+- Integrated combobox-based search in the toolbar.
 - Extracted `calcSpeedRange` helper for isolated testing.
 - Added avatar upload and selection for customizable map markers.
 - Module registries can now be overridden for easier testing.
@@ -33,7 +35,7 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 - Added `clean` script for wiping caches and reinstalling dependencies.
 - Covered invalid JSON and missing type cases in `onMessage` tests.
 - Unified test command across documentation.
-- Dropped coverage npm script; run tests with `npm test -- --coverage`.
+ - Dropped coverage npm script; run tests with `pnpm test --coverage`.
 - Re-exported `cloneNavigationState` from the navigation feature and removed duplicate implementation.
 - Renamed project heading to "greenWave".
 - Added tests to ensure navigation maneuvers remain isolated between runs.
@@ -118,7 +120,7 @@ npx expo start -c
 Run unit tests:
 
 ```
-npm test -- --coverage
+pnpm test --coverage
 ```
 
 ### Database
