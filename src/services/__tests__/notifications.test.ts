@@ -35,7 +35,7 @@ describe('notifications service', () => {
     expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
   });
 
-  it('notifies upcoming green phase', async () => {
+  it('schedules notification when startIn > 0', async () => {
     (getUpcomingPhase as jest.Mock).mockResolvedValueOnce({
       direction: 'MAIN',
       startIn: 5,
@@ -45,5 +45,11 @@ describe('notifications service', () => {
       content: { title: 'Upcoming green', body: 'MAIN in 5s' },
       trigger: { seconds: 5 },
     });
+  });
+
+  it('does not schedule when no upcoming phase', async () => {
+    (getUpcomingPhase as jest.Mock).mockResolvedValueOnce(null);
+    await notifyGreenPhase('1');
+    expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
   });
 });
