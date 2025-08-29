@@ -1,7 +1,8 @@
 import { parseMessage } from './parse';
 import { validateMessage } from './validate';
 import { handleMessage } from './handle';
-export type { Message } from './types';
+export type { Message, MessageHandler, HandlerMap } from './types';
+export { handlers } from './handlers';
 
 export { parseMessage, validateMessage, handleMessage };
 
