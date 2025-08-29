@@ -5,6 +5,8 @@
 
 React Native (Expo) app with real-time traffic-light detection, premium subscriptions, and analytics.
 
+See [docs/API.md](docs/API.md) for available REST endpoints.
+
 ## Branches
 
 - `main` – protected, production-ready releases.
@@ -121,9 +123,9 @@ See [CHANGELOG.md](CHANGELOG.md) for a full history.
 Copy `.env.example` to `.env` and set the following environment variables for API access:
 
 ```
-EXPO_PUBLIC_SUPABASE_URL
-EXPO_PUBLIC_SUPABASE_ANON_KEY
-EXPO_PUBLIC_ORS_API_KEY
+SUPABASE_URL
+SUPABASE_ANON_KEY
+ORS_API_KEY
 ```
 
 ## Running
