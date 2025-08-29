@@ -13,6 +13,10 @@ React Native (Expo) app with real-time traffic-light detection, premium subscrip
 
 ## Recent changes
 
+- Added destination selection to navigation helpers.
+- Included `.env.example` with required keys.
+- Introduced SpeedAdvisor component to compute safe speed ranges for green windows.
+
 - Added LightStatusBadge component showing upcoming traffic-light phases.
 - Added markup mode toggle for map overlays.
 - Exposed grouped modules in `index.ts` for easier testing.
