@@ -1,3 +1,5 @@
+import { log } from '../logger';
+
 export interface GptClient {
   complete(prompt: string): Promise<string>;
 }
@@ -22,9 +24,20 @@ export function createGptClient(
           }),
         },
       );
-      const data = (await res.json()) as {
-        choices: { message: { content: string } }[];
-      };
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+
+      let data: { choices: { message: { content: string } }[] };
+      try {
+        data = (await res.json()) as {
+          choices: { message: { content: string } }[];
+        };
+      } catch (error) {
+        await log('ERROR', `Failed to parse GPT response: ${String(error)}`);
+        throw error;
+      }
+
       return data.choices[0]?.message.content ?? '';
     },
   };
