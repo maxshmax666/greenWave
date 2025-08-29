@@ -49,12 +49,12 @@ describe('notifications service', () => {
 
   it('honors lead time', async () => {
     (getUpcomingPhase as jest.Mock).mockResolvedValueOnce({
-      direction: 'SIDE',
+      direction: 'SECONDARY',
       startIn: 10,
     });
     await notifyGreenPhase('2', 4);
     expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledWith({
-      content: { title: 'Upcoming green', body: 'SIDE in 6s' },
+      content: { title: 'Upcoming green', body: 'SECONDARY in 6s' },
       trigger: { seconds: 6 },
     });
   });

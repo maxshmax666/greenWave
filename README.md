@@ -43,6 +43,7 @@ Open a pull request on GitHub and request a review.
 - Added log viewer screen to inspect `data/app.log` from the menu.
 - Added notifications for upcoming green phases.
 - Added lead-time setting for green-phase notifications.
+- Persisted lead-time preference across sessions.
 - Extracted registry manager into dedicated module for improved testability.
 - Added registry manager factory for isolated module registries in tests.
 - Added modular GPT service with API client, prompt formatter, and utilities.
