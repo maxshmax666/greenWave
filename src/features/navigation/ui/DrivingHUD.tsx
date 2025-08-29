@@ -38,7 +38,7 @@ export default function DrivingHUD({
       );
       spoken.current = maneuver;
     }
-  }, [maneuver, distance]);
+  }, [speechEnabled, maneuver, distance]);
   return (
     <SafeAreaView style={styles.container} pointerEvents="none">
       <View style={styles.maneuverPanel}>
