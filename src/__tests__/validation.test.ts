@@ -1,4 +1,4 @@
-import { validateLight, validateCycle } from '../validation';
+import { validateLight, validateCycle } from '../utils/validation';
 
 describe('validateLight', () => {
   test('requires name', () => {

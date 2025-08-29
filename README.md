@@ -34,6 +34,10 @@ Open a pull request on GitHub and request a review.
 
 ## Recent changes
 
+- Split `onMessage` into parsing, validation, and handling modules.
+- Moved validation helpers to `src/utils` for reuse.
+- Made module registry injectable for easier overriding in tests.
+- Resolved dependency vulnerabilities via `npm audit fix`.
 - Documented GitHub Actions `test` workflow and provided logger usage example.
 - CI now runs tests with coverage and uploads reports to Codecov.
 - Added API reference documentation and `.env.example` template.
