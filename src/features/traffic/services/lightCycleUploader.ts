@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { uploadCycle, Phase } from './uploadLightData';
-import { ColorPhase } from '../features/traffic/services/colorPhases';
+import { ColorPhase } from './colorPhases';
 
 export async function uploadLightCycle(
   light: { id: number | string; lat: number; lon: number } | null,

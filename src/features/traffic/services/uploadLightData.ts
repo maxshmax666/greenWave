@@ -1,5 +1,5 @@
-import { supabase } from './supabase';
-import { log } from './logger';
+import { supabase } from '../../../services/supabase';
+import { log } from '../../../services/logger';
 
 export interface Phase {
   color: string;

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { parseVoiceResult } from '../useVoicePhaseLogger';
-import { phaseSync, STORAGE_KEY } from '../../../../services/phaseSync';
+import { phaseSync, STORAGE_KEY } from '../../services/phaseSync';
 import { network } from '../../../../services/network';
 
 jest.mock(
