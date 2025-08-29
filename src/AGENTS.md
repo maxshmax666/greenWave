@@ -8,6 +8,6 @@ Guidelines for code under `src/`.
 - After changes run:
   ```bash
   pre-commit run --files <files>
-  npm test -- --coverage
+  pnpm test -- --coverage
   ```
   Ensure hooks and tests pass before committing.

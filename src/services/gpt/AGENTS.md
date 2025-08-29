@@ -6,4 +6,4 @@ Guidelines for GPT service modules.
 - Pure helpers belong in `utils.ts` and should remain stateless.
 - `promptHandler.ts` formats prompts without side effects.
 - Place tests in `__tests__/` alongside the modules.
-- Run `pre-commit run --files <files>` and `npm test -- --coverage` after changes.
+- Run `pre-commit run --files <files>` and `pnpm test -- --coverage` after changes.
