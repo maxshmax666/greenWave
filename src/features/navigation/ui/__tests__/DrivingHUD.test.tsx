@@ -12,12 +12,18 @@ jest.mock('../../../../premium/subscription', () => ({
   usePremium: () => ({ isPremium: true }),
 }));
 jest.mock('expo-speech');
-jest.mock('../../../../state/speech', () => ({ speechEnabled: true }));
+const speechState = { speechEnabled: true };
+jest.mock('../../../../state/speech', () => speechState);
 import * as Speech from 'expo-speech';
 
 import DrivingHUD from '../DrivingHUD';
 
 describe('DrivingHUD', () => {
+  beforeEach(() => {
+    speechState.speechEnabled = true;
+    (Speech.speak as jest.Mock).mockClear();
+  });
+
   it('displays provided props', () => {
     const { getByTestId } = render(
       <DrivingHUD
@@ -47,6 +53,35 @@ describe('DrivingHUD', () => {
         speed={0}
       />,
     );
+    await waitFor(() =>
+      expect(Speech.speak).toHaveBeenCalledWith('Turn left in 100 m'),
+    );
+  });
+
+  it('speaks when speech setting toggles on', async () => {
+    speechState.speechEnabled = false;
+    const { rerender } = render(
+      <DrivingHUD
+        maneuver="Turn left"
+        distance={100}
+        street=""
+        eta={0}
+        speed={0}
+      />,
+    );
+    expect(Speech.speak).not.toHaveBeenCalled();
+
+    speechState.speechEnabled = true;
+    rerender(
+      <DrivingHUD
+        maneuver="Turn left"
+        distance={100}
+        street=""
+        eta={0}
+        speed={0}
+      />,
+    );
+
     await waitFor(() =>
       expect(Speech.speak).toHaveBeenCalledWith('Turn left in 100 m'),
     );
