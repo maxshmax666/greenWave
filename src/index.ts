@@ -1,6 +1,19 @@
-export { cloneNavigationState } from './features/navigation/cloneNavigationState';
-export { createNavigation, initialState } from './navigationFactory';
-export {
+import { cloneNavigationState } from './features/navigation/cloneNavigationState';
+import { createNavigation, initialState } from './navigationFactory';
+import * as registry from './registryManager';
+
+export function createCore() {
+  return {
+    cloneNavigationState,
+    createNavigation,
+    initialState,
+    ...registry,
+  };
+}
+
+export { cloneNavigationState, createNavigation, initialState };
+
+export const {
   createRegistryManager,
   setRegistry,
   initRegistry,
@@ -10,4 +23,4 @@ export {
   getProcessors,
   getSources,
   getStores,
-} from './registryManager';
+} = registry;

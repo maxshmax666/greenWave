@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Voice from 'expo-voice';
 import type { PhaseRecord } from '../../../interfaces/phaseSync';
-import { STORAGE_KEY } from '../../../services/phaseSync';
+import { STORAGE_KEY } from '../services/phaseSync';
 
 const COLOR_RE = /(red|yellow|green)/i;
 const TIME_RE = /(\d+(?:\.\d+)?)/;

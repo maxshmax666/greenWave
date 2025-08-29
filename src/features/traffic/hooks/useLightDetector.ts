@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Tflite from 'tflite-react-native';
 import type { CameraView, CameraCapturedPicture } from 'expo-camera';
 import { finalizePhase, ColorPhase } from '../services/colorPhases';
-import { uploadLightCycle } from '../../../services/lightCycleUploader';
+import { uploadLightCycle } from '../services/lightCycleUploader';
 
 export interface TrafficLightDetection {
   color: 'red' | 'yellow' | 'green';

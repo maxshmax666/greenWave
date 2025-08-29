@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { uploadLightCycle } from '../lightCycleUploader';
-import { uploadCycle } from '../uploadLightData';
-import type { ColorPhase } from '../../features/traffic/services/colorPhases';
+import { uploadLightCycle } from './lightCycleUploader';
+import { uploadCycle } from './uploadLightData';
+import type { ColorPhase } from './colorPhases';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
   jest.requireActual(
@@ -9,7 +9,7 @@ jest.mock('@react-native-async-storage/async-storage', () =>
   ),
 );
 
-jest.mock('../uploadLightData', () => ({
+jest.mock('./uploadLightData', () => ({
   uploadCycle: jest.fn(),
 }));
 

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { network } from './network';
-import type { PhaseRecord, PhaseSync } from '../interfaces/phaseSync';
+import { network } from '../../../services/network';
+import type { PhaseRecord, PhaseSync } from '../../../interfaces/phaseSync';
 
 export const STORAGE_KEY = 'voicePhases';
 const ENDPOINT = 'https://example.com/api/phases';

@@ -6,7 +6,7 @@ import { runModelOnImageMock as runModelOnImageMockRaw } from 'tflite-react-nati
 import type { CameraCapturedPicture } from 'expo-camera';
 const runModelOnImageMock = runModelOnImageMockRaw as jest.Mock;
 
-jest.mock('../../../../services/lightCycleUploader', () => ({
+jest.mock('../../services/lightCycleUploader', () => ({
   uploadLightCycle: jest.fn().mockResolvedValue(undefined),
 }));
 
