@@ -23,10 +23,25 @@ describe('createGptClient', () => {
       .fn<ReturnType<typeof fetch>, Parameters<typeof fetch>>()
       .mockResolvedValue({
         ok: false,
-        text: async () => 'bad',
+        text: async () => 'err',
       } as unknown as Response);
     const client = createGptClient('k', mockFetch);
-    await expect(client.complete('hi')).rejects.toThrow('bad');
+    const expected = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer k',
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content: 'hi' }],
+      }),
+    };
+    await expect(client.complete('hi')).rejects.toThrow('err');
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.openai.com/v1/chat/completions',
+      expected,
+    );
   });
 
   it('logs and rethrows on json parse error', async () => {
