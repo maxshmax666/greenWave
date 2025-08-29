@@ -42,11 +42,17 @@ describe('index navigation facade', () => {
 
   it('returns fresh copies from getters', () => {
     const a = getCommands() as Record<string, unknown>;
-    (a as Record<string, unknown>)['foo'] = 1;
+    (a as any).foo = 1;
     const b = getCommands() as Record<string, unknown>;
-    expect(b['foo']).toBeUndefined();
+    expect((b as any).foo).toBeUndefined();
     const s1 = getStores();
     const s2 = getStores();
     expect(s1).not.toBe(s2);
+  });
+
+  it('merges overrides without mutating defaults', () => {
+    const custom = getCommands({ test: () => true } as any);
+    expect(typeof (custom as any).test).toBe('function');
+    expect((commands as any).test).toBeUndefined();
   });
 });

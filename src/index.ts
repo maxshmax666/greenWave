@@ -6,21 +6,16 @@ import * as storeModules from './stores';
 export { cloneNavigationState } from './features/navigation/cloneNavigationState';
 export { createNavigation, initialState } from './navigationFactory';
 
-export function getCommands() {
-  return { ...commandModules };
+type ModuleMap = Record<string, unknown>;
+
+function createGetter<T extends ModuleMap>(defaults: T) {
+  return (overrides: Partial<T> = {}): T => ({ ...defaults, ...overrides });
 }
 
-export function getProcessors() {
-  return { ...processorModules };
-}
-
-export function getSources() {
-  return { ...sourceModules };
-}
-
-export function getStores() {
-  return { ...storeModules };
-}
+export const getCommands = createGetter(commandModules);
+export const getProcessors = createGetter(processorModules);
+export const getSources = createGetter(sourceModules);
+export const getStores = createGetter(storeModules);
 
 export const commands = getCommands();
 export const processors = getProcessors();
