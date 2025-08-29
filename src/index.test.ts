@@ -1,9 +1,9 @@
-import { createRegistry } from './index';
+import { initRegistry } from './index';
 
 describe('createRegistry', () => {
   it('merges overrides into default modules', () => {
     const customCommand = () => {};
-    const reg = createRegistry({ commands: { customCommand } });
+    const reg = initRegistry({ commands: { customCommand } });
     expect(reg.commands.customCommand).toBe(customCommand);
     // ensure other groups exist
     expect(reg.processors).toBeDefined();

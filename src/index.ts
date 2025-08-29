@@ -4,7 +4,13 @@ export { cloneNavigationState } from './features/navigation/cloneNavigationState
 export { createNavigation, initialState } from './navigationFactory';
 export { createRegistry } from './registry';
 
-export const { commands, processors, sources, stores } = createRegistry();
+export function initRegistry(
+  overrides?: Parameters<typeof createRegistry>[0],
+): ReturnType<typeof createRegistry> {
+  return createRegistry(overrides);
+}
+
+export const { commands, processors, sources, stores } = initRegistry();
 
 export * from './commands';
 export * from './processors';
