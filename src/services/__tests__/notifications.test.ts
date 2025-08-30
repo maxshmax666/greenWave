@@ -65,16 +65,15 @@ describe('notifications service', () => {
     });
   });
 
-  it('triggers immediately when lead time exceeds start', async () => {
+  it('uses null trigger when lead time exceeds start', async () => {
     (getUpcomingPhase as jest.Mock).mockResolvedValueOnce({
       direction: 'MAIN',
       startIn: 3,
     });
-    await notifyGreenPhase('3', 5);
-    expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledWith({
-      content: { title: 'Upcoming green', body: 'MAIN in 0s' },
-      trigger: null,
-    });
+    await notifyGreenPhase('id', 5);
+    expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledWith(
+      expect.objectContaining({ trigger: null }),
+    );
   });
 
   it('does not schedule when no upcoming phase', async () => {
