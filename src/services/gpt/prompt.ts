@@ -1,4 +1,4 @@
-export function buildPrompt(
+export function formatPrompt(
   template: string,
   vars: Record<string, string>,
 ): string {
