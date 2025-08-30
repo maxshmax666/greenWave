@@ -35,6 +35,7 @@ Open a pull request on GitHub and request a review.
 ## Recent changes
 
 - Configured pnpm with hoisted node linker for Expo 53 compatibility and removed `tflite-react-native`.
+- Centralized core creation in `src/core.ts` and simplified exports.
 - Driving HUD reacts to speech-setting toggles.
 - Navigation advisor treats `NaN` speeds as `0` to avoid invalid recommendations.
 - `createCore` now accepts a custom registry for improved testability.

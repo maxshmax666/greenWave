@@ -26,7 +26,7 @@ New contributors can start by exploring the folders below to see how the app is 
 - Start with [`README.md`](README.md) and [`CHANGELOG.md`](CHANGELOG.md) to see recent changes.
 - Navigation helpers live in `src/features/navigation` and are re-exported from `src/index.ts`.
 - Use `createNavigation()` from `src/index.ts` to obtain test-friendly navigation helpers.
-- `createCore({ navigation, registry })` in `src/index.ts` lets you inject test doubles for navigation or registry logic.
+ - `createCore({ navigation, registry })` in `src/core.ts` lets you inject test doubles for navigation or registry logic and is re-exported from `src/index.ts`.
 - Tests sit next to code; see `src/features/navigation/__tests__` for examples.
 
 Service interfaces are named `SupabaseService`, `AnalyticsService`, etc., and live in `src/interfaces/`.
