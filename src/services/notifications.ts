@@ -33,12 +33,13 @@ export async function notifyGreenPhase(
   const upcoming = await getUpcomingPhase(lightId);
   if (!upcoming) return;
   const startIn = Math.max(0, upcoming.startIn - leadTimeSec);
+  const trigger = startIn > 0 ? { seconds: Math.ceil(startIn) } : null;
   await Notifications.scheduleNotificationAsync({
     content: {
       title: 'Upcoming green',
       body: `${upcoming.direction} in ${Math.round(startIn)}s`,
     },
-    trigger: startIn > 0 ? { seconds: Math.ceil(startIn) } : null,
+    trigger,
   });
 }
 
