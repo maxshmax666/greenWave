@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Alert, StyleSheet, View, Text } from 'react-native';
-import Settings from './src/ui/Settings';
+import Settings from './src/features/navigation/ui/Settings';
 import { theme as themeNameValue, loadTheme } from './src/state/theme';
 import { colors } from './src/styles/tokens';
 import { loadSpeechEnabled } from './src/state/speech';
@@ -28,7 +28,6 @@ import {
   computeRecommendation,
   LightOnRoute,
 } from './src';
-import { loadLeadTimeSec, leadTimeSec } from './src/state/leadTime';
 import type { Light, LightCycle } from './src/domain/types';
 
 interface Car {
@@ -131,7 +130,6 @@ export default function App(): JSX.Element {
   useEffect(() => {
     loadTheme().then(() => setThemeName(themeNameValue));
     loadSpeechEnabled();
-    loadLeadTimeSec();
   }, []);
 
   useEffect(() => {
@@ -142,7 +140,7 @@ export default function App(): JSX.Element {
   useEffect(() => {
     const id = setInterval(() => {
       lights.forEach((l) => {
-        void notifyGreenPhase(l.id, leadTimeSec);
+        void notifyGreenPhase(l.id);
       });
     }, 30000);
     return () => clearInterval(id);

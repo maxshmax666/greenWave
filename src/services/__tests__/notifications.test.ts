@@ -4,6 +4,9 @@ import type { PhaseEmitter } from '../../interfaces/notifications';
 
 jest.mock('expo-notifications');
 jest.mock('../traffic/lights', () => ({ getUpcomingPhase: jest.fn() }));
+jest.mock('../../stores/leadTime', () => ({
+  leadTimeStore: { get: jest.fn().mockResolvedValue(0) },
+}));
 
 import {
   notifyDriver,
@@ -11,6 +14,7 @@ import {
   subscribeToPhaseChanges,
 } from '../notifications';
 import { getUpcomingPhase } from '../traffic/lights';
+import { leadTimeStore } from '../../stores/leadTime';
 
 describe('notifications service', () => {
   beforeEach(() => {
@@ -80,5 +84,18 @@ describe('notifications service', () => {
     (getUpcomingPhase as jest.Mock).mockResolvedValueOnce(null);
     await notifyGreenPhase('1');
     expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
+  });
+
+  it('uses stored lead time by default', async () => {
+    (leadTimeStore.get as jest.Mock).mockResolvedValueOnce(3);
+    (getUpcomingPhase as jest.Mock).mockResolvedValueOnce({
+      direction: 'MAIN',
+      startIn: 8,
+    });
+    await notifyGreenPhase('3');
+    expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledWith({
+      content: { title: 'Upcoming green', body: 'MAIN in 5s' },
+      trigger: { seconds: 5 },
+    });
   });
 });

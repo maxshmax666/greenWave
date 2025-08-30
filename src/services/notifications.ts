@@ -5,6 +5,7 @@ import type {
   PhaseEmitter,
 } from '../interfaces/notifications';
 import { getUpcomingPhase } from './traffic/lights';
+import { leadTimeStore } from '../stores/leadTime';
 
 export async function notifyDriver(phase: PhaseColor): Promise<void> {
   await Notifications.scheduleNotificationAsync({
@@ -28,11 +29,12 @@ export function subscribeToPhaseChanges(emitter: PhaseEmitter): () => void {
 
 export async function notifyGreenPhase(
   lightId: string,
-  leadTimeSec = 0,
+  leadTimeSec?: number,
 ): Promise<void> {
+  const lead = leadTimeSec ?? (await leadTimeStore.get());
   const upcoming = await getUpcomingPhase(lightId);
   if (!upcoming) return;
-  const startIn = Math.max(0, upcoming.startIn - leadTimeSec);
+  const startIn = Math.max(0, upcoming.startIn - lead);
   const trigger = startIn > 0 ? { seconds: Math.ceil(startIn) } : null;
   await Notifications.scheduleNotificationAsync({
     content: {
