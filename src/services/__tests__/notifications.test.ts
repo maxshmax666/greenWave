@@ -65,6 +65,8 @@ describe('notifications service', () => {
     });
   });
 
+  it('triggers immediately when lead time exceeds start time', async () => {
+    
   it('triggers immediately when lead time exceeds start', async () => {
     (getUpcomingPhase as jest.Mock).mockResolvedValueOnce({
       direction: 'MAIN',
