@@ -1,5 +1,9 @@
 # Changelog
 
+## 2025-10
+
+- feat: persist lead-time preference via store and use as default for green-phase notifications
+
 ## 2025-08
 
 - refactor: rename maneuver panel style

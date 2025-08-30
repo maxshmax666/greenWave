@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   View,
@@ -8,9 +8,9 @@ import {
   Button,
   TextInput,
 } from 'react-native';
-import { setTheme, theme } from '../state/theme';
-import { speechEnabled, setSpeechEnabled } from '../state/speech';
-import { leadTimeSec, setLeadTimeSec } from '../state/leadTime';
+import { setTheme, theme } from '../../../state/theme';
+import { speechEnabled, setSpeechEnabled } from '../../../state/speech';
+import { leadTimeStore } from '../../../stores/leadTime';
 
 export interface SettingsProps {
   visible: boolean;
@@ -25,7 +25,11 @@ export default function Settings({
 }: SettingsProps): JSX.Element {
   const [voice, setVoice] = useState(speechEnabled);
   const [dark, setDark] = useState(theme === 'dark');
-  const [lead, setLead] = useState(String(leadTimeSec));
+  const [lead, setLead] = useState('0');
+
+  useEffect(() => {
+    leadTimeStore.get().then((v: number) => setLead(String(v)));
+  }, []);
 
   const toggleTheme = async (v: boolean) => {
     setDark(v);
@@ -42,7 +46,7 @@ export default function Settings({
   const changeLead = async (v: string) => {
     setLead(v);
     const parsed = parseInt(v, 10);
-    if (!Number.isNaN(parsed)) await setLeadTimeSec(parsed);
+    if (!Number.isNaN(parsed)) await leadTimeStore.set(parsed);
   };
 
   return (
