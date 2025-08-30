@@ -6,7 +6,7 @@ import {
   computeRecommendation,
 } from './features/navigation';
 import type { NavigationState, LightOnRoute } from './features/navigation';
-import { cloneNavigationState } from './index';
+import { cloneNavigationState } from './features/navigation/cloneNavigationState';
 
 export interface NavigationDeps {
   handleStartNavigation: typeof handleStartNavigation;

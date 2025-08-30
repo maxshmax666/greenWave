@@ -1,4 +1,4 @@
-import { cloneNavigationState as defaultCloneNavigationState } from './features/navigation/cloneNavigationState';
+import { cloneNavigationState } from './features/navigation/cloneNavigationState';
 import * as navigationFactory from './navigationFactory';
 import * as registry from './registryManager';
 
@@ -8,16 +8,16 @@ interface CoreDeps {
     initialState: typeof navigationFactory.initialState;
   };
   registry?: typeof registry;
-  cloneNavigationState?: typeof defaultCloneNavigationState;
+  cloneNavigationState?: typeof cloneNavigationState;
 }
 
 export function createCore({
   navigation = navigationFactory,
   registry: registryDep = registry,
-  cloneNavigationState = defaultCloneNavigationState,
+  cloneNavigationState: clone = cloneNavigationState,
 }: CoreDeps = {}) {
   return {
-    cloneNavigationState,
+    cloneNavigationState: clone,
     createNavigation: navigation.createNavigation,
     initialState: navigation.initialState,
     ...registryDep,
@@ -25,7 +25,7 @@ export function createCore({
 }
 
 export const { createNavigation, initialState } = navigationFactory;
-export const cloneNavigationState = defaultCloneNavigationState;
+export { cloneNavigationState };
 
 export const {
   createRegistryManager,
