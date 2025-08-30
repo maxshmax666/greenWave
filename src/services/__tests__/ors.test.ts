@@ -1,5 +1,5 @@
-import { getRoute } from './ors';
-import { network } from '../../../services/network';
+import { getRoute } from '../navigation/ors';
+import { network } from '../network';
 
 const start = { latitude: 1, longitude: 2 };
 const end = { latitude: 3, longitude: 4 };

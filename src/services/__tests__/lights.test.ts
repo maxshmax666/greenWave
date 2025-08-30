@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 import type { LightCycle } from '../../domain/types';
-import { createLight, getUpcomingPhase, upsertPhases } from '../lights';
+import { createLight, getUpcomingPhase, upsertPhases } from '../traffic/lights';
 
 const singleLight = vi.fn();
 const insert = vi.fn();

@@ -1,6 +1,6 @@
-import { supabase } from '../lib/supabase';
-import { log } from './logger';
-import type { Light, LightCycle, Direction } from '../domain/types';
+import { supabase } from '../../lib/supabase';
+import { log } from '../logger';
+import type { Light, LightCycle, Direction } from '../../domain/types';
 
 /** Creates a traffic light. */
 export async function createLight(light: Omit<Light, 'id'>): Promise<Light> {

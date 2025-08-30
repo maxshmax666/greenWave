@@ -1,11 +1,11 @@
-jest.mock('../../../services/supabase', () => ({
+jest.mock('../supabase', () => ({
   supabase: { from: jest.fn() },
 }));
-jest.mock('../../../services/logger', () => ({ log: jest.fn() }));
+jest.mock('../logger', () => ({ log: jest.fn() }));
 
-import { uploadCycle } from './uploadLightData';
-import { supabase } from '../../../services/supabase';
-import { log } from '../../../services/logger';
+import { uploadCycle } from '../traffic/uploadLightData';
+import { supabase } from '../supabase';
+import { log } from '../logger';
 
 describe('uploadCycle', () => {
   it('logs and throws on insert error', async () => {

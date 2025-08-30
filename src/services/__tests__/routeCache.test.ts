@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { RouteResult } from './ors';
-import { saveRoute, loadRoute } from './routeCache';
+import type { RouteResult } from '../navigation/ors';
+import { saveRoute, loadRoute } from '../navigation/routeCache';
 
 jest.mock('@react-native-async-storage/async-storage', () => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports

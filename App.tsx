@@ -16,11 +16,8 @@ import LogViewer from './src/features/logs/LogViewer';
 import { supabase } from './src/services/supabase';
 import { useSupabaseData } from './src/hooks/useSupabaseData';
 import { useMenu } from './src/hooks/useMenu';
-import { getRoute, RouteStep } from './src/features/navigation/services/ors';
-import {
-  saveRoute,
-  loadRoute,
-} from './src/features/navigation/services/routeCache';
+import { getRoute, RouteStep } from './src/services/navigation/ors';
+import { saveRoute, loadRoute } from './src/services/navigation/routeCache';
 import i18n from './src/i18n';
 import { projectLightsToRoute } from './src/domain/matching';
 import { analytics } from './src/services/analytics';
