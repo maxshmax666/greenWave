@@ -5,6 +5,7 @@
 - refactor: rename maneuver panel style
 - feat: schedule notifications for upcoming green phases
 - feat: allow lead-time offset for green-phase notifications
+- fix: respect lead-time when scheduling green-phase notifications
 - fix: guard NaN speeds in navigation advisor
 
 ## 2025-09

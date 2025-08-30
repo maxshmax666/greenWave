@@ -44,6 +44,7 @@ Open a pull request on GitHub and request a review.
 - Added notifications for upcoming green phases.
 - Added lead-time setting for green-phase notifications.
 - Persisted lead-time preference across sessions.
+- Fixed green-phase notifications to trigger immediately when lead time has elapsed.
 - `subscribeToPhaseChanges` now returns an unsubscribe callback to remove listeners.
 - Extracted registry manager into dedicated module for improved testability.
 - Added registry manager factory for isolated module registries in tests.
