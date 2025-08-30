@@ -1,6 +1,6 @@
 # Changelog
 
-## 2025-10
+## 2025-08
 
 - refactor: rename maneuver panel style
 - feat: schedule notifications for upcoming green phases
