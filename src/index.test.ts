@@ -28,4 +28,10 @@ describe('createCore', () => {
     expect(core.createNavigation).toBe(navigation.createNavigation);
     expect(core.initialState).toBe(navigation.initialState);
   });
+
+  it('allows injecting custom cloneNavigationState', () => {
+    const clone = jest.fn();
+    const core = createCore({ cloneNavigationState: clone });
+    expect(core.cloneNavigationState).toBe(clone);
+  });
 });

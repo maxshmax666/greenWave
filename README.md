@@ -34,6 +34,7 @@ Open a pull request on GitHub and request a review.
 
 ## Recent changes
 
+- Configured pnpm with hoisted node linker for Expo 53 compatibility and removed `tflite-react-native`.
 - Driving HUD reacts to speech-setting toggles.
 - Navigation advisor treats `NaN` speeds as `0` to avoid invalid recommendations.
 - `createCore` now accepts a custom registry for improved testability.
@@ -45,6 +46,7 @@ Open a pull request on GitHub and request a review.
 - Added lead-time setting for green-phase notifications.
 - Persisted lead-time preference across sessions.
 - Fixed green-phase notifications to trigger immediately when lead time has elapsed.
+- Fixed green-phase notification trigger to respect lead time.
 - `subscribeToPhaseChanges` now returns an unsubscribe callback to remove listeners.
 - Extracted registry manager into dedicated module for improved testability.
 - Added registry manager factory for isolated module registries in tests.
