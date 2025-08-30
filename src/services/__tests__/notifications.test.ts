@@ -3,14 +3,14 @@ import * as Notifications from 'expo-notifications';
 import type { PhaseEmitter } from '../../interfaces/notifications';
 
 jest.mock('expo-notifications');
-jest.mock('../lights', () => ({ getUpcomingPhase: jest.fn() }));
+jest.mock('../traffic/lights', () => ({ getUpcomingPhase: jest.fn() }));
 
 import {
   notifyDriver,
   notifyGreenPhase,
   subscribeToPhaseChanges,
 } from '../notifications';
-import { getUpcomingPhase } from '../lights';
+import { getUpcomingPhase } from '../traffic/lights';
 
 describe('notifications service', () => {
   beforeEach(() => {

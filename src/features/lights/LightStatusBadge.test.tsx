@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, act } from '@testing-library/react-native';
 
-jest.mock('../../services/lights', () => ({
+jest.mock('../../services/traffic/lights', () => ({
   getUpcomingPhase: jest.fn(),
 }));
 
 import { LightStatusBadge } from './LightStatusBadge';
-import { getUpcomingPhase } from '../../services/lights';
+import { getUpcomingPhase } from '../../services/traffic/lights';
 
 jest.mock('react-native', () => ({
   View: 'View',

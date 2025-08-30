@@ -41,7 +41,7 @@ Open a pull request on GitHub and request a review.
 - Navigation advisor treats `NaN` speeds as `0` to avoid invalid recommendations.
 - `createCore` now accepts a custom registry for improved testability.
 - Renamed maneuver panel style for consistent naming.
-- Consolidated traffic services under `src/features/traffic/services` with new guidelines.
+- Consolidated traffic services under `src/services/traffic` with new guidelines.
 - Streamlined registry manager exports and covered them with tests.
 - Added log viewer screen to inspect `data/app.log` from the menu.
 - Added notifications for upcoming green phases.

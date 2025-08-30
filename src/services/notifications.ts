@@ -4,7 +4,7 @@ import type {
   PhaseColor,
   PhaseEmitter,
 } from '../interfaces/notifications';
-import { getUpcomingPhase } from './lights';
+import { getUpcomingPhase } from './traffic/lights';
 
 export async function notifyDriver(phase: PhaseColor): Promise<void> {
   await Notifications.scheduleNotificationAsync({

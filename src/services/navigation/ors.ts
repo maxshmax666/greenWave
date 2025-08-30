@@ -1,4 +1,4 @@
-import { network } from '../../../services/network';
+import { network } from '../network';
 
 export interface LatLng {
   latitude: number;

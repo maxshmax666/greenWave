@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { getUpcomingPhase, UpcomingPhase } from '../../services/lights';
+import { getUpcomingPhase, UpcomingPhase } from '../../services/traffic/lights';
 
 const overlay = '#00000088';
 
