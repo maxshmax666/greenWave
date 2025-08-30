@@ -38,7 +38,7 @@ export async function notifyGreenPhase(
       title: 'Upcoming green',
       body: `${upcoming.direction} in ${Math.round(startIn)}s`,
     },
-    trigger: upcoming.startIn > 0 ? { seconds: Math.ceil(startIn) } : null,
+    trigger: startIn > 0 ? { seconds: Math.ceil(startIn) } : null,
   });
 }
 
