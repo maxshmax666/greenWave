@@ -34,6 +34,7 @@ Open a pull request on GitHub and request a review.
 
 ## Recent changes
 
+- Renamed GPT API client to `client.ts` and split prompt formatting and response parsing into `prompt.ts` and `parse.ts`.
 - Configured pnpm with hoisted node linker for Expo 53 compatibility and removed `tflite-react-native`.
 - Centralized core creation in `src/core.ts` and simplified exports.
 - Driving HUD reacts to speech-setting toggles.

@@ -1,4 +1,4 @@
-import { createGptClient } from '../apiClient';
+import { createGptClient } from '../client';
 import * as logger from '../../logger';
 
 describe('createGptClient', () => {

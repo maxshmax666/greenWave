@@ -1,4 +1,5 @@
 import { log } from '../logger';
+import { extractContent, GptResponse } from './parse';
 
 export interface GptClient {
   complete(prompt: string): Promise<string>;
@@ -28,17 +29,15 @@ export function createGptClient(
         throw new Error(await res.text());
       }
 
-      let data: { choices: { message: { content: string } }[] };
+      let data: GptResponse;
       try {
-        data = (await res.json()) as {
-          choices: { message: { content: string } }[];
-        };
+        data = (await res.json()) as GptResponse;
       } catch (error) {
         await log('ERROR', `Failed to parse GPT response: ${String(error)}`);
         throw error;
       }
 
-      return data.choices[0]?.message.content ?? '';
+      return extractContent(data);
     },
   };
 }
