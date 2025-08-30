@@ -34,6 +34,7 @@ Open a pull request on GitHub and request a review.
 
 ## Recent changes
 
+- Added numeric input for lead-time setting.
 - Navigation settings moved under the navigation feature with lead-time preference stored via a dedicated store and used as the default for green-phase notifications.
 - Renamed GPT API client to `client.ts` and split prompt formatting and response parsing into `prompt.ts` and `parse.ts`.
 - Configured pnpm with hoisted node linker for Expo 53 compatibility and removed `tflite-react-native`.

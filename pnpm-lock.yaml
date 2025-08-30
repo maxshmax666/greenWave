@@ -12,19 +12,19 @@ importers:
         specifier: ^1.24.0
         version: 1.24.0(react-native@0.74.7(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(@types/react@18.3.24)(react@18.2.0))
       '@react-native-firebase/analytics':
-        specifier: ^23.1.2
+        specifier: ^23.2.0
         version: 23.2.0(@react-native-firebase/app@23.2.0(@react-native-async-storage/async-storage@1.24.0(react-native@0.74.7(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(@types/react@18.3.24)(react@18.2.0)))(expo@53.0.20(@babel/core@7.28.3)(react-native@0.74.7(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(@types/react@18.3.24)(react@18.2.0))(react@18.2.0))(react-native@0.74.7(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(@types/react@18.3.24)(react@18.2.0))(react@18.2.0))
       '@react-native-firebase/app':
-        specifier: ^23.1.2
+        specifier: ^23.2.0
         version: 23.2.0(@react-native-async-storage/async-storage@1.24.0(react-native@0.74.7(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(@types/react@18.3.24)(react@18.2.0)))(expo@53.0.20(@babel/core@7.28.3)(react-native@0.74.7(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(@types/react@18.3.24)(react@18.2.0))(react@18.2.0))(react-native@0.74.7(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(@types/react@18.3.24)(react@18.2.0))(react@18.2.0)
       '@supabase/supabase-js':
-        specifier: ^2.56.0
+        specifier: ^2.56.1
         version: 2.56.1
       expo:
-        specifier: ^53.0.0
+        specifier: ^53.0.20
         version: 53.0.20(@babel/core@7.28.3)(react-native@0.74.7(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(@types/react@18.3.24)(react@18.2.0))(react@18.2.0)
       expo-camera:
-        specifier: ^15.0.0
+        specifier: ^15.0.16
         version: 15.0.16(expo@53.0.20(@babel/core@7.28.3)(react-native@0.74.7(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(@types/react@18.3.24)(react@18.2.0))(react@18.2.0))
       expo-file-system:
         specifier: ^18.1.11
@@ -36,7 +36,7 @@ importers:
         specifier: ^16.1.6
         version: 16.1.6(expo@53.0.20(@babel/core@7.28.3)(react-native@0.74.7(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(@types/react@18.3.24)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       expo-location:
-        specifier: ^18.0.0
+        specifier: ^18.1.6
         version: 18.1.6(expo@53.0.20(@babel/core@7.28.3)(react-native@0.74.7(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(@types/react@18.3.24)(react@18.2.0))(react@18.2.0))
       expo-speech:
         specifier: ^13.1.7
@@ -48,7 +48,7 @@ importers:
         specifier: 18.2.0
         version: 18.2.0
       react-native:
-        specifier: 0.74.x
+        specifier: 0.74.7
         version: 0.74.7(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(@types/react@18.3.24)(react@18.2.0)
       react-native-maps:
         specifier: 1.14.0

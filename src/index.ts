@@ -1,9 +1,7 @@
-export { createCore } from './core';
-export type { Core, CoreDeps } from './core';
-
-export { createNavigation, initialState } from './navigationFactory';
-export { cloneNavigationState } from './features/navigation/cloneNavigationState';
-export {
+import { createCore, type Core, type CoreDeps } from './core';
+import { createNavigation, initialState } from './navigationFactory';
+import { cloneNavigationState } from './features/navigation/cloneNavigationState';
+import {
   createRegistryManager,
   setRegistry,
   initRegistry,
@@ -14,3 +12,36 @@ export {
   getSources,
   getStores,
 } from './registryManager';
+
+export const api = {
+  createCore,
+  createNavigation,
+  initialState,
+  cloneNavigationState,
+  createRegistryManager,
+  setRegistry,
+  initRegistry,
+  getRegistry,
+  resetRegistry,
+  getCommands,
+  getProcessors,
+  getSources,
+  getStores,
+};
+
+export {
+  createCore,
+  createNavigation,
+  initialState,
+  cloneNavigationState,
+  createRegistryManager,
+  setRegistry,
+  initRegistry,
+  getRegistry,
+  resetRegistry,
+  getCommands,
+  getProcessors,
+  getSources,
+  getStores,
+};
+export type { Core, CoreDeps };
