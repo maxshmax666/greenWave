@@ -41,6 +41,28 @@ export async function getRoute(
     throw new Error(`Unable to fetch route. ${message}`);
   }
 
+  if (!res.ok) {
+    let body: string | undefined;
+    try {
+      const text = await res.text();
+      if (text) {
+        body = text;
+      }
+    } catch (err) {
+      try {
+        const json = await res.json();
+        body = JSON.stringify(json);
+      } catch {
+        const message = err instanceof Error ? err.message : String(err);
+        body = message;
+      }
+    }
+    const details = body ? `: ${body}` : '';
+    throw new Error(
+      `Unable to fetch route. Request failed with status ${res.status}${details}`,
+    );
+  }
+
   const json = await res.json();
   const feature = json.features?.[0];
   if (!feature) {

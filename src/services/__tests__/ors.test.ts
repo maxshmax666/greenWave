@@ -24,16 +24,18 @@ describe('getRoute', () => {
   });
 
   it('throws on non-ok responses', async () => {
-    const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue({
+    const textSpy = jest.fn().mockResolvedValue('server error');
+    const fetchSpy = jest.spyOn(network, 'fetchWithTimeout').mockResolvedValue({
       ok: false,
       status: 500,
-      text: jest.fn().mockResolvedValue('server error'),
+      text: textSpy,
     } as unknown as Response);
 
     await expect(getRoute(start, end)).rejects.toThrow(
       'Unable to fetch route. Request failed with status 500: server error',
     );
     expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(textSpy).toHaveBeenCalledTimes(1);
   });
 
   it('returns parsed route data on success', async () => {
