@@ -150,12 +150,13 @@ See [CHANGELOG.md](CHANGELOG.md) for a full history.
 
 ## Environment
 
-Copy `.env.example` to `.env` and set the following environment variables for API access:
+Copy `.env.example` to `.env` and set the following environment variables for API access.
+Expo only exposes variables prefixed with `EXPO_PUBLIC_` to the client bundle, so keep any client-read keys under that prefix:
 
 ```
-SUPABASE_URL
-SUPABASE_ANON_KEY
-ORS_API_KEY
+PUBLIC_SUPABASE_URL
+PUBLIC_SUPABASE_ANON_KEY
+EXPO_PUBLIC_ORS_API_KEY
 ```
 
 ## Running
