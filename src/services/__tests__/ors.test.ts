@@ -92,4 +92,18 @@ describe('getRoute', () => {
     });
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
+
+  it('throws on invalid response shape', async () => {
+    const json = {
+      features: [],
+    };
+    const fetchSpy = jest
+      .spyOn(network, 'fetchWithTimeout')
+      .mockResolvedValue({ json: async () => json } as unknown as Response);
+
+    await expect(getRoute(start, end)).rejects.toThrow(
+      'Invalid ORS response shape',
+    );
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
 });

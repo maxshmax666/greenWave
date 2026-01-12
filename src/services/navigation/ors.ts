@@ -20,6 +20,67 @@ export interface RouteResult {
   steps: RouteStep[];
 }
 
+type ORSFeature = {
+  geometry: {
+    coordinates: [number, number][];
+  };
+  properties: {
+    summary: {
+      distance: number;
+      duration: number;
+    };
+    segments?: Array<{
+      steps?: unknown[];
+    }>;
+  };
+};
+
+const isNumber = (value: unknown): value is number =>
+  typeof value === 'number' && Number.isFinite(value);
+
+const hasValidCoordinates = (
+  coords: unknown,
+): coords is [number, number][] =>
+  Array.isArray(coords) &&
+  coords.every(
+    (pair) =>
+      Array.isArray(pair) &&
+      pair.length >= 2 &&
+      isNumber(pair[0]) &&
+      isNumber(pair[1]),
+  );
+
+const hasValidSummary = (
+  summary: unknown,
+): summary is ORSFeature['properties']['summary'] =>
+  !!summary &&
+  typeof summary === 'object' &&
+  isNumber((summary as { distance?: unknown }).distance) &&
+  isNumber((summary as { duration?: unknown }).duration);
+
+const isValidOrsResponse = (data: unknown): data is { features: ORSFeature[] } => {
+  if (!data || typeof data !== 'object') {
+    return false;
+  }
+  const features = (data as { features?: unknown }).features;
+  if (!Array.isArray(features) || features.length === 0) {
+    return false;
+  }
+  const feature = features[0] as ORSFeature | undefined;
+  if (!feature || typeof feature !== 'object') {
+    return false;
+  }
+  const geometry = feature.geometry;
+  const properties = feature.properties;
+  if (!geometry || !properties) {
+    return false;
+  }
+  return (
+    hasValidCoordinates(geometry.coordinates) &&
+    hasValidSummary(properties.summary)
+  );
+};
+
 export async function getRoute(
   start: LatLng,
   end: LatLng,
@@ -64,10 +125,10 @@ export async function getRoute(
   }
 
   const json = await res.json();
-  const feature = json.features?.[0];
-  if (!feature) {
-    throw new Error('Route not found');
+  if (!isValidOrsResponse(json)) {
+    throw new Error('Invalid ORS response shape');
   }
+  const feature = json.features[0];
   const coords: LatLng[] = feature.geometry.coordinates.map(
     ([lon, lat]: [number, number]) => ({
       latitude: lat,
