@@ -6,6 +6,8 @@
 React Native (Expo) app with real-time traffic-light detection, premium subscriptions, and analytics.
 
 See [docs/API.md](docs/API.md) for available REST endpoints.
+For the Node.js backend that handles Telegram WebApp auth and ordering settings, see
+[docs/telegram-node-backend.md](docs/telegram-node-backend.md).
 
 ## Branches
 
